@@ -6,18 +6,28 @@
     <description>Recent content on Steve Doogue</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 28 Mar 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Apr 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Welcome to my blog</title>
-      <link>/2018/03/welcome-to-my-blog/</link>
-      <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
+      <title>Funding cuts and deprivation in England</title>
+      <link>/2018/04/funding-cuts-and-deprivation/</link>
+      <pubDate>Mon, 09 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/03/welcome-to-my-blog/</guid>
-      <description>&lt;p&gt;Welcome to my new blog. I&amp;rsquo;m using this as an opportunity to learn new data analysis tools, and wil be applying these to gain insights into city, state and local issues.&lt;/p&gt;</description>
+      <guid>/2018/04/funding-cuts-and-deprivation/</guid>
+      <description>The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, this could bring relief to some of the hardest-hit local councils. However, this analysis shows that the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived parts of England.
+In 2010 the UK government embarked on a series of major spending cuts to reduce its budget deficit, in response to the financial crisis.</description>
+    </item>
+    
+    <item>
+      <title>Welcome to my blog</title>
+      <link>/2018/04/welcome-to-my-blog/</link>
+      <pubDate>Sun, 08 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/04/welcome-to-my-blog/</guid>
+      <description>&lt;p&gt;Welcome to my new blog. I&amp;rsquo;m using this as an opportunity to explore new data analysis and visualisation tools. This is intended as an exercise in learning-by-doing: as I learn new skills, I will be using these to explore data relating city, state and local issues.&lt;/p&gt;</description>
     </item>
     
   </channel>

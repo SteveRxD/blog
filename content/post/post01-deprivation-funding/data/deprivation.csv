@@ -1,0 +1,353 @@
+ecode1,name,deprivation
+E0101,Bath & North East Somerset UA,0.091
+E0102,Bristol UA,0.167
+E0103,South Gloucestershire UA,0.087
+E0104,North Somerset UA,0.116
+E0201,Luton UA,0.178
+E0202,Bedford UA,0.136
+E0203,Central Bedfordshire UA,0.094
+E0301,Bracknell Forest UA,0.082
+E0302,West Berkshire UA,0.076
+E0303,Reading UA,0.135
+E0304,Slough UA,0.151
+E0305,Windsor & Maidenhead UA,0.069
+E0306,Wokingham UA,0.052
+E0401,Milton Keynes UA,0.138
+E0421,Buckinghamshire,0.076
+E0431,Aylesbury Vale,0.079
+E0432,Chiltern,0.061
+E0434,South Bucks,0.066
+E0435,Wycombe,0.086
+E0501,Peterborough UA,0.182
+E0521,Cambridgeshire,0.091
+E0531,Cambridge,0.084
+E0532,East Cambridgeshire,0.083
+E0533,Fenland,0.157
+E0536,South Cambridgeshire,0.064
+E0551,Huntingdonshire,0.086
+E0601,Halton UA,0.201
+E0602,Warrington UA,0.122
+E0603,Cheshire East UA,0.094
+E0604,Cheshire West and Chester UA,0.122
+E0701,Hartlepool UA,0.239
+E0702,Middlesbrough UA,0.268
+E0703,Redcar & Cleveland UA,0.204
+E0704,Stockton-on-Tees UA,0.177
+E0801,Cornwall UA,0.143
+E0920,Cumbria,0.119
+E0931,Allerdale,0.133
+E0932,Barrow-in-Furness,0.174
+E0933,Carlisle,0.128
+E0934,Copeland,0.141
+E0935,Eden,0.074
+E0936,South Lakeland,0.071
+E1001,Derby City UA,0.181
+E1021,Derbyshire,0.126
+E1031,Amber Valley,0.126
+E1032,Bolsover,0.165
+E1033,Chesterfield,0.167
+E1035,Derbyshire Dales,0.076
+E1036,Erewash,0.137
+E1037,High Peak,0.110
+E1038,North East Derbyshire,0.123
+E1039,South Derbyshire,0.097
+E1101,Plymouth UA,0.163
+E1102,Torbay UA,0.191
+E1121,Devon,0.108
+E1131,East Devon,0.087
+E1132,Exeter,0.114
+E1133,Mid Devon,0.103
+E1134,North Devon,0.122
+E1136,South Hams,0.097
+E1137,Teignbridge,0.114
+E1139,Torridge,0.133
+E1140,West Devon,0.106
+E1201,Poole UA,0.112
+E1202,Bournemouth UA,0.140
+E1221,Dorset,0.096
+E1232,Christchurch,0.103
+E1233,East Dorset,0.073
+E1234,North Dorset,0.082
+E1236,Purbeck,0.092
+E1237,West Dorset,0.091
+E1238,Weymouth & Portland,0.145
+E1301,Darlington UA,0.168
+E1302,Durham UA,0.178
+E1401,Brighton & Hove UA,0.140
+E1421,East Sussex,0.131
+E1432,Eastbourne,0.151
+E1433,Hastings,0.222
+E1435,Lewes,0.111
+E1436,Rother,0.128
+E1437,Wealden,0.079
+E1501,Southend-on-Sea UA,0.169
+E1502,Thurrock UA,0.152
+E1521,Essex,0.120
+E1531,Basildon,0.162
+E1532,Braintree,0.110
+E1533,Brentwood,0.079
+E1534,Castle Point,0.124
+E1535,Chelmsford,0.090
+E1536,Colchester,0.117
+E1537,Epping Forest,0.108
+E1538,Harlow,0.159
+E1539,Maldon,0.102
+E1540,Rochford,0.085
+E1542,Tendring,0.185
+E1544,Uttlesford,0.066
+E1620,Gloucestershire,0.107
+E1631,Cheltenham,0.110
+E1632,Cotswold,0.073
+E1633,Forest of Dean,0.118
+E1634,Gloucester,0.146
+E1635,Stroud,0.088
+E1636,Tewkesbury,0.091
+E1701,Portsmouth UA,0.156
+E1702,Southampton UA,0.154
+E1721,Hampshire,0.086
+E1731,Basingstoke & Deane,0.083
+E1732,East Hampshire,0.068
+E1733,Eastleigh,0.078
+E1734,Fareham,0.066
+E1735,Gosport,0.125
+E1736,Hart,0.046
+E1737,Havant,0.146
+E1738,New Forest,0.087
+E1740,Rushmoor,0.108
+E1742,Test Valley,0.076
+E1743,Winchester,0.066
+E1801,Herefordshire UA,0.111
+E1821,Worcestershire,0.116
+E1831,Bromsgrove,0.081
+E1835,Redditch,0.140
+E1837,Worcester,0.129
+E1838,Wychavon,0.099
+E1839,Wyre Forest,0.144
+E1851,Malvern Hills,0.103
+E1920,Hertfordshire,0.097
+E1931,Broxbourne,0.129
+E1932,Dacorum,0.099
+E1933,East Hertfordshire,0.069
+E1934,Hertsmere,0.102
+E1935,North Hertfordshire,0.094
+E1936,St Albans,0.069
+E1937,Stevenage,0.145
+E1938,Three Rivers,0.083
+E1939,Watford,0.108
+E1940,Welwyn Hatfield,0.100
+E2001,East Riding of Yorkshire UA,0.109
+E2002,Kingston upon Hull UA,0.257
+E2003,North East Lincolnshire UA,0.204
+E2004,North Lincolnshire UA,0.150
+E2101,Isle of Wight UA,0.155
+E2201,The Medway Towns UA,0.153
+E2221,Kent,0.129
+E2231,Ashford,0.122
+E2232,Canterbury,0.115
+E2233,Dartford,0.113
+E2234,Dover,0.150
+E2236,Gravesham,0.142
+E2237,Maidstone,0.107
+E2239,Sevenoaks,0.082
+E2240,Shepway,0.163
+E2241,Swale,0.166
+E2242,Thanet,0.212
+E2243,Tonbridge & Malling,0.090
+E2244,Tunbridge Wells,0.084
+E2301,Blackburn with Darwen UA,0.215
+E2302,Blackpool UA,0.257
+E2321,Lancashire,0.141
+E2333,Burnley,0.209
+E2334,Chorley,0.113
+E2335,Fylde,0.103
+E2336,Hyndburn,0.188
+E2337,Lancaster,0.136
+E2338,Pendle,0.178
+E2339,Preston,0.166
+E2340,Ribble Valley,0.062
+E2341,Rossendale,0.156
+E2342,South Ribble,0.097
+E2343,West Lancashire,0.139
+E2344,Wyre,0.130
+E2401,Leicester City UA,0.221
+E2402,Rutland UA,0.064
+E2421,Leicestershire,0.090
+E2431,Blaby,0.080
+E2432,Charnwood,0.098
+E2433,Harborough,0.064
+E2434,Hinckley & Bosworth,0.094
+E2436,Melton,0.083
+E2437,North West Leicestershire,0.106
+E2438,Oadby & Wigston,0.099
+E2520,Lincolnshire,0.132
+E2531,Boston,0.141
+E2532,East Lindsey,0.170
+E2533,Lincoln,0.177
+E2534,North Kesteven,0.091
+E2535,South Holland,0.119
+E2536,South Kesteven,0.104
+E2537,West Lindsey,0.129
+E2620,Norfolk,0.132
+E2631,Breckland,0.118
+E2632,Broadland,0.080
+E2633,Great Yarmouth,0.201
+E2634,King's Lynn & West Norfolk,0.136
+E2635,North Norfolk,0.121
+E2636,Norwich,0.189
+E2637,South Norfolk,0.088
+E2701,York UA,0.086
+E2721,North Yorkshire,0.092
+E2731,Craven,0.078
+E2732,Hambleton,0.076
+E2734,Richmondshire,0.067
+E2736,Scarborough,0.161
+E2753,Harrogate,0.071
+E2755,Ryedale,0.088
+E2757,Selby,0.089
+E2820,Northamptonshire,0.122
+E2831,Corby,0.160
+E2832,Daventry,0.088
+E2833,East Northamptonshire,0.100
+E2834,Kettering,0.127
+E2835,Northampton,0.145
+E2836,South Northamptonshire,0.058
+E2837,Wellingborough,0.149
+E2901,Northumberland UA,0.137
+E3001,City of Nottingham UA,0.225
+E3021,Nottinghamshire,0.128
+E3031,Ashfield,0.168
+E3032,Bassetlaw,0.137
+E3033,Broxtowe,0.113
+E3034,Gedling,0.118
+E3035,Mansfield,0.173
+E3036,Newark & Sherwood,0.121
+E3038,Rushcliffe,0.068
+E3120,Oxfordshire,0.080
+E3131,Cherwell,0.085
+E3132,Oxford,0.111
+E3133,South Oxfordshire,0.062
+E3134,Vale of White Horse,0.067
+E3135,West Oxfordshire,0.066
+E3201,Telford and the Wrekin UA,0.176
+E3202,Shropshire UA,0.106
+E3320,Somerset,0.113
+E3331,Mendip,0.109
+E3332,Sedgemoor,0.131
+E3333,Taunton Deane,0.108
+E3334,South Somerset,0.103
+E3335,West Somerset,0.129
+E3401,Stoke-on-Trent UA,0.208
+E3421,Staffordshire,0.112
+E3431,Cannock Chase,0.146
+E3432,East Staffordshire,0.119
+E3433,Lichfield,0.097
+E3434,Newcastle-under-Lyme,0.121
+E3435,South Staffordshire,0.097
+E3436,Stafford,0.088
+E3437,Staffordshire Moorlands,0.093
+E3439,Tamworth,0.145
+E3520,Suffolk,0.114
+E3531,Babergh,0.095
+E3532,Forest Heath,0.099
+E3533,Ipswich,0.163
+E3534,Mid Suffolk,0.080
+E3535,St Edmundsbury,0.090
+E3536,Suffolk Coastal,0.085
+E3537,Waveney,0.164
+E3620,Surrey,0.070
+E3631,Elmbridge,0.065
+E3632,Epsom & Ewell,0.066
+E3633,Guildford,0.068
+E3634,Mole Valley,0.061
+E3635,Reigate & Banstead,0.077
+E3636,Runnymede,0.073
+E3637,Spelthorne,0.091
+E3638,Surrey Heath,0.061
+E3639,Tandridge,0.073
+E3640,Waverley,0.062
+E3641,Woking,0.077
+E3720,Warwickshire,0.102
+E3731,North Warwickshire,0.111
+E3732,Nuneaton & Bedworth,0.149
+E3733,Rugby,0.095
+E3734,Stratford-on-Avon,0.079
+E3735,Warwick,0.082
+E3820,West Sussex,0.097
+E3831,Adur,0.123
+E3832,Arun,0.118
+E3833,Chichester,0.091
+E3834,Crawley,0.124
+E3835,Horsham,0.067
+E3836,Mid Sussex,0.061
+E3837,Worthing,0.118
+E3901,Swindon UA,0.125
+E3902,Wiltshire UA,0.088
+E4001,Isles of Scilly,x
+E4201,Bolton,0.190
+E4202,Bury,0.153
+E4203,Manchester,0.242
+E4204,Oldham,0.206
+E4205,Rochdale,0.216
+E4206,Salford,0.212
+E4207,Stockport,0.128
+E4208,Tameside,0.188
+E4209,Trafford,0.120
+E4210,Wigan,0.163
+E4301,Knowsley,0.276
+E4302,Liverpool,0.256
+E4303,St Helens,0.196
+E4304,Sefton,0.176
+E4305,Wirral,0.187
+E4401,Barnsley,0.188
+E4402,Doncaster,0.186
+E4403,Rotherham,0.187
+E4404,Sheffield,0.173
+E4501,Gateshead,0.185
+E4502,Newcastle upon Tyne,0.194
+E4503,North Tyneside,0.163
+E4504,South Tyneside,0.223
+E4505,Sunderland,0.210
+E4601,Birmingham,0.242
+E4602,Coventry,0.182
+E4603,Dudley,0.170
+E4604,Sandwell,0.241
+E4605,Solihull,0.122
+E4606,Walsall,0.219
+E4607,Wolverhampton,0.238
+E4701,Bradford,0.205
+E4702,Calderdale,0.164
+E4703,Kirklees,0.156
+E4704,Leeds,0.160
+E4705,Wakefield,0.166
+E5011,Camden,0.174
+E5012,Greenwich,0.189
+E5013,Hackney,0.234
+E5014,Hammersmith & Fulham,0.167
+E5015,Islington,0.217
+E5016,Kensington & Chelsea,0.135
+E5017,Lambeth,0.191
+E5018,Lewisham,0.200
+E5019,Southwark,0.198
+E5020,Tower Hamlets,0.253
+E5021,Wandsworth,0.127
+E5022,Westminster,0.170
+E5030,Barking & Dagenham,0.242
+E5031,Barnet,0.133
+E5032,Bexley,0.126
+E5033,Brent,0.188
+E5034,Bromley,0.112
+E5035,Croydon,0.162
+E5036,Ealing,0.166
+E5037,Enfield,0.210
+E5038,Haringey,0.210
+E5039,Harrow,0.127
+E5040,Havering,0.132
+E5041,Hillingdon,0.136
+E5042,Hounslow,0.148
+E5043,Kingston upon Thames,0.088
+E5044,Merton,0.116
+E5045,Newham,0.217
+E5046,Redbridge,0.151
+E5047,Richmond upon Thames,0.073
+E5048,Sutton,0.111
+E5049,Waltham Forest,0.193

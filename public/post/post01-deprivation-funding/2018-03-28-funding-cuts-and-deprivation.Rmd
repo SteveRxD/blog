@@ -1,0 +1,241 @@
+---
+title: 'Funding cuts and deprivation in England'
+Summary: 'The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, this could bring relief to some of the hardest-hit local councils. However, this analysis shows that the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived parts of England.'
+author: ''
+date: '2018-04-09'
+slug: funding-cuts-and-deprivation
+categories: []
+tags: []
+thumbnailImagePosition: "left"
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1522274214/coins600.jpg
+comments: true
+
+---
+
+_The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, this could bring relief to some of the hardest-hit local councils. However, this analysis shows that the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived parts of England._ 
+
+<!--more--->
+
+
+In 2010 the UK government embarked on a series of major spending cuts to reduce its budget deficit, in response to the financial crisis. The  department responsible for local government - now the Ministry of Housing, Communities and Local Government (MHCLG) - was forced to make some of the greatest savings. 
+
+This translated to cuts in funding for local councils across England. Local councils who were most reliant on central government grants - as opposed to locally raised revenue - were hit the hardest by these cuts. These also tended to be the most deprived parts of England.  
+
+To illustrate this, we looked at the relationship between local councils' deprivation and change in 'spending power' between 2010 and 2019. This is illustrated in the chart below, broken down by type of authority.^[In simple terms, in any given area, local services are provided by either (i) a single 'unitary' authority or (ii) by both a county council and shire district. Among other functions, unitaries and county councils are responsible for providing social services to children and adults. (For simplicity we use the term 'unitaries' in this post, though this includes unitaries, metropolitan districts and London boroughs).] Please note that this chart excludes the effects of inflation; in real terms, councils' funding has fallen even more sharply over time. 
+
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
+
+# Load in packages
+
+library(tidyverse)
+library(readxl)
+library(plotly)
+library(scales) # This enables percent() function, to format the chart tool tip
+
+# Set up Plotly authentication
+# This will be used to publish plot online
+
+Sys.setenv("plotly_username"="SteveRxD")
+Sys.setenv("plotly_api_key"="ICR8IWvpFN3YMrgd5zXA")
+
+# Read in data
+
+df_main  <- read_csv('data/spendingpowercuts.csv')
+df_dep   <- read_csv('data/deprivation.csv')
+df_dep$deprivation   <- as.double(df_dep$deprivation) 
+
+# Categorise councils based on their functions:
+
+df1 <- df_main %>%
+          mutate(type = case_when(
+            functions == 'UF' ~ 'County',
+            functions == 'U'  ~ 'County',
+            functions == 'L'  ~ 'District',
+            TRUE              ~ 'Unitary')
+          ) %>%
+          filter(name != 'Isles of Scilly')
+  
+
+# Gather years into a single column
+
+df2 <- df1 %>% 
+        select(-rcode,-functions) %>% 
+        gather(year, change, starts_with('20')) %>%
+        arrange(name,year)
+
+
+# Calculate cumulative percentage change
+
+df3 <- df2 %>%
+        mutate(perchange = change + 1) %>% 
+        group_by(name) %>%
+        mutate(cumchange = cumprod(perchange) - 1) %>%
+        ungroup() %>%
+        select(-perchange)
+
+
+# Combine with deprivation data
+
+df4 <- df3 %>% 
+        left_join(select(df_dep,ecode1,deprivation),by = 'ecode1')
+
+
+# Produce Figure 1
+
+p <- df4 %>%
+  
+      plot_ly(
+        x = ~deprivation,
+        y = ~cumchange,
+        frame = ~year,
+        color = ~type,
+        colors = "Set1",
+        text = ~paste('Authority: ', name,
+                      '<br>Spending power: ', percent(cumchange)),
+        hoverinfo = 'text',
+        type = 'scatter',
+        mode = 'markers',
+        marker = list(size = 12, opacity = 0.7)
+      ) %>%
+  
+      layout(
+        xaxis = list(title = "Income deprivation", tickfont = list(size = 12),tickformat = "%"),
+        # The following line adds blank spaces between 'Spending Power' and the axis ticks
+        yaxis = list(title = paste0("Change in spending power", rep("\n&nbsp;", 3)),
+                tickfont = list(size = 12), tickformat = "%"), 
+        font = list(family = 'arial', size = 16)
+      ) %>% 
+  
+      animation_opts(frame = 1500, easing = 'cubic-in-out', redraw = TRUE) %>% 
+      style(
+        hoverlabel = list(bordercolor = "white"))  %>% 
+  
+      animation_slider(
+        currentvalue = list(font = list(color="white", size = 24))
+      ) %>%
+  
+      config(displayModeBar = FALSE) # hides the pop-up menu that appears in Plotly charts
+
+      # Alternative way to publish to Ploty: 
+      
+      # api_create(p, filename = "funding_cuts")
+      # <iframe width="700" height="600" frameborder="0" scrolling="no" src="//plot.ly/~SteveRxD/5.embed"></iframe>
+
+```
+  
+__Fig 1: Deprivation and change in spending power since 2010__
+```{r, echo = FALSE}
+p
+
+```
+
+Spending power reflects the major revenue streams available to local councils. It is made up of two components: 
+
+* __Council tax revenue__, a tax paid by residents based on the value of their homes; and
+* __Need-based funding determined by central government__, including (i) direct grants and (ii) a share of business rates, a levy paid by local businesses based on the market rental value of their premises.^[MHCLG deducts a 'tariff' from or applies a 'top-up' to each local council, so that their final share of business rate revenue is equal to a pre-determined level of funding need. This level of funding is included in MHCLG's definition of 'spending power'. Additionally, local councils are rewarded (or penalised) for growth (or reductions) in the physical tax base. These changes in revenue are excluded from the definition.] 
+
+Deprivation reflects the percentage of residents who are income deprived, based on benefit recipient rates. This is based on the [English Indices of Deprivation 2015](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2015). 
+
+<br>
+Deprived authorities fared worse because of the government's decision to apply uniform cuts to need-based funding. Poorer parts of England are more reliant on this funding and have a lower capacity to generate council tax revenue than affluent areas. (These points have also been made in a [recent blog post by Dan Bates](http://www.room151.co.uk/funding/dan-bates-the-importance-of-council-tax-in-the-fair-funding-debate/), which focuses on differences in council tax revenue). The table below compares the fortunes of Wokingham, the least deprived unitary in England with a high share of council tax revenue, with those of Knowsley, the most deprived authority and with a low share of this tax revenue.
+<hr>
+__Table 1: Wokingham versus Knowsley__  
+
+Local authority | % of revenue from council tax (2010) | % deprived residents | Spending power change
+---------------| ------------: |----------:|-----------:
+Wokingham | 68% | 5% |  __+1.8%__
+Knowsley | 24% | 28% | __-26.9%__  
+<hr>
+
+In 2016, the government began taking these differences in council tax revenue into account when applying cuts. However, 2016 was also the final year in which spending power was cut (at least for unitaries and counties), and so this change came too late to prevent deprived areas from bearing a disproportionate share of cuts.  
+
+Furthermore, changes in subsequent years did little to reverse the cuts to deprived areas. This can be seen by breaking the time period into years in which spending power was falling (2010 to 2016) and when it is rising (2017 to 2019). This is illustrated in the chart below, focusing on those authorities with social care responsibilities.^[In 2017 to 2019, spending power rises for unitaries and counties. This is partly financed by further cuts to shire districts. For shire districts, there is no immediately discernible relationship between spending power cuts and deprivation in 2017 to 2019.]
+
+__Fig 2: Change in spending power for periods 2010-2016 and 2017-2019__
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
+
+# Produce figure 2
+
+first <- c('2011','2012','2013','2014','2015','2016')
+second <- c('2017','2018','2019')
+
+df_first <- df2 %>%
+            filter(year %in% first) %>%
+            mutate(perchange = change + 1) %>%
+            group_by(name) %>%
+            mutate(cumchange = cumprod(perchange) - 1) %>%
+            ungroup() %>%
+            select(-perchange) %>%
+            filter(year == 2016) %>%
+            select(-change)
+
+df_second <-  df2 %>%
+              filter(year %in% second) %>%
+              mutate(perchange = change + 1) %>%
+              group_by(name) %>%
+              mutate(cumchange = cumprod(perchange) - 1) %>%
+              ungroup() %>%
+              select(-perchange) %>%
+              filter(year == 2019) %>%
+              select(-change)
+
+df_phase <- df_first %>%
+            rbind(df_second) %>%
+            arrange(name,year) %>%
+            left_join(select(df_dep,ecode1,deprivation),by = 'ecode1') %>%
+            filter(type != 'District') %>%
+            mutate (year = as.factor(year))
+    
+levels(df_phase$year)
+levels(df_phase$year) <- c("2010 to 2016", "2017 to 2019")
+
+
+p4 <- ggplot(df_phase, 
+              aes(x = deprivation, 
+                  y = cumchange, 
+                  color = type,
+                  text = paste('Name: ', name,
+                               '<br>Spending power: ', percent(cumchange)))) +
+              geom_point(size = 2.5, alpha = .7) +
+              scale_color_manual(values=c("#E41A1C","#999999")) + 
+              facet_grid(. ~ year) +
+              theme_minimal() +
+              theme(
+                text = element_text(family = 'Arial'),
+                strip.text.x = element_text(size = 12),
+                axis.text=element_text(size = 12),
+                axis.title=element_text(size = 16),
+                legend.title = element_blank(),
+                legend.text = element_text(size =12)
+                ) +
+              geom_hline(yintercept = 0, size = 0.25) +
+              ylab("Change in spending power") + 
+              xlab("Income deprivation") + 
+              scale_y_continuous(labels=percent) +
+              scale_x_continuous(labels=percent)
+
+```
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ggplotly(p4, tooltip = c("text")) %>% # This will only display the variables listed above
+  
+  layout(legend = list(orientation = "v",
+                       x = .9, 
+                       y=.5,
+                       xanchor = "right")) %>%
+  
+  config(displayModeBar = FALSE)
+```
+<br>    
+This clearly shows that while spending power _cuts_ fell disproportionately on the most deprived councils in England, spending power _gains_ (at least for social care providers) are set to be distributed fairly evenly among both affluent and deprived areas.
+<br>  
+The UK government is currently carrying out review of how local councils are funded, with changes to be implemented in 2020. It is yet to be seen if this will result in a shift of resources back the most vulnerable parts of England, or whether a diminished share of funding for deprived areas has simply become the new normal.
+<br>  
+{{<alert info>}} 
+__Technical stuff__  
+<p> _Spending power_  
+This analysis was based on spending power figures published by MHCLG since 2011-12. For each year, the _adjusted_ change in spending power was used. This provides a like-for-like comparison with the year before, controlling for changes in the definition of spending power. Unlike MHCLG's definition of spending power, this analysis excluded Public Health grant (but includes NHS support for social care). This was ring-fenced funding which could not be used to fund local authorities' core services. The annual adjusted changes in each council's spending power were then linked together, to give an estimate of the compounded change in spending power over time. All these figures are are presented in nominal terms, and exclude the effects of inflation.</p>
+<p> _Code_  
+The charts in this post were produced using the [plotly package for R](https://plot.ly/r/getting-started/). This allows you produce charts in R as you normally would (using ggplot2), but then publish them using Plotly. Using Plotly means you can produce animated charts (as in Figure 1), and make the charts interactive with tool tips. The code and data underlying this post can be found on [GitHub](https://github.com/SteveRxD/blog/tree/master/content/post/post01-deprivation-funding).</p>
+{{</alert>}}
+
+

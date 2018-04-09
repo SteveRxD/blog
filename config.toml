@@ -32,8 +32,8 @@ canonifyurls = true
 
 [author]
   name = "Steve Doogue"
-  bio = "A blog that uses data to explore city, state and local issues. An exercise in learning-by-doing!"
-  job = "Economist and Data Analyst"
+  bio = "A blog that uses data to explore city, state and local issues. An exercise in learning-by-doing."
+  job = "Economist / Data Analyst / Jack-of-all-trades"
   location = "Dallas, Texas"
   # Your Gravatar email. Overwrite `author.picture` everywhere in the blog
   # gravatarEmail = "thibaud.lepretre@gmail.com"
