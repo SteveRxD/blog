@@ -33,7 +33,7 @@ library(plotly)
 library(scales) # This enables percent() function, to format the chart tool tip
 
 # Set up Plotly authentication
-# This will be used to publish plot online
+# This is only needed if you want to publish to your Plotly account
 
 Sys.setenv("plotly_username"="SteveRxD")
 Sys.setenv("plotly_api_key"="ICR8IWvpFN3YMrgd5zXA")
@@ -156,6 +156,8 @@ __Fig 2: Change in spending power for periods 2010-2016 and 2017-2019__
 
 # Produce figure 2
 
+# Break the data into two phases, first (2011-16) and second (2017-19)
+
 first <- c('2011','2012','2013','2014','2015','2016')
 second <- c('2017','2018','2019')
 
@@ -179,16 +181,21 @@ df_second <-  df2 %>%
               filter(year == 2019) %>%
               select(-change)
 
+# Combine the total changes to 2016 and to 2019 into a single data frame
+
 df_phase <- df_first %>%
             rbind(df_second) %>%
             arrange(name,year) %>%
             left_join(select(df_dep,ecode1,deprivation),by = 'ecode1') %>%
             filter(type != 'District') %>%
             mutate (year = as.factor(year))
-    
+
+# Do some renaming
+
 levels(df_phase$year)
 levels(df_phase$year) <- c("2010 to 2016", "2017 to 2019")
 
+# Plot a chart of the two periods
 
 p4 <- ggplot(df_phase, 
               aes(x = deprivation, 
