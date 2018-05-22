@@ -131,7 +131,7 @@ map1 <- leaflet() %>%
 map1
 ```
 
-To narrow things down, we can focus on four counties which account for over 85% of residents in the DFW Metroplex, namely Dallas County (2.6 million people), Tarrant County (2.0 million), Collin County (0.9 million), and Denton County (0.8 million). The map below shows these keys counties, overlaid by the boundaries of the City of Dallas.
+To narrow things down, we can focus on four counties which account for over 85% of residents in the DFW Metroplex, namely Dallas County (2.6 million people), Tarrant County (2.0 million), Collin County (0.9 million), and Denton County (0.8 million). The map below shows these key counties, overlaid by the boundaries of the City of Dallas.
 
 **Fig 2: City of Dallas and the four largest counties**  
 ```{r, echo = FALSE, message = FALSE}
