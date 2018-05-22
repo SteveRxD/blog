@@ -407,18 +407,5 @@ These observations are consistent with the phenomenon of 'growth rings' seen acr
 
 > Nationwide, one feature stands out: the bumper crop of fresh suburbs that ring almost every metropolitan area. Where did all of these people come from?... The new tract developments appear to be sucking the life out the older neighborhoods, which bear the scarlet tints of waning population. Ah, the classic flight to the suburbs, but with a twist!... [A]t the very center of the biggest cities – within a stone’s throw of downtown – you’ll see a tiny, resurgent dot of blue. Apparently, at some point in recent history, a home address amongst the skyscrapers became desirable again.
 
-And that's it! Two dot-density maps showing the distribution of Dallas' population and its change over time, all produced using R. This illustrates R's GIS capabilities, and the ability to work with spatial features (such as maps and boundary files) alongside regular data sets.  
-<br>  
-{{<alert info>}} 
-__Technical stuff__  
-  
-The code used to produced this post is available on [GitHub](https://github.com/SteveRxD/Blog/tree/master/content/post).
-
-Most of the analysis takes advantage of the [tidycensus](https://walkerke.github.io/tidycensus/) package. This enables the user to interact with data from the US Census Bureau’s decennial census and American Community Survey APIs, including the ability to download related spatial information (in this case, block groups and water features).  
-  
-The simple features or [sf](https://cran.r-project.org/package=sf) package allows you to store spatial information as columns in a data frame, which which can then be manipulated like any other data frame; for example, by using dplyr operators and functions such as `%>%`, `filter` and `left_join`.  
-  
-Finally, the [leaflet](https://rstudio.github.io/leaflet/) package for R was used to produce the interactive maps shown above.
-{{</alert>}}
-
+And that's it! Two dot-density maps showing the distribution of Dallas' population and its change over time, all produced using R. This illustrates R's GIS capabilities, and the ability to work with spatial features (such as maps and boundary files) alongside regular data sets. As always, the code used to produced this post is available on [GitHub](https://github.com/SteveRxD/Blog/tree/master/content/post).
 
