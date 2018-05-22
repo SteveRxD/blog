@@ -1,0 +1,424 @@
+---
+title: 'A dot-density map of Dallas'
+Summary: 'In this post I produce a population dot-density map using R, to better understand the relationship between Dallas, its neighboring cities, and something they call the "Metroplex".'
+author: 'Steve Doogue'
+date: '2018-05-19'
+slug: dallas-population
+categories: []
+tags: []
+thumbnailImagePosition: "left"
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1526501882/dallas.png
+comments: true
+
+---
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(tidycensus)
+library(tigris)
+library(sf)
+library(leaflet)
+
+census_api_key("87b4725dab82b85567e622d5f88a48b8de59790c")
+
+options(tigris_class = "sf")
+options(tigris_use_cache = TRUE)
+
+```
+
+As a new arrival in Dallas, it's taken me a while to get to grips with its layout. Its sheer size and sprawl make it difficult to identify where Dallas ends and neighboring cities begin. Expanses of new developments and construction appear to have blurred the lines between what were once distinct towns and cities. 
+
+With this in mind, this post has two aims: first, to better understand the geography of Dallas, and second, to do so while exploring some of the GIS tools available in R, the open-source programming language. Specially, I wanted to produce a [dot-density map](https://en.wikipedia.org/wiki/Dot_distribution_map) showing the approximate location of each person in Dallas and its surrounding areas.
+
+__The DFW Metroplex__
+
+A good starting point is the Dallas-Forth Worth (DFW) "Metroplex". This is an area encompassing 13 counties, and is home to 7.4 million people. This is one of the [fastest growing metropolitan areas](https://en.wikipedia.org/wiki/Dallas%E2%80%93Fort_Worth_metroplex) in the United States.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# Clear all objects
+rm(list = ls())
+
+# Specify basemap style without labels: "CartoDB.PositronNoLabels" 
+url_base = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png'
+
+# List of counties in the DFW metroplex area:
+list_county <- tibble(
+                  name = c(
+                   'Collin County, Texas',
+                   'Dallas County, Texas',
+                   'Denton County, Texas',
+                   'Ellis County, Texas',
+                   'Hood County, Texas',
+                   'Hunt County, Texas',
+                   'Johnson County, Texas',
+                   'Kaufman County, Texas',
+                   'Parker County, Texas',
+                   'Rockwall County, Texas',
+                   'Somervell County, Texas',
+                   'Tarrant County, Texas',
+                   'Wise County, Texas'
+                   ))
+
+# Add a shorter name for each county
+list_county <-  list_county %>%  
+                mutate(shortname = word(name,1))
+
+# Download county population data and geography for ACS 2016
+
+pop <- "B01003_001" # This is the population variable
+msa <- "metropolitan statistical area/micropolitan statistical area"
+
+sf_county <- get_acs(geography = "county", 
+                     variables = pop, 
+                     state = "TX",
+                     geometry = TRUE) %>%
+              rename_all(tolower) %>% 
+              st_transform(4326) %>%  # The WGS84 projection 
+              filter(name %in% list_county$name) %>%
+              left_join(list_county)
+
+sf_msa <- core_based_statistical_areas(cb = TRUE) %>%
+          filter(NAME == 'Dallas-Fort Worth-Arlington, TX') %>% 
+          st_transform(4326)
+
+# Calculate the centroid of each county (ignore the resulting warning)
+sf_county$centroids <- st_centroid(sf_county)
+
+# Labels for use in maps
+sf_label <- tribble(
+  ~type,~name,~lat,~lon,
+  'county','Dallas',32.990, -97.027,
+  'county','Tarrant',32.990, -97.538,
+  'county','Denton',33.426, -97.375,
+  'county','Collin',33.410, -96.820,
+  'city','City of Dallas',32.776, -96.797,
+  'city','McKinney',33.197, -96.666,
+  'city','Frisco',33.150, -96.824
+  ) 
+
+```
+
+**Fig 1: The Dallas-Fort Worth Metroplex**
+```{r, echo = FALSE, message = FALSE}
+# PRODUCE MAP OF DFW METROPLEX
+
+map1 <- leaflet() %>% 
+        addTiles(url_base) %>%  
+        addPolygons(data = sf_county, 
+          fillColor = 'transparent', 
+          weight = 1) %>%
+        addPolygons(data = sf_msa, 
+          color = 'red',
+          fillColor = 'transparent', 
+          weight = 3) %>%
+        addLabelOnlyMarkers(
+          data = sf_county$centroids,
+          label = ~shortname,
+          labelOptions = labelOptions(
+            noHide = T, textOnly = T, 
+            direction = 'top', offset = c(0,20), 
+            textsize = "10px", style = list(color = 'blue')
+            )) %>% 
+        addLegend("topright", 
+          colors = c("blue",  "red"),
+          labels= c("Counties", "Dallas-Fort Worth Metroplex"), opacity = .7) %>% 
+        addMiniMap(
+          tiles = providers$Stamen.TonerLite,
+          zoomLevelOffset = -4)
+
+
+map1
+```
+
+To narrow things down, we can focus on four counties which account for over 85% of residents in the DFW Metroplex, namely Dallas County (2.6 million people), Tarrant County (2.0 million), Collin County (0.9 million), and Denton County (0.8 million). The map below shows these keys counties, overlaid by the boundaries of the City of Dallas.
+
+**Fig 2: City of Dallas and the four largest counties**  
+```{r, echo = FALSE, message = FALSE}
+
+sf_county4 <- sf_county %>%
+              select(-centroids) %>%
+              filter(shortname %in% c('Dallas','Denton','Tarrant','Collin'))
+                    
+  
+sf_city <- st_read("data/cities/TxDOT_City_Boundaries.shp", 
+                  stringsAsFactors = FALSE, quiet = TRUE) %>%
+                  st_transform(4326) %>%
+                  mutate(name = CITY_NM)
+
+map2 <- leaflet() %>% 
+        addTiles(url_base) %>%  
+        addPolygons(data = sf_county4, 
+                    fillColor = 'transparent', 
+                    weight = 2) %>%
+        addPolygons(data = sf_city %>% filter(name == 'Dallas'), 
+                    color = 'black', weight =1, fillColor = 'transparent') %>% 
+        addLabelOnlyMarkers(
+          data = sf_label %>% filter(type == 'county'), 
+          lng = ~lon, 
+          lat = ~lat,
+          label = ~name,
+          labelOptions = labelOptions(
+            noHide = T, 
+            textOnly = TRUE,
+            direction = 'right',
+            offset = c(0,10),
+            style = list(color = 'blue')
+            )) %>% 
+        addLabelOnlyMarkers(
+          data = sf_label %>% filter(name == 'City of Dallas'), 
+          lng = ~lon, 
+          lat = ~lat,
+          label = ~name,
+          labelOptions = labelOptions(
+            noHide = T, 
+            textOnly = TRUE,
+            #direction = 'right',
+            offset = c(30,0),
+            style = list(color = 'black')
+            ))
+
+map2
+```
+
+The next step is break the four counties down by block group. [Block groups](https://en.wikipedia.org/wiki/Census_block_group) are small geographical units used in the decennial census and the ongoing American Community Survey (ACS). For this analysis, we use population data from the 2012 - 2016 ACS.^[The ACS is carried out on a rolling five year basis, and gathers information previously contained in the long form of the decennial census. Figures in the ACS are based on a sample, and so are subject to sampling error.] 
+
+**Fig 3: Block groups**
+```{r, echo = FALSE, message = FALSE}
+
+# SHOW BLOCK GROUP AND WATER POLYGONS
+
+sf_blockgroup <- rbind(
+    get_acs("block group", pop, state = "TX", county = "Dallas", geometry = T),
+    get_acs("block group", pop, state = "TX", county = "Denton", geometry = T),
+    get_acs("block group", pop, state = "TX", county = "Collin County", geometry = T),
+    get_acs("block group", pop, state = "TX", county = "Tarrant", geometry = T)
+    ) %>% 
+  st_transform(4326)
+
+
+sf_water <- rbind_tigris(
+    area_water(state = 'TX', county = 'Dallas', class = 'sf'),
+    area_water(state = 'TX', county = 'Tarrant', class = 'sf'),
+    area_water(state = 'TX', county = 'Denton', class = 'sf'),
+    area_water(state = 'TX', county = 'Collin County', class = 'sf')
+    ) %>%
+  top_n(20,AWATER) %>%
+  st_transform(4326)
+
+map3 <- leaflet() %>% 
+  addTiles(url_base) %>%  
+  addPolygons(data = sf_county4, fillColor = 'transparent', weight = 2) %>%
+  addPolygons(data = sf_water, fillColor = 'blue', weight = 0) %>%
+  addPolygons(data = sf_blockgroup, fillColor = 'transparent', color = 'black', weight = .2)
+
+map3
+
+```
+
+When producing a dot-density map, we will allocate dots (representing people) to a random location within each block group. One problem is that these boundaries overlay bodies of water, including lakes, and we do not want to assign dots to areas that are clearly uninhabited. 
+
+We can address this by 'erasing' the area of each block group that overlaps a major body of water. To do this we use the technique explained [here](https://walkerke.github.io/tidycensus/articles/spatial-data.html) by Kyle Walker, the author of the tidycensus package for R. The map below shows the same block group boundaries once the areas of water have been erased.
+
+**Fig 4: Block groups adjusted for large bodies of water**
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# ERASE THE PORTION OF BLOCK GROUPS THAT OVERLAP WATER
+# Use this function from Kyle Walker https://bit.ly/2HoHonQ
+
+st_erase <- function(x, y) {
+              st_difference(x, st_union(st_combine(y)))
+              }
+
+sf_blockgroup_erase <- st_erase(sf_blockgroup,sf_water)
+
+map4 <- leaflet() %>% 
+  addTiles(url_base) %>%  
+  addPolygons(data = sf_county4, fillColor = 'transparent', weight = 2) %>%
+  addPolygons(data = sf_water, fillColor = 'blue', weight = 0) %>%
+  addPolygons(data = sf_blockgroup_erase, fillColor = 'transparent', color = 'black', weight = .2)
+
+
+map4
+
+```
+
+We are now ready to produce a dot-density map. Here we use one dot to represent 100 residents, and assign each dot to a random location somewhere in each block group. The results are shown below.
+
+```{r, echo = FALSE}
+
+# GENERATE COORDINATE PAIRS FOR POPULATION LEVELS
+#
+# Creates a coordinate pair for each dot.
+# Because this takes a very long time, the results are saved as a csv file.
+# They can then be read as a csv file in future, without re-running this code.
+
+# Data frame for population *level*. Each dot = 100 people
+# num_dots_level <- as.data.frame(sf_blockgroup_erase) %>%
+#                     select(estimate) %>%
+#                     mutate_all(funs(as.integer(round(. / 100))))
+
+# Generate table of coordinates for population *level*
+# sf_dots_level <-  map_df(names(num_dots_level),
+#                       ~ st_sample(sf_blockgroup_erase, size = num_dots_level[, .x], type = "random") %>%
+#                         st_cast("POINT") %>%
+#                         st_coordinates() %>%
+#                         as_tibble() %>%
+#                         setNames(c("lon","lat"))
+#                    )
+
+# Write to csv
+ # write_csv(sf_dots_level,'data/sf_dots_level.csv')
+```
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# READ DOT-DENSITY DATA FOR POPULATION LEVELS
+
+sf_dots_level <- read_csv('data/sf_dots_level.csv')
+sf_dots_level <- st_as_sf(sf_dots_level, coords = c("lon", "lat"), crs = 4326)
+
+```
+**Fig 5: Dot density map of Dallas, 2016 (1 dot = 100 people)**
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# CREATE DOT DENSITY MAP FOR POPULATION LEVELS
+
+map5 <- leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+  addProviderTiles("CartoDB.Positron", options = providerTileOptions(
+    updateWhenZooming = FALSE,      # map won't update tiles until zoom is done#
+    updateWhenIdle = TRUE           # map won't load new tiles when panning
+  )) %>%   
+ addPolygons(data = sf_county4, fillColor = 'transparent', weight = 1) %>%
+ addCircles(data = sf_dots_level,
+            radius = 175, 
+            weight = 0,
+            fillOpacity = 0.1)
+
+map5
+
+```
+
+The map illustrates Dallas' sprawling population, and the absence of a clear delineation between neighboring cities and towns. For instance, when travelling north from downtown Dallas to McKinney (33 miles by road), or north west to Denton (40 miles), the density of the population appears to remain fairly constant. There are few blank areas on the map that would indicate rural or unoccupied land separating the cities.
+
+The uninhabited spots on the map tend to be rivers and airports, often with abutting commercial and industrial zones. This includes the branches of the Trinity River running between Dallas and Lewisville, and between Dallas and Fort Worth. The DFW airport is a notable 'blank' spot in the map, lying to the north west of Irving (you can see these features by zooming in on the map).
+
+__Population growth over time__
+
+The final step is to produce a map showing how the population has _changed_ over time. Here we use dots to represent growth or reductions in the number of people. 
+
+The map below shows the change in population between 2000 and 2016.^[Technically, this is between 2000 and 2012 - 2016, as the latter is based on the ASC which spans a five year period. Because the boundaries of block groups have changed over time, it was necessary to use population estimates for 2000 which had been standardized to the more recent 2010 geography. This information is published by the [National Historical Geographic Information System (NHGIS)](https://www.nhgis.org/).] Each blue dot represents an increase of 50 people, and each red dot represents a reduction of 50 people. 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# IMPORT DATA USED TO SHOW POPULATION GROWTH
+# This data is from NHGIS. It uses block groups that are standardised to 2010.
+
+# Read in data. Concat state, county, tract and blockgroup code to create GEOID
+# df_blockgroup_old <- read_csv('data/population_by_bg.csv') %>%
+#   mutate(shortname = word(`County Name`,1)) %>%
+#   filter(shortname %in% c('Dallas','Denton','Tarrant','Collin')) %>%
+#   mutate(GEOID = paste0(
+#     `State Code`,
+#     sprintf("%03d",`County Code`),  # Adds leading zero(s) if not 3 digits
+#     sprintf("%06d",`Census Tract Code`), # Adds leading zero(s) if not 6 digits
+#     `Block Group Code`)) %>%
+#   select(GEOID,everything())
+
+# Combine this with data from the ACS, used above
+# Calculate change between 2010 and 2016
+# sf_blockgroup_change <- sf_blockgroup_erase %>%
+#   select(GEOID, `2016` = estimate, geometry) %>%
+#   left_join(select(df_blockgroup_old,
+#                    GEOID,
+#                    `2010` = `2010: Persons: Total`,
+#                    `2000` = `2000: Persons: Total`,
+#                     shortname),
+#             by = 'GEOID') %>% 
+#   mutate(growth = `2016` - `2000`) %>% 
+#   mutate(growth_pos = if_else(growth >= 0, growth, 0),
+#          growth_neg = if_else(growth < 0, abs(growth),0))
+```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+
+# GENERATE COORDINATE PAIRS FOR POPULATION GROWTH
+#
+# Creates a coordinate pair for each dot.
+# Because this takes a very long time, the results are saved as a csv file.
+# They can then be read as a csv file in future, without re-running this code.
+
+# Data frame for population *growth*. Each dot = 50 people
+# num_dots_growth <- as.data.frame(sf_blockgroup_change) %>%
+#                     select(growth_pos,growth_neg) %>%
+#                     mutate_all(funs(as.integer(round(. / 50))))
+# 
+# sf_dots_growth <-  map_df(names(num_dots_growth), 
+#                       ~ st_sample(sf_blockgroup_change, size = num_dots_growth[, .x], type = "random") %>%
+#                         st_cast("POINT") %>%
+#                         st_coordinates() %>%
+#                         as_tibble() %>% 
+#                         setNames(c("lon","lat")) %>%
+#                         mutate(change = .x)
+#                    )
+
+# Write to csv
+# write_csv(sf_dots_growth,'data/sf_dots_growth.csv')
+
+```
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# READ DOT-DENSITY DATA FOR POPULATION GROWTH
+
+sf_dots_growth <- read_csv('data/sf_dots_growth.csv')
+sf_dots_growth <- st_as_sf(sf_dots_growth, coords = c("lon", "lat"), crs = 4326)
+
+```
+
+**Fig 5: Population growth between 2010 and 2016 (1 dot = 50 people)**
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# CREATE DOT DENSITY MAP FOR POPULATION CHANGE, 2000 TO 2016
+
+pal <- colorFactor(palette = c('red', 'blue'),  domain = sf_dots_growth$change)
+
+map6 <- leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+        addProviderTiles("CartoDB.Positron", options = providerTileOptions(
+          updateWhenZooming = FALSE,      # map won't update tiles until zoom is done
+          updateWhenIdle = TRUE           # map won't load new tiles when panning
+        )) %>%   
+        addPolygons(data = sf_county4, fillColor = 'transparent', weight = 1) %>%
+        addCircles(data = sf_dots_growth, 
+                   color = ~pal(change),
+                   radius = 175, 
+                    weight = 0,
+                    fillOpacity = 0.1) %>% 
+        addLegend("bottomright", 
+          colors = c("blue",  "red"),
+          labels= c("Population increase", "Population decrease"), opacity = .7)
+
+map6
+
+```
+
+This map shows a general decline in population levels near the centers of Dallas and Fort Worth. There is, however, a dense cluster of growth near downtown Dallas. Most of the growth is concentrated in the outlying towns and cities. In particular, the map highlights the rapid growth seen to the north, particularly in Frisco and McKinney, which in 2016 were the [second- and third-fastest growing large cities in the United States.](https://www.census.gov/newsroom/press-releases/2017/cb17-81-population-estimates-subcounty.html)
+
+These observations are consistent with the phenomenon of 'growth rings' seen across the US, illustrated in a set of [impressive vizualizations](http://www.datapointed.net/2011/04/maps-us-population-change-2000-2010-census/) produced by Stephen Von Worley, described as follows:
+
+> Nationwide, one feature stands out: the bumper crop of fresh suburbs that ring almost every metropolitan area. Where did all of these people come from?... The new tract developments appear to be sucking the life out the older neighborhoods, which bear the scarlet tints of waning population. Ah, the classic flight to the suburbs, but with a twist!... [A]t the very center of the biggest cities – within a stone’s throw of downtown – you’ll see a tiny, resurgent dot of blue. Apparently, at some point in recent history, a home address amongst the skyscrapers became desirable again.
+
+And that's it! Two dot-density maps showing the distribution of Dallas' population and its change over time, all produced using R. This illustrates R's GIS capabilities, and the ability to work with spatial features (such as maps and boundary files) alongside regular data sets.  
+<br>  
+{{<alert info>}} 
+__Technical stuff__  
+  
+The code used to produced this post is available on [GitHub](https://github.com/SteveRxD/Blog/tree/master/content/post).
+
+Most of the analysis takes advantage of the [tidycensus](https://walkerke.github.io/tidycensus/) package. This enables the user to interact with data from the US Census Bureau’s decennial census and American Community Survey APIs, including the ability to download related spatial information (in this case, block groups and water features).  
+  
+The simple features or [sf](https://cran.r-project.org/package=sf) package allows you to store spatial information as columns in a data frame, which which can then be manipulated like any other data frame; for example, by using dplyr operators and functions such as `%>%`, `filter` and `left_join`.  
+  
+Finally, the [leaflet](https://rstudio.github.io/leaflet/) package for R was used to produce the interactive maps shown above.
+{{</alert>}}
+
+

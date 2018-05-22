@@ -1,0 +1,173 @@
+---
+title: 'Population growth in Dallas'
+Summary: 'Summary text'
+author: ''
+date: '2018-04-09'
+slug: funding-cuts-and-deprivation
+categories: []
+tags: []
+thumbnailImagePosition: "left"
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1522274214/coins600.jpg
+comments: true
+
+---
+
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
+
+# Load in packages
+
+library(tidyverse)
+library(tidycensus)
+library(sf)
+library(mapview)
+library(rgdal)
+library(leaflet)
+library(tigris)
+library(maptools)
+options(tigris_use_cache = TRUE)
+census_api_key("87b4725dab82b85567e622d5f88a48b8de59790c")
+
+```
+
+## Census tract changes
+
+```{r}
+library(tidyverse)
+library(tigris)
+library(sp)
+library(sf)
+library(leaflet)
+library(readxl)
+library(geojsonio)
+
+url_base = "https://api.mapbox.com/styles/v1/steverd/cj79lzfne8a582spgrmb0otyr/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic3RldmVyZCIsImEiOiJ5T0hIMGU4In0.iRYeTkjtats3I4b2ZCBZVw"
+
+# Get TIGER/line shapefiles from Census Bureau using tigris package
+# http://rstudio-pubs-static.s3.amazonaws.com/90665_de25062951e540e7b732f21de53001f0.html
+
+dfw <- tracts(state = 'TX', county = c('Dallas'))
+
+dfw <-st_as_sf(dfw)
+
+# If necessary change projection to WGS84 (ref. 4326), so that it can be used in leaflet (https://bit.ly/2vGMtXd)
+# # dfw <- spTransform(dfw, CRS("+init=epsg:4326"))
+
+# See the map
+
+leaflet() %>% addTiles() %>%  addPolygons(data = dfw, weight = .75)
+
+```
+
+Remove the water
+
+```{r}
+
+# The following steps are described by Kyle Walker (https://bit.ly/2HoHonQ)
+
+dallas_water <- area_water("TX", "Dallas", class = 'sf')
+
+m2 <-  leaflet() %>% 
+      addTiles() %>%
+      addPolygons(data = dallas_water)
+
+m2
+```
+
+Focus on larger water sourcess only
+
+```{r}
+
+# Tranform the shapefile into a SF object, so that we can use dplyr (see: https://bit.ly/2KcV2fx)
+
+dallas_water2 <-st_as_sf(dallas_water)
+
+# Restrict the analysis to large areas of water to simplify the analysis:
+
+dallas_water3 <-  dallas_water2 %>% 
+                  mutate(water_area = as.numeric(AWATER)) %>%
+                  arrange(desc(water_area)) %>%
+                  filter(water_area > 500000)
+
+leaflet(dallas_water3) %>% addTiles() %>% addPolygons()
+
+```
+
+```{r}
+
+# Need to transform the two features so they have the same projection
+
+dfw <- st_transform(dfw, 4326)
+dallas_water3 <-st_transform(dallas_water3,4326)
+
+# Check their projections are the same
+st_crs(dfw)
+st_crs(dallas_water3)
+
+
+
+st_erase <- function(x, y) {
+  st_difference(x, st_union(st_combine(y)))
+}
+st_crs(dfw)
+st_crs(dallas_water3)
+
+dfw2 <- st_erase(dfw, dallas_water3)
+
+
+leaflet(dfw2) %>% addTiles() %>% addPolygons(weight = 0.75)
+```
+
+```{r}
+
+# Population changes by census tract 2000 to 2010
+# https://www.census.gov/data/tables/time-series/dec/metro-micro/tract-change-00-10.html
+
+df_pop <- read_xlsx("data/tract_changes.xlsx")
+
+# Join the population data at tract level
+
+dfw3 <- dfw2 %>% left_join(select(df_pop,GEOID, POP00, POP10), by = 'GEOID')
+
+# Add density variable, number of additional persons per hecatare
+
+glimpse(dfw3)
+dfw3 <- dfw3 %>% mutate(
+                  pop00 = POP00,
+                  pop10 = POP10,
+                  area_land = as.numeric(ALAND),
+                  growth = pop10 - pop00,
+                  growth_area = (pop10 - pop00) / (area_land / 1000))
+
+
+bins <-  c(-Inf,-2,-1,-0.5,0,0.5,1,2,Inf)
+pal_change <- colorBin("YlOrRd", domain = dfw3$growth_area, bins = bins)
+
+leaflet() %>% 
+  addTiles() %>% 
+  addPolygons(data = dfw3,
+              weight = .5,color = "black",
+              fillColor = ~pal_change(growth_area),
+              fillOpacity = 0.7, 
+              label = paste(dfw3$growth_area)) %>% 
+  addLegend(pal = pal_change, values = dfw3$growth_area, opacity = 0.7, title = NULL,
+                position = "bottomright")
+
+```
+```{r}
+
+dfw4 <- dfw3 %>%
+        filter(GEOID == 48113000202)
+              
+
+dots <- st_sample(dfw3, abs(dfw3$growth))
+class(dots)
+
+
+
+leaflet(data = dots) %>% addTiles %>% addCircles(radius = .1, weight = .5)
+
+
+```
+
+
+

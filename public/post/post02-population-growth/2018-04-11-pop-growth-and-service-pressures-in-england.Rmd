@@ -1,0 +1,236 @@
+---
+title: 'Population growth and service pressures in England'
+Summary: 'This is where the summary text goes'
+author: 'Steve Doogue'
+date: '2018-04-11'
+slug: population-growth-and-pressure
+categories: []
+tags: []
+thumbnailImagePosition: "left"
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1523463010/population600.jpg
+comments: true
+
+---
+
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
+# PACKAGES ----
+
+library(tidyverse)
+library(readxl)
+library(plotly)
+library(scales)
+library(ggrepel)
+
+```
+```{r, echo = FALSE, message = FALSE}
+# LOAD AND ORGANISE DATA ----
+
+# Clear workspace
+
+rm(list = ls())
+
+# Read in population data
+df_pop <-   read_csv('data/pop_data.csv') %>%
+            # Create an ID column, based on authority code and age band
+            unite(id, code_mhclg, age_band,sep = " ", remove = FALSE) %>%
+            select(-id,id) 
+
+# Read in local authority information data and change data types
+df_info <-  read_xlsx('data/la_info.xlsx') %>%
+            mutate_at(vars(5:6,8),as.factor) 
+
+            # Change factor levels
+            df_info$admin <- fct_collapse(df_info$admin, London = c('ILB','OLB'))
+            df_info$admin <- fct_relevel(df_info$admin, 'London', 'County', 'Unitary', 'MD') 
+            df_info$admin <- recode(df_info$admin, 'MD' = 'Met', 'SD' = 'Shire district')
+
+# Read in spending data
+df_spend <- read_xlsx('data/spending.xlsx') %>%
+  
+            # Expenditure data for Isles of Scilly is missing
+            filter(name != 'Isles of Scilly') %>% 
+  
+            # Gather age bands into single column
+            gather(age_band,share,`0_17`:`all`) %>%
+            arrange(code_mhclg) %>%
+  
+            # Create an ID column, based on authorty code and age band
+            unite(id, code_mhclg, age_band,sep = " ", remove = FALSE) %>%
+            select(-id,id)
+
+```
+```{r, echo = FALSE}
+
+# Calculate the annual and cumulative change for each age band.
+# This is an index with base 1.
+
+df_pop2 <- df_pop %>%
+            group_by(code_mhclg,age_band) %>% 
+            mutate(change_annual = (number - lag(number))/lag(number) + 1) %>%
+            # Replace null values in 2013 with value = one
+            mutate(change_annual = if_else(is.na(change_annual),1,change_annual)) %>% 
+            mutate(change_cum = cumprod(change_annual)) %>%
+  
+            # Add the spending share from df_spend table (same for every year)
+            left_join(select(df_spend, id, share), by = 'id') %>%
+            mutate(change_cum_weight = change_cum * share) %>%
+            ungroup()
+
+# Calculate the cumulative weighted change for each year, summing over age bands
+
+df_pop3 <- df_pop2 %>% 
+            group_by(code_mhclg,year) %>%
+            summarise(change_weight_tot = sum(change_cum_weight)) %>%
+            ungroup() %>% 
+   
+            # Create unique id based on code and year          
+            unite(id, code_mhclg, year, remove = FALSE) %>%
+            select(-id,id)
+
+# Identify the cumulative unweighted change for each year
+
+df_pop4 <- df_pop2 %>%
+            filter(age_band == 'all') %>%
+            select(code_mhclg, year, change_cum) %>%
+            
+            # Create unique id based on code and year
+            unite(id, code_mhclg, year, remove = FALSE) %>%
+  
+            # Join both weighted and unweighted change in population
+            left_join(select(df_pop3, id, change_weight_tot), by = 'id') %>%
+            left_join(select(df_info, code_mhclg, name,admin), by = 'code_mhclg') %>%
+            select(-id) %>% 
+
+            # Remove outliers and missing data
+            filter(name != 'City of London' & name != 'Isles of Scilly')
+
+
+
+# Assign each authority a randomly generated 'order', used to create a jitter 
+
+df_pop5 <- df_pop4 %>% 
+            filter(year <= 2025) %>%
+            group_by(code_mhclg) %>% 
+            mutate(order = sample(10:90, n())/100) %>%
+            mutate(order = first(order)) %>%
+            # Calculate the average population change for each admin group
+            group_by(admin,year) %>%
+            mutate(avg = mean(change_weight_tot)) %>%
+            ungroup()
+```
+
+```{r, echo = FALSE, message = FALSE}
+# Population growth (unweighted)
+
+plot1_a <-  df_pop2 %>%
+            select(code_mhclg, year, age_band, change_cum) %>%
+            left_join(select(df_info,code_mhclg, name, admin)) %>%
+            filter(name != 'City of London', 
+                   name != 'Isles of Scilly') %>% 
+            filter(year <= 2025,
+                   age_band == 'all')
+
+plot1_b <-  plot1_a %>%
+            group_by(admin, year) %>%
+            summarise(change_cum = mean(change_cum)) %>%
+            ungroup() %>% 
+            mutate(label_val = case_when(
+              year == 2025 ~ as.character(percent(change_cum - 1)),
+              TRUE ~ ""
+            )
+                   )
+  
+          
+plot1  <- ggplot(data = plot1_b, 
+                 aes(x = year, y = change_cum -1, text = change_cum)
+          ) +
+          geom_line(data = plot1_a, aes(group = name), color = 'grey10', alpha = .1, size = .5) +
+          facet_grid(~admin) +
+          geom_line(color = 'red', size = .75) +
+          theme_minimal() +
+          theme(axis.text.x=element_text(angle = -90, hjust = 0),
+                legend.title = element_blank(),
+                legend.text = element_blank(),
+                
+                panel.grid.major.x = element_blank()
+                ) +
+          scale_x_continuous(breaks= pretty_breaks()) +
+          geom_text_repel(aes(label = label_val), show.legend = F, color = 'red', segment.color = 'red')+
+          geom_hline(yintercept = 0, size = 0.25)
+          
+plot1
+        
+ggplotly(plot1)
+
+```
+
+```{r}
+plot1b <-  df_pop2 %>%
+          select(code_mhclg, year, age_band, change_cum) %>%
+          left_join(select(df_info,code_mhclg, name, admin)) %>%
+          filter(name != 'City of London', 
+                 name != 'Isles of Scilly') %>%
+          group_by(admin,year,age_band) %>%
+          summarise(avg_change = mean(change_cum)) %>%
+          ungroup() %>% 
+          filter(year <= 2025) %>% 
+          
+  
+          ggplot(aes(x = year, y = avg_change -1, group = age_band), color = age_band) +
+          geom_line(aes(color = age_band)) +
+          facet_grid(~admin) +
+          theme_minimal() +
+          theme(axis.text.x=element_text(angle = -90, hjust = 0)) +
+          scale_x_continuous(breaks= pretty_breaks()) +
+          scale_color_manual(values = c("grey70", "grey50", "grey30", "red"))
+          
+ggplotly(plot1b)
+```
+
+
+```{r, echo = FALSE, message = FALSE}
+
+# Population growth (weighted)
+
+plot3 <-  ggplot(df_pop5, 
+            aes(x = order, 
+                y = avg - 1, 
+                color = admin,
+                frame = year,
+                group = 1, # For some reason, is needed to stop geom_line disappearing when using 'text'
+                text = paste(' Name: ', name,
+                             '<br>Change: ', percent(change_weight_tot - 1),
+                             '<br>',admin,'average: ', percent(avg -1))
+                )
+            ) +
+          geom_point(aes(y = avg), alpha = 0) +
+          geom_point(aes(y = change_weight_tot - 1), alpha = 0.4, size = 4) +
+          geom_line(alpha = 1, color = 'black') +
+          facet_grid(~admin, scales = "free_y") +
+          theme_minimal() +
+          theme(text = element_text(family = 'Arial', color ='grey20'),
+                axis.title.x=element_blank(),
+                axis.title.y=element_blank(),
+                axis.text.x=element_blank(),
+                axis.ticks.x=element_blank(),
+                panel.grid.major.x = element_blank(),
+                legend.title = element_blank(),
+                legend.text = element_blank(),
+                panel.spacing.x=unit(0, "lines"),
+                plot.title = element_text(margin=margin(b = 10, unit = 'pt'))
+                ) +
+          coord_cartesian(xlim = c(0, 1), ylim = c(-.05,.35)) +
+          geom_hline(yintercept = 0, size = 0.25) +
+          ylab("Change in population (weighted)") + 
+          scale_y_continuous(labels = percent) +
+          labs(title = "Population growth weighted by age band\n")
+```
+```{r, echo = FALSE, message = FALSE}
+ggplotly(plot3, tooltip = c("text")) %>% # This will only display the variables listed above 
+          animation_opts(1200, easing = "cubic-in-out", redraw = FALSE) %>%
+          layout(showlegend = FALSE) %>%
+          config(displayModeBar = FALSE)
+```
+
+
+
