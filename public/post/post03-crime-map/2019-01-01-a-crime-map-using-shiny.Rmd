@@ -31,7 +31,7 @@ The concept of Shiny is brilliant: it allows you to provide a user-friendly inte
 
 __Technical stuff__
 
-All the code used to produce this app is available on [Github]. The main steps were as follows:
+All the code used to produce this app is available on [Github](https://github.com/SteveRxD/Blog/tree/master/content/post/post03-crime-map). The main steps were as follows:  
 &nbsp;
 
 1. **Access the data** from City of Dallas API. The data was read using the [jsonlite](https://cran.r-project.org/web/packages/jsonlite/jsonlite.pdf) package, with help from the [soql](https://cran.r-project.org/web/packages/soql/soql.pdf) package to construct the URL needed to access the relevant ZIP codes.   

@@ -26,7 +26,8 @@ comments: true
 <p>Note that to preserve the anonymity of my neighbors, I added some random ‘noise’ to the location data, so that the points displayed on the map would be within around 150 feet of the actual location.</p>
 <p>The concept of Shiny is brilliant: it allows you to provide a user-friendly interface to your R code (like a dashboard) which can be accessed through a website. The user does not need to see any of the underlying code, and, because it is web-based, does not need to download anything. Your app can be hosted for free at <a href="https://shiny.rstudio.com/deploy/">Shinyapps.io</a> (though the free version is subject to limitations on how long it can be accessed each month).</p>
 <p><strong>Technical stuff</strong></p>
-<p>All the code used to produce this app is available on [Github]. The main steps were as follows:  </p>
+<p>All the code used to produce this app is available on <a href="https://github.com/SteveRxD/Blog/tree/master/content/post/post03-crime-map">Github</a>. The main steps were as follows:<br />
+ </p>
 <ol style="list-style-type: decimal">
 <li><strong>Access the data</strong> from City of Dallas API. The data was read using the <a href="https://cran.r-project.org/web/packages/jsonlite/jsonlite.pdf">jsonlite</a> package, with help from the <a href="https://cran.r-project.org/web/packages/soql/soql.pdf">soql</a> package to construct the URL needed to access the relevant ZIP codes.<br />
 </li>
