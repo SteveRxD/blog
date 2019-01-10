@@ -32,14 +32,14 @@ canonifyurls = true
 
 [author]
   name = "Steve Doogue"
-  bio = "A blog that uses data to explore city, state and local issues. An exercise in learning-by-doing."
-  job = "Economist / Data Analyst / Jack-of-all-trades"
+  bio = "A blog in which I learn to code and make data pretty. An exercise in learning-by-doing."
+  job = "Data and finance guy"
   location = "Dallas, Texas"
   # Your Gravatar email. Overwrite `author.picture` everywhere in the blog
   # gravatarEmail = "thibaud.lepretre@gmail.com"
   # Your profile picture
   # Overwritten by your gravatar image if `author.gravatarEmail` is filled
-  picture = "http://res.cloudinary.com/ddjmrpbw4/image/upload/v1522272946/profile.jpg"
+  picture = "https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg"
   # Your Twitter username without the @. E.g : thibaudlepretre
   # twitter = "thibaudlepretre"
   # Your google plus profile id. E.g : +ThibaudLepretre or 114625208755123718311

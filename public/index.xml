@@ -6,10 +6,20 @@
     <description>Recent content on Steve Doogue</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 19 May 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Jan 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>A neighborhood crime map using Shiny</title>
+      <link>/2019/01/a-neighborhood-crime-map-using-shiny/</link>
+      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/01/a-neighborhood-crime-map-using-shiny/</guid>
+      <description>Shiny has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.
+With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood. The app can be found here. This accesses the latest data from the City of Dallas’ OpenData API which is updated daily.</description>
+    </item>
     
     <item>
       <title>A dot-density map of Dallas</title>
@@ -17,8 +27,8 @@
       <pubDate>Sat, 19 May 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/05/dallas-population/</guid>
-      <description>As a new arrival in Dallas, it’s taken me a while to get to grips with its layout. Its sheer size and sprawl make it difficult to identify where Dallas ends and neighboring cities begin. Expanses of new developments and construction appear to have blurred the lines between what were once distinct towns and cities.
-With this in mind, this post has two aims: first, to better understand the geography of Dallas, and second, to do so while exploring some of the GIS tools available in R, the open-source programming language.</description>
+      <description>As a new arrival in Dallas, it’s taken me a while to get to grips with its layout. Its sheer size and sprawl make it difficult to identify where Dallas ends and neighboring cities begin.
+With this in mind, this post had two aims: to better understand the geography of Dallas, and to explore some of the GIS tools available in R, the open-source programming language.</description>
     </item>
     
     <item>
@@ -37,7 +47,8 @@ With this in mind, this post has two aims: first, to better understand the geogr
       <pubDate>Sun, 08 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/04/welcome-to-my-blog/</guid>
-      <description>&lt;p&gt;Welcome to my new blog. I&amp;rsquo;m using this as an opportunity to explore new data analysis and visualization tools. This is intended as an exercise in learning-by-doing: as I learn new tools, I will be using these to explore data relating to city, state and local issues.&lt;/p&gt;</description>
+      <description>Welcome to my new blog. I’m using this as an opportunity to explore new data analysis and visualization tools. This is intended as an exercise in learning-by-doing: as I learn new tools, I will be using these to explore real-life data sets.
+Most of the analysis carried out in this blog will use the R programming language. As a former Microsoft Excel junkie, I’m increasingly relying on this powerful and flexible tool for my day-to-day data analysis work.</description>
     </item>
     
   </channel>

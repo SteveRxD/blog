@@ -1,0 +1,41 @@
+---
+title: 'A neighborhood crime map using Shiny'
+Summary: 'Building a simple app to access public crime data and map the location of each incident in my neighorhood'
+author: ''
+date: '2019-01-15'
+slug: 
+categories: []
+tags: []
+thumbnailImagePosition: "left"
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1546397538/crimemap.png
+comments: true
+
+---
+
+
+
+<p><a href="https://shiny.rstudio.com/">Shiny</a> has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.</p>
+<p>With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood. The app can be found <a href="https://stevedoogue.shinyapps.io/crimemap/">here</a>. This accesses the latest data from the City of Dallas’ <a href="https://www.dallasopendata.com/Public-Safety/Police-Incidents/qv6i-rri7">OpenData API</a> which is updated daily.</p>
+<p>The main features are illustrated below (and yep, there’s a Hollywood Santa Monica in Dallas!):<br />
+ </p>
+<div class="figure">
+<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1546723680/crimemapgif.gif" />
+
+</div>
+<p>As can be seen, the app allows the user select the neighborhoods they’re interested in, and then displays incidents occuring in those neighborhoods over the selected timeframe (from the past month to past three years).</p>
+<p>Note that to preserve the anonymity of my neighbors, I added some random ‘noise’ to the location data, so that the points displayed on the map would be within around 150 feet of the actual location.</p>
+<p>The concept of Shiny is brilliant: it allows you to provide a user-friendly interface to your R code (like a dashboard) which can be accessed through a website. The user does not need to see any of the underlying code, and, because it is web-based, does not need to download anything. Your app can be hosted for free at <a href="https://shiny.rstudio.com/deploy/">Shinyapps.io</a> (though the free version is subject to limitations on how long it can be accessed each month).</p>
+<p><strong>Technical stuff</strong></p>
+<p>All the code used to produce this app is available on [Github]. The main steps were as follows:  </p>
+<ol style="list-style-type: decimal">
+<li><strong>Access the data</strong> from City of Dallas API. The data was read using the <a href="https://cran.r-project.org/web/packages/jsonlite/jsonlite.pdf">jsonlite</a> package, with help from the <a href="https://cran.r-project.org/web/packages/soql/soql.pdf">soql</a> package to construct the URL needed to access the relevant ZIP codes.<br />
+</li>
+<li><strong>Filter the data</strong> to exclude incidents where there was not an actual offence, such as false alarms.<br />
+</li>
+<li><strong>Create longitude and latitude columns</strong>. The downloaded data included a ‘geocoded coordinates’ column, but I couldn’t get this to play nicely with my map. I converted this to separate latitude and longitude columns, which worked fine.</li>
+<li><strong>Create shapefiles of my local neighbourhoods</strong>. I wanted to identify incidents that occured in specific neighbourhoods, as opposed to the wider ZIP codes. I could not find these boundary maps online (in the form of shapefiles), so I drew them manually in <a href="https://www.google.com/maps/about/mymaps/">Google MyMaps</a>. These boundaries could be downloaded as .kml files and converted to shapefiles <a href="https://mygeodata.cloud/converter/kml-to-shp">here</a>. The shapefiles were then read into R using the <code>readOGR()</code> function.</li>
+<li><strong>Only show those incidents occurring in relevant neighborhoods</strong>. The next step was to identify those incidents whose coordinates fell without the neighborhood boundaries described above. This was done using the <code>over()</code> function. The data was then filtered to only include those relevant incidents.</li>
+<li><strong>Randomise locations</strong>. To preserve the anonymity of my neighbors, I changed street numbers to block numbers and added some random ‘noise’ to the coordinates of each incident.</li>
+<li><strong>Create the Shiny app</strong>. The app essentially plots all the incidents on a map using <a href="https://rstudio.github.io/leaflet/">Leaflet</a>. The incidents shown are filtered based on two sets of values entered by the user: the relevant neighborhood(s), and the timeframe. The user is also able to click on the table to select an individual incident or incidents. This selection serves as another input, filtering the data to only include the selected incident(s) and overlying this second set of points on the map using red markers.</li>
+</ol>
+<p>The final step was the hardest, given the learning curve associated with Shiny. However I was able to learn 90% of what I needed from this excellent DataCamp course, <a href="https://www.datacamp.com/courses/building-web-applications-in-r-with-shiny">Building Web Applications in R with Shiny</a>.</p>

@@ -1,6 +1,6 @@
 ---
 title: 'Funding cuts and deprivation in England'
-Summary: 'The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, this could bring relief to some of the hardest-hit local councils. However, this analysis shows that the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived parts of England.'
+Summary: 'The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived areas.'
 author: ''
 date: '2018-04-09'
 slug: funding-cuts-and-deprivation
