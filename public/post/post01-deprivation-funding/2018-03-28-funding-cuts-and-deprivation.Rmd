@@ -211,26 +211,29 @@ p4 <- ggplot(df_phase,
                 text = element_text(family = 'Arial'),
                 strip.text.x = element_text(size = 12),
                 axis.text=element_text(size = 12),
-                axis.title=element_text(size = 16),
+                axis.title=element_text(size = 14),
                 legend.title = element_blank(),
                 legend.text = element_text(size =12)
                 ) +
               geom_hline(yintercept = 0, size = 0.25) +
-              ylab("Change in spending power") + 
-              xlab("Income deprivation") + 
+              labs(y= "Change in spending power\n", x = 'Income deprivation') + 
+             # xlab("Income deprivation") + 
               scale_y_continuous(labels=percent) +
               scale_x_continuous(labels=percent)
 
 ```
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-ggplotly(p4, tooltip = c("text")) %>% # This will only display the variables listed above
-  
-  layout(legend = list(orientation = "v",
-                       x = .9, 
-                       y=.5,
-                       xanchor = "right")) %>%
-  
-  config(displayModeBar = FALSE)
+p4
+# The code below is an interactive version of p4, but I cannot get the 
+# axis titles to behave nicely in ggplotly
+# ggplotly(p4, tooltip = c("text")) %>% # This will only display the variables listed above
+#   
+#   layout(legend = list(orientation = "v",
+#                        x = .9, 
+#                        y=.5,
+#                        xanchor = "right")) %>%
+#   
+#   config(displayModeBar = FALSE)
 ```
 <br>    
 This clearly shows that while spending power _cuts_ fell disproportionately on the most deprived councils in England, spending power _gains_ (at least for social care providers) are set to be distributed fairly evenly among both affluent and deprived areas.
