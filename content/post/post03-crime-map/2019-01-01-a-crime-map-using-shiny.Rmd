@@ -1,6 +1,6 @@
 ---
 title: 'A neighborhood crime map using Shiny'
-Summary: 'Building a simple app to access public crime data and map the location of each incident in my neighborhood'
+Summary: 'Building a simple webapp that maps live crime data in my neighborhood'
 author: ''
 date: '2019-01-15'
 slug: 
