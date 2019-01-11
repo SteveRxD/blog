@@ -1,6 +1,6 @@
 ---
 title: 'A neighborhood crime map using Shiny'
-Summary: 'Building a simple app to access public crime data and map the location of each incident in my neighorhood'
+Summary: 'Building a simple app to access public crime data and map the location of each incident in my neighborhood'
 author: ''
 date: '2019-01-15'
 slug: 
@@ -23,7 +23,7 @@ The main features are illustrated below (and yep, there's a Hollywood Santa Moni
 ![](https://res.cloudinary.com/ddjmrpbw4/image/upload/v1546723680/crimemapgif.gif)
 
 
-As can be seen, the app allows the user select the neighborhoods they're interested in, and then displays incidents occuring in those neighborhoods over the selected timeframe (from  the past month to past three years).
+As can be seen, the app allows the user select the neighborhoods they're interested in, and then displays incidents occurring in those neighborhoods over the selected time frame (from  the past month to past three years).
 
 Note that to preserve the anonymity of my neighbors, I added some random 'noise' to the location data, so that the points displayed on the map would be within around 150 feet of the actual location.
 
@@ -37,10 +37,10 @@ All the code used to produce this app is available on [Github](https://github.co
 1. **Access the data** from City of Dallas API. The data was read using the [jsonlite](https://cran.r-project.org/web/packages/jsonlite/jsonlite.pdf) package, with help from the [soql](https://cran.r-project.org/web/packages/soql/soql.pdf) package to construct the URL needed to access the relevant ZIP codes.   
 2. **Filter the data** to exclude incidents where there was not an actual offence, such as false alarms.  
 3. **Create longitude and latitude columns**. The downloaded data included a 'geocoded coordinates' column, but I couldn't get this to play nicely with my map. I converted this to separate latitude and longitude columns, which worked fine.
-4. **Create shapefiles of my local neighbourhoods**. I wanted to identify incidents that occured in specific neighbourhoods, as opposed to the wider ZIP codes. I could not find these boundary maps online (in the form of shapefiles), so I drew them manually in [Google MyMaps](https://www.google.com/maps/about/mymaps/). These boundaries could be downloaded as .kml files and converted to shapefiles [here](https://mygeodata.cloud/converter/kml-to-shp). The shapefiles were then read into R using the `readOGR()` function.
+4. **Create shapefiles of my local neighbourhoods**. I wanted to identify incidents that occurred in specific neighborhoods, as opposed to the wider ZIP codes. I could not find these boundary maps online (in the form of shapefiles), so I drew them manually in [Google MyMaps](https://www.google.com/maps/about/mymaps/). These boundaries could be downloaded as .kml files and converted to shapefiles [here](https://mygeodata.cloud/converter/kml-to-shp). The shapefiles were then read into R using the `readOGR()` function.
 5. **Only show those incidents occurring in relevant neighborhoods**. The next step was to identify those incidents whose coordinates fell without the neighborhood boundaries described above. This was done using the `over()` function. The data was then filtered to only include those relevant incidents.
 6. **Randomise locations**. To preserve the anonymity of my neighbors, I changed street numbers to block numbers and added some random 'noise' to the coordinates of each incident.
-7. **Create the Shiny app**. The app essentially plots all the incidents on a map using [Leaflet](https://rstudio.github.io/leaflet/). The incidents shown are filtered based on two sets of values entered by the user: the relevant neighborhood(s), and the timeframe. The user is also able to click on the table to select an individual incident or incidents. This selection serves as another input, filtering the data to only include the selected incident(s) and overlying this second set of points on the map using red markers.
+7. **Create the Shiny app**. The app essentially plots all the incidents on a map using [Leaflet](https://rstudio.github.io/leaflet/). The incidents shown are filtered based on two sets of values entered by the user: the relevant neighborhood(s), and the time frame. The user is also able to click on the table to select an individual incident or incidents. This selection serves as another input, filtering the data to only include the selected incident(s) and overlying this second set of points on the map using red markers.
 
 The final step was the hardest, given the learning curve associated with Shiny. However I was able to learn 90% of what I needed from this excellent DataCamp course, [Building Web Applications in R with Shiny](https://www.datacamp.com/courses/building-web-applications-in-r-with-shiny).
 
