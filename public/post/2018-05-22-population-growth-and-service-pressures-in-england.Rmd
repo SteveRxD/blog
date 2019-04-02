@@ -1,9 +1,0 @@
----
-title: Population growth and service pressures in England
-author: Steve Doogue
-date: '2018-05-22'
-slug: population-growth-and-service-pressures-in-england
-categories: []
-tags: []
----
-

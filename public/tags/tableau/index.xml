@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tableau on Steve Doogue</title>
+    <link>/tags/tableau/</link>
+    <description>Recent content in Tableau on Steve Doogue</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 15 Mar 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/tableau/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Comparing city spending with Tableau</title>
+      <link>/2019/03/how-do-us-cities-raise-and-spend-money/</link>
+      <pubDate>Fri, 15 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/03/how-do-us-cities-raise-and-spend-money/</guid>
+      <description>I learned the basics of Tableau a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.
+One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard. This avoids overwhelming the user with too much data up front, while still giving them the freedom to explore the data in more detail should they choose.</description>
+    </item>
+    
+  </channel>
+</rss>

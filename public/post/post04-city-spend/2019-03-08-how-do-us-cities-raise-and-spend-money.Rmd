@@ -1,0 +1,54 @@
+---
+title: 'Comparing city spending with Tableau'
+Summary: 'An interactive Tableau dashboard that compares how the largest US cities raise and spend money.'
+author: ''
+date: '2019-03-15'
+slug: how-do-us-cities-raise-and-spend-money
+categories: []
+tags: 
+  - Tableau
+thumbnailImagePosition: "left"
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/bo_100px_solid_rgb:fffdfd/v1554166331/city%20spend%20thumb.png
+comments: true
+
+---
+
+I learned the basics of [Tableau](https://public.tableau.com/en-us/s/) a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.  
+
+One feature I wanted to explore further was the ability for users to 'drill down' into the results presented in a dashboard. This avoids overwhelming the user with too much data up front, while still giving them the freedom to explore the data in more detail should they choose. It can also help the user to understand hierarchies present in the data, and how the various parts make up the whole. (Pivot tables can be used to similar effect in Microsoft Excel, but I wanted to apply this in a Tableau dashboard.)   
+
+As an example, I created a dashboard showing how major cities in the US raise and spend money. The animation below demonstrates the main features of the dashboard, the full version of which can be found [here](https://public.tableau.com/profile/steverd#!/vizhome/1902Version6_5/Dashboard1).  
+  
+&nbsp;  
+__Demonstration:__ <hr>
+![](https://res.cloudinary.com/ddjmrpbw4/image/upload/v1554144819/cityspend.gif)
+<hr>  
+&nbsp;  
+Notice how the user is first presented with overall revenue / expenditure per resident, and can then drill down to see the results at a finer level of detail. The chart to the right shows the city's ranking for whichever service the user clicks on. The map allows the user compare revenue or expenditure per head between neighboring cities.
+
+Overall I find Tableau to be great for producing interactive visualizations, and for performing exploratory data analysis using its click-and-point interface. But while the interface works great for standard visualizations, I'm often surprised at the need to use workarounds to achieve seemingly simple tasks (for example, in the dashboard above, [creating a text box that returned the name of the service currently selected by the user](https://community.tableau.com/thread/296210)). Tableau's user-friendly interface also lacks the conciseness and reproducibility of code. As one correspondent on Twitter put it, "I find it incredibly frustrating that I have to understand this arcane system of menus and point and click options for something that I could accomplish with two to three lines of R code."  A useful approach seems to be doing as much work as possible in R first - cleaning and restructuring your data, for example - and then using Tableau exclusively for visualizing the output. 
+
+__Tell me more about city spending!__
+
+Well, since you insist. I produced this dashboard using the [Fiscally Standardized Cities (FiSCs)](https://www.lincolninst.edu/research-data/data-toolkits/fiscally-standardized-cities/search-database) database, which enables a meaningful comparison of the 150 largest cities in the US. It does so by adding the revenue and expenditure of each city government to the relevant portion of the revenue and expenditure of overlapping counties, independent school districts and special districts (e.g. airports and hospital districts). Without this standardization, comparisons across city governments alone can be misleading.
+
+The dashboard highlights some interesting facts about Dallas, where I live, such as:  
+
+* Schools account for the largest share of local expenditure, though Dallas is not unusual in this respect. 
+* Dallas spends a lot on airports on a per capita basis, presumably due to the Dallas-Fort Worth (DFW) airport. This also brings in revenue. However the questionable return on investment has led to some calls for [the airport to be sold off.](https://www.dmagazine.com/publications/d-magazine/2019/march/why-dallas-fort-worth-should-sell-dfw-airport/)  
+* Hospitals are the third largest category of expenditure. This presumably reflects Parkland Hospital, a [safety net hospital](https://en.wikipedia.org/wiki/Safety_net_hospital) that provides care for uninsured patients, funded through a property tax on Dallas county residents. This has [raised questions of fairness](https://www.dallasnews.com/news/dallas-county/2017/06/29/suburbs-booming-uninsured-growing-burden-dallas-county-taxpayers) given that the hospital is used by low-income residents from surrounding counties, which boast lower property taxes and provide the bare minimum state requirements for indigent health care. 
+* Dallas spends a lot servicing its debt. Interest payments of $510 per resident are the 5th largest out of all the major cities, and is greater than its spending on police and fire services combined. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
