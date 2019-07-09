@@ -1,0 +1,17 @@
+---
+title: 'Common statistical tests are linear models (a walk through)'
+Summary: 'The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived areas.'
+author: ''
+date: '2019-07-09'
+slug: statistical-tests
+categories: []
+tags: []
+thumbnailImagePosition: "left"
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1562704559/05%20Statistical%20tests/image_dummy2.png
+comments: true
+
+---
+
+_Intro._ 
+
+<!--more--->
