@@ -11,7 +11,10 @@ thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1546397538/crimemap
 comments: true
 
 ---
+_In this post I created this [crime map of my local neighborhood](https://stevedoogue.shinyapps.io/crimemap/), using live data accessed from the City of Dallas' OpenData portal._ 
 
+<hr>
+<!--more--->
 [Shiny](https://shiny.rstudio.com/) has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R. 
 
 With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood. The app can be found [here](https://stevedoogue.shinyapps.io/crimemap/). This accesses the latest data from the City of Dallas' [OpenData API](https://www.dallasopendata.com/Public-Safety/Police-Incidents/qv6i-rri7) which is updated daily.

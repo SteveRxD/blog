@@ -13,6 +13,10 @@ comments: true
 
 ---
 
+_In this post I create an interactive Tableau [dashboard that compares how US cities raise and spend money](https://public.tableau.com/profile/steverd#!/vizhome/1902Version6_5/Dashboard1), using data from the Fiscally Standardized Cities (FiSCs) database._ 
+
+<hr>
+<!--more--->
 I learned the basics of [Tableau](https://public.tableau.com/en-us/s/) a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.  
 
 One feature I wanted to explore further was the ability for users to 'drill down' into the results presented in a dashboard. This avoids overwhelming the user with too much data up front, while still giving them the freedom to explore the data in more detail should they choose. It can also help the user to understand hierarchies present in the data, and how the various parts make up the whole. (Pivot tables can be used to similar effect in Microsoft Excel, but I wanted to apply this in a Tableau dashboard.)   
