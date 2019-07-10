@@ -13,7 +13,7 @@ comments: true
 
 ---
 
-_In this post I create an interactive Tableau [dashboard that compares how US cities raise and spend money](https://public.tableau.com/profile/steverd#!/vizhome/1902Version6_5/Dashboard1), using data from the Fiscally Standardized Cities (FiSCs) database._ 
+_In this post I create a [Tableau dashboard that compares how US cities raise and spend money](https://public.tableau.com/profile/steverd#!/vizhome/1902Version6_5/Dashboard1), using data from the Fiscally Standardized Cities (FiSCs) database._ 
 
 <hr>
 <!--more--->

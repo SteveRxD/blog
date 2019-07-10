@@ -11,7 +11,7 @@ thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1546397538/crimemap
 comments: true
 
 ---
-_In this post I created this [crime map of my local neighborhood](https://stevedoogue.shinyapps.io/crimemap/), using live data accessed from the City of Dallas' OpenData portal._ 
+_In this post I created a [crime map of my local neighborhood](https://stevedoogue.shinyapps.io/crimemap/), using live data accessed from the City of Dallas' OpenData portal._ 
 
 <hr>
 <!--more--->
