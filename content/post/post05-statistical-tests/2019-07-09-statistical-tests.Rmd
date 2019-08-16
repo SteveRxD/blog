@@ -1,6 +1,6 @@
 ---
 title: 'Common statistical tests are linear models'
-Summary: 'A book which demonstrates that most common statistical tests are special cases of linear models. This offers a simplified and intuitive way to understand statistical tests.'
+Summary: 'My own version of a book which demonstrates that most common statistical tests are special cases of linear models. This offers a simplified and intuitive way to understand statistical tests.'
 author: ''
 date: '2019-07-09'
 slug: statistical-tests
@@ -38,10 +38,10 @@ where $x_i$ is a 'dummy' variable that takes the value of $0$ if the person samp
 ![](https://res.cloudinary.com/ddjmrpbw4/image/upload/v1563649801/05%20Statistical%20tests/image_income_example.png){width=70%}
 </center>
 
-The results our independent sample t-test, of whether there are statistically significant differences between men's and women's salaries, are _exactly the same_ as our test for whether $\beta_1$ is different from zero! Both tests give the same p-value, which, if sufficiently low (typically below 5%) would lead us to reject the null hypothesis that there was no difference in salaries.
+The results of our independent sample t-test, i.e. whether there are statistically significant differences between men's and women's salaries, are _exactly the same_ as our test for whether $\beta_1$ is different from zero! Both tests give the same p-value, which, if sufficiently low (typically below 5%) would lead us to reject the null hypothesis that there was no difference in salaries.
 
-The book shows how the linear model can be applied in a wide range of other cases, making it the 'Swiss Army knife' of statistical tests. It also demonstrates that many non-parametric tests, which are needed when certain test assumptions do not hold, can be approximated by linear models using the _rank_ of values. 
+The book shows how the linear model can be applied in a wide range of other common tests. It also demonstrates that many non-parametric tests, which are needed when certain test assumptions do not hold, can be approximated by linear models using the _rank_ of values. 
 
-This approach brings coherence to a wide range of statistical tests, which are usually taught to students as independent tools with a 'zoology' of names.  The approach also helps to explain the intuition underlying statistical tests (rather than relying on rote learning) by drawing on the familiar concept of linear regressions.
+This approach brings coherence to a wide range of statistical tests, which are usually taught to students as independent tools. It helps to explain the intuition underlying statistical tests (rather than relying on rote learning) by drawing on the familiar concept of linear regressions.
 
-As well as serving to solidify my own understanding, I hope this will be helpful to others following along with Lindeløv's original book. My version of the book was written using the [bookdown](https://bookdown.org/) package in R. The GitHub repository can be found [here](https://github.com/SteveRxD/Stat_tests).
+My version of the book was written using the [bookdown](https://bookdown.org/) package in R. The GitHub repository can be found [here](https://github.com/SteveRxD/Stat_tests).
