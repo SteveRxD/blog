@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Steve Doogue</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 01 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>R and SQL (Part 1)</title>
+      <link>/2019/08/r-and-sql/</link>
+      <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/08/r-and-sql/</guid>
+      <description>When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</description>
+    </item>
     
     <item>
       <title>Common statistical tests are linear models</title>
@@ -17,7 +26,7 @@
       <pubDate>Tue, 09 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/07/statistical-tests/</guid>
-      <description>This is a book in which I demonstrate that most common statistical tests are special cases of simple linear models. It builds on an open-source book written by Jonas Lindeløv. This offers a simplified and intuitive way to teach and learn statistical tests.
+      <description>This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
 The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.</description>
     </item>
     
@@ -69,8 +78,8 @@ With this in mind, this post had two aims: to better understand the geography of
       <pubDate>Sun, 08 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/04/welcome-to-my-blog/</guid>
-      <description>Welcome to my new blog, which I’m using as an opportunity to explore new data analysis tools. This is intended as an exercise in learning-by-doing - as I learn new tools, I will be using them to explore real-life data sets.
-Most of the analysis carried out in this blog will use the R programming language. I’m increasingly relying on this powerful and versatile tool to complement Microsoft Excel in my day to day analysis For anyone getting started in R, I highly recommend the excellent and accessible R for Data Science by Hadley Wickham and Garrett Grolemund.</description>
+      <description>Welcome to my new blog, which I’m using as an opportunity to explore and apply new data analysis tools. This is intended as an exercise in learning by doing.
+Most of the analysis carried out in this blog will use the R programming language. I’m increasingly relying on this powerful tool to complement Microsoft Excel in my day-to-day data analysis. For anyone getting started in R, I highly recommend the excellent and accessible R for Data Science by Hadley Wickham and Garrett Grolemund.</description>
     </item>
     
   </channel>

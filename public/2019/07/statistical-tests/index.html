@@ -28,9 +28,9 @@
     
 
     
-    <meta name="description" content="This is a book in which I demonstrate that most common statistical tests are special cases of simple linear models. It builds on an open-source book written by Jonas Lindeløv. This offers a simplified and intuitive way to teach and learn statistical tests.
+    <meta name="description" content="This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
 The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.">
-    <meta property="og:description" content="This is a book in which I demonstrate that most common statistical tests are special cases of simple linear models. It builds on an open-source book written by Jonas Lindeløv. This offers a simplified and intuitive way to teach and learn statistical tests.
+    <meta property="og:description" content="This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
 The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="Common statistical tests are linear models">
@@ -38,7 +38,7 @@
     <meta property="og:site_name" content="Steve Doogue">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Steve Doogue">
-    <meta name="twitter:description" content="This is a book in which I demonstrate that most common statistical tests are special cases of simple linear models. It builds on an open-source book written by Jonas Lindeløv. This offers a simplified and intuitive way to teach and learn statistical tests.
+    <meta name="twitter:description" content="This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
 The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.">
     
     
@@ -51,7 +51,7 @@
     
 
     
-      <meta property="og:image" content="//res.cloudinary.com/ddjmrpbw4/image/upload/v1562705594/05%20Statistical%20tests/image_dummy2.png">
+      <meta property="og:image" content="//res.cloudinary.com/ddjmrpbw4/image/upload/c_thumb,w_200,g_face/v1563202273/05%20Statistical%20tests/swissarmy.png">
     
     
     
@@ -67,6 +67,10 @@
     <link rel="stylesheet" href="/css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
     
     
+      
+        <link rel="stylesheet"  href="/css/mystyle.css">
+      
+    
 
     
       
@@ -76,7 +80,7 @@
 
   <body>
     <div id="blog">
-      <header id="header" data-behavior="5">
+      <header id="header" data-behavior="2">
   <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
   <div class="header-title">
     <a class="header-title-link" href="/">Steve Doogue</a>
@@ -96,7 +100,7 @@
   
 </header>
 
-      <nav id="sidebar" data-behavior="5">
+      <nav id="sidebar" data-behavior="2">
   <div class="sidebar-container">
     
       <div class="sidebar-profile">
@@ -105,7 +109,7 @@
         </a>
         <h4 class="sidebar-profile-name">Steve Doogue</h4>
         
-          <h5 class="sidebar-profile-bio">A blog in which I learn new data analysis tools. An exercise in learning-by-doing.</h5>
+          <h5 class="sidebar-profile-bio">A blog in which I explore various data analysis tools.</h5>
         
       </div>
     
@@ -156,7 +160,7 @@
 
       
 
-      <div id="main" data-behavior="5"
+      <div id="main" data-behavior="2"
         class="
                hasCoverMetaIn
                ">
@@ -188,14 +192,23 @@
               
 
 
-<p><em><a href="https://steverxd.github.io/Stat_tests/">This is a book</a> in which I demonstrate that most common statistical tests are special cases of simple linear models. It builds on an open-source book written by Jonas Lindeløv. This offers a simplified and intuitive way to teach and learn statistical tests.</em></p>
+<p><em><a href="https://steverxd.github.io/Stat_tests/">This book</a> demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.</em></p>
 <hr>
 <!--more--->
-<p>The book <a href="https://lindeloev.github.io/tests-as-linear/">Common statistical tests are linear models (or: how to teach stats)</a>, by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model. It also demonstrates that many non-parametric tests, which are needed when certain test assumptions do not hold, can be approximated by linear models using the <em>rank</em> of values.</p>
-<p>To better understand this I wrote my own version of the book, <a href="https://steverxd.github.io/Stat_tests/">Common statistical tests are linear models (a work through)</a>, which builds on the original. The objective of this was to solidify my understanding of the book, by reproducing the examples provided; by expanding on areas where there were gaps in my knowledge; and by paraphrasing some of the explanations, using concepts and terms with which I was more familiar.</p>
-<p>The approach explained in the book offers a way to greatly simplify the teaching of introductory statistics, using the simple model of the form <em>y = a + b⋅x</em>, which is familiar to most students. This approach brings coherence to a wide range of statistical tests, which are usually taught to students as independent tools. The approach also helps to explain the intuition underlying statistical tests, drawing on the familiar concept of linear regressions, which emphasizes understanding over rote learning.</p>
-<p>As well as solidifying my own understanding, I hope this book might be helpful to others following along with Lindeløv’s book, but who require more background on some of the concepts being discussed.</p>
-<p>This book was written using the <a href="https://bookdown.org/">bookdown</a> package in R. The GitHub repository can be found <a href="https://github.com/SteveRxD/Stat_tests">here</a>.</p>
+<p>The book <a href="https://lindeloev.github.io/tests-as-linear/">Common statistical tests are linear models (or: how to teach stats)</a>, by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.</p>
+<p>To solidify my understanding, I wrote my own version of the book: <a href="https://steverxd.github.io/Stat_tests/">Common statistical tests are linear models (a work through)</a>. I used this to work through the examples provided in the original, to expand on areas where there were gaps in my knowledge, and to explain some of the ideas using terms and concepts with which I was more familiar.</p>
+<p>The main idea of the book is that most statistical tests can be explained as an application of the simple linear model, <em><span class="math inline">\(y = a + b⋅x\)</span></em>, which is familiar to most students of introductory statistics.</p>
+<p>For example, say you wanted to assess whether the average salaries of men and women in a company were equal, based on a sample of 50 women and 50 men. A common test that might be applied in this case is the <strong>indendent sample t test</strong>. The null hypothesis would be that there was no difference between the average salaries of men and women.</p>
+<p>An equivalent approach would be a linear model, of the form:</p>
+<p><span class="math display">\[income = \beta_0 + \beta_1 \cdot x_i\]</span></p>
+<p>where <span class="math inline">\(x_i\)</span> is a ‘dummy’ variable that takes the value of <span class="math inline">\(0\)</span> if the person sampled is a woman and <span class="math inline">\(1\)</span> if they are a man. In this case, <span class="math inline">\(\beta_1\)</span> would be the average difference in men’s salaries relative to women, as illustrated below.</p>
+<center>
+<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1563649801/05%20Statistical%20tests/image_income_example.png" style="width:70.0%" />
+</center>
+<p>The results our independent sample t-test, of whether there are statistically significant differences between men’s and women’s salaries, are <em>exactly the same</em> as our test for whether <span class="math inline">\(\beta_1\)</span> is different from zero! Both tests give the same p-value, which, if sufficiently low (typically below 5%) would lead us to reject the null hypothesis that there was no difference in salaries.</p>
+<p>The book shows how the linear model can be applied in a wide range of other cases, making it the ‘Swiss Army knife’ of statistical tests. It also demonstrates that many non-parametric tests, which are needed when certain test assumptions do not hold, can be approximated by linear models using the <em>rank</em> of values.</p>
+<p>This approach brings coherence to a wide range of statistical tests, which are usually taught to students as independent tools with a ‘zoology’ of names. The approach also helps to explain the intuition underlying statistical tests (rather than relying on rote learning) by drawing on the familiar concept of linear regressions.</p>
+<p>As well as serving to solidify my own understanding, I hope this will be helpful to others following along with Lindeløv’s original book. My version of the book was written using the <a href="https://bookdown.org/">bookdown</a> package in R. The GitHub repository can be found <a href="https://github.com/SteveRxD/Stat_tests">here</a>.</p>
 
               
             </div>
@@ -211,7 +224,7 @@
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql/" data-tooltip="R and SQL (Part 1)">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -289,7 +302,7 @@
 </footer>
 
       </div>
-      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
         
   <div class="post-actions-wrap">
       <nav >
@@ -297,7 +310,7 @@
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql/" data-tooltip="R and SQL (Part 1)">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -360,7 +373,7 @@
 
 
       </div>
-      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
   <i id="btn-close-shareoptions" class="fa fa-close"></i>
   <ul class="share-options">
     
@@ -397,7 +410,7 @@
     
     <h4 id="about-card-name">Steve Doogue</h4>
     
-      <div id="about-card-bio">A blog in which I learn new data analysis tools. An exercise in learning-by-doing.</div>
+      <div id="about-card-bio">A blog in which I explore various data analysis tools.</div>
     
     
       <div id="about-card-job">
@@ -438,6 +451,23 @@
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql/">
+                <h3 class="media-heading">R and SQL (Part 1)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="/2019/07/statistical-tests/">
                 <h3 class="media-heading">Common statistical tests are linear models</h3>
               </a>
@@ -446,7 +476,7 @@
                   Jul 7, 2019
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">This is a book in which I demonstrate that most common statistical tests are special cases of simple linear models. It builds on an open-source book written by Jonas Lindeløv. This offers a simplified and intuitive way to teach and learn statistical tests.
+              <div class="media-content hide-xs font-merryweather">This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
 The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.</div>
             </div>
             <div style="clear:both;"></div>
@@ -538,8 +568,8 @@ With this in mind, this post had two aims: to better understand the geography of
                   Apr 4, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">Welcome to my new blog, which I’m using as an opportunity to explore new data analysis tools. This is intended as an exercise in learning-by-doing - as I learn new tools, I will be using them to explore real-life data sets.
-Most of the analysis carried out in this blog will use the R programming language. I’m increasingly relying on this powerful and versatile tool to complement Microsoft Excel in my day to day analysis For anyone getting started in R, I highly recommend the excellent and accessible R for Data Science by Hadley Wickham and Garrett Grolemund.</div>
+              <div class="media-content hide-xs font-merryweather">Welcome to my new blog, which I’m using as an opportunity to explore and apply new data analysis tools. This is intended as an exercise in learning by doing.
+Most of the analysis carried out in this blog will use the R programming language. I’m increasingly relying on this powerful tool to complement Microsoft Excel in my day-to-day data analysis. For anyone getting started in R, I highly recommend the excellent and accessible R for Data Science by Hadley Wickham and Garrett Grolemund.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -552,7 +582,7 @@ Most of the analysis carried out in this blog will use the R programming languag
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         6 posts found
+         7 posts found
       </p>
     </div>
   </div>
@@ -616,6 +646,10 @@ $(document).ready(function() {
   
 
 
+<script src="//yihui.name/js/math-code.js"></script>
+<script async
+src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 
     
   </body>

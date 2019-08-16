@@ -1,0 +1,4247 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+
+  
+
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.53 with theme Tranquilpeak 0.4.3-BETA">
+    <title>R and SQL (Part 1)</title>
+    <meta name="author" content="Steve Doogue">
+    <meta name="keywords" content="">
+
+    <link rel="icon" href="/favicon.png">
+    
+
+    
+    <meta name="description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.">
+    <meta property="og:description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="R and SQL (Part 1)">
+    <meta property="og:url" content="/2019/08/r-and-sql/">
+    <meta property="og:site_name" content="Steve Doogue">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Steve Doogue">
+    <meta name="twitter:description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg">
+    
+
+    
+      <meta property="og:image" content="//res.cloudinary.com/ddjmrpbw4/image/upload/c_thumb,w_200,g_face/v1563498573/06%20R%20SQL/r_to_sql_thumb1.png">
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="/css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="/css/mystyle.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="/">Steve Doogue</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="/#about">
+          <img class="sidebar-profile-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Steve Doogue</h4>
+        
+          <h5 class="sidebar-profile-bio">A blog in which I explore various data analysis tools.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      R and SQL (Part 1)
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2019-08-01T00:00:00Z">
+        
+  August 1, 2019
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<p><em>When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</em></p>
+<hr>
+<!--more--->
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>SQL is a language that allows users query, manipulate, and transform data. Many common queries carried out with SQL, such as filtering and joining tables, can be carried out using equivalent functions in R.</p>
+<p>In this post, I wanted to draw some comparisons between two languages. I illustrate this using a sample database, first running queries using SQL, and then demonstrating how identical results could be achieved in R.</p>
+<p>The purpose of this post is <strong>not</strong> to suggest that R is a substitute for SQL, but to examine how the two approaches can achieve the same results when working with data. For people who have a basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.</p>
+<p>When working with R, I will be using the <a href="https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html">dplyr</a> package. This is a data manipulation package that includes simple verbs (e.g. ‘select’ and ‘filter’), as well as joins (e.g. ‘left_join’ and ‘inner_join’), that can replicate many common queries carried out in SQL.</p>
+<hr>
+</div>
+<div id="contents" class="section level1">
+<h1>Contents</h1>
+<ul>
+<li><a href="#the-sample-dataset"><strong>The sample dataset</strong></a></li>
+<li><a href="#setting-up"><strong>Setting up</strong></a></li>
+<li><a href="#part1"><strong>1. Selecting data</strong></a>
+<ul>
+<li><a href="#part1_1"><strong>1.1 Select all columns</strong></a></li>
+<li><a href="#part1_2"><strong>1.2 Select specific columns</strong></a></li>
+<li><a href="#part1_3"><strong>1.3 Select distinct records</strong></a></li>
+<li><a href="#part1_4"><strong>1.4 Select distinct records with multiple columns</strong></a></li>
+</ul></li>
+<li><a href="#part2"><strong>2. Sorting and ordering data</strong></a>
+<ul>
+<li><a href="#part2_1"><strong>2.1 Basic sorting</strong></a></li>
+<li><a href="#part2_2"><strong>2.2 Sort descending</strong></a><br />
+</li>
+<li><a href="#part2_3"><strong>2.3 Limiting the number of results</strong></a><br />
+</li>
+</ul></li>
+<li><a href="#part3"><strong>3. Filtering</strong></a>
+<ul>
+<li><a href="#part3_1"><strong>3.1 Basic filtering</strong></a></li>
+<li><a href="#part3_2"><strong>3.2 Filtering based on inequalities</strong></a></li>
+<li><a href="#part3_3"><strong>3.3 Filtering with AND conditions</strong></a></li>
+<li><a href="#part3_4"><strong>3.4 Filtering with OR conditions</strong></a><br />
+</li>
+<li><a href="#part3_5"><strong>3.5 Filtering with both OR, AND conditions</strong></a><br />
+</li>
+<li><a href="#part3_6"><strong>3.6 The IN operator</strong></a><br />
+</li>
+<li><a href="#part3_7"><strong>3.7 The NOT IN operator</strong></a></li>
+<li><a href="#part3_8"><strong>3.8 Filtering with regular expressions</strong></a></li>
+</ul></li>
+</ul>
+<hr>
+</div>
+<div id="the-sample-dataset" class="section level1">
+<h1>The sample dataset</h1>
+<p>We will be using a fictional database called <strong>classicmodels</strong> from the <a href="http://www.mysqltutorial.org/">MySQL Tutorial</a> website. I will also use a number of examples provided in their tutorials, which is useful for comparing and validating our results.</p>
+<p>The sample database is for a fictional company that sells model planes, cars and so on. It comprises the follow tables:</p>
+<ul>
+<li><strong>customers</strong>: customer details including name and address</li>
+<li><strong>products</strong>: a list of models, their description, vendor, quantity in stock and prices</li>
+<li><strong>productlines</strong>: includes the product line (e.g. ‘motorcycles’) and a description</li>
+<li><strong>orders</strong>: sales orders placed by customers, including the date and current status</li>
+<li><strong>orderdetails</strong>: details of each order, including products, quantities and prices</li>
+<li><strong>payments</strong>: payments made by each customer, including the date and the amount</li>
+<li><strong>employees:</strong> employees’ names, titles, offices, contact details, and supervisor</li>
+<li><strong>offices:</strong> address and contact details of each office</li>
+</ul>
+<p>This is shown in the following <a href="http://www.mysqltutorial.org/wp-content/uploads/2018/04/MySQL-Sample-Database-Diagram-PDF-A4.pdf">schema</a>:</p>
+<br>
+<center>
+<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1563847454/06%20R%20SQL/schema.png" style="width:90.0%" />
+</center>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="setting-up" class="section level1">
+<h1>Setting up</h1>
+<div id="running-the-queries-in-sql" class="section level4">
+<h4>Running the queries in SQL</h4>
+<p>There are least two ways you can perform SQL queries on this sample database:</p>
+<ol style="list-style-type: decimal">
+<li><p>Type queries straight into the browser using the <a href="http://www.mysqltutorial.org/tryit/">TryIt</a> tool provided at mysqltutorial.org; or</p></li>
+<li><p>Load the sample database into MySQL or another database management system. Instructions on how to install MySQL can be found <a href="https://www.youtube.com/watch?v=iHTI_Nk7uwo">here</a>. Instructions on how to load in the sample database can be found <a href="https://www.youtube.com/watch?v=7QN600zGUIo">here</a> (just substitute the SQL file referred to the video with the one being used in this exercise). The SQL file for the ‘classicmodel’ database can be downloaded from <a href="http://www.mysqltutorial.org/mysql-sample-database.aspx">mysqltutorial.org</a>.</p></li>
+</ol>
+</div>
+<div id="running-the-code-in-r" class="section level4">
+<h4>Running the code in R</h4>
+<p>We will be looking at equivalent R code using the <a href="https://www.r-bloggers.com/data-manipulation-with-dplyr/">dplyr</a> package. This includes the use of the pipe operator, <code>%&gt;%</code>, which allows you to chain code together in a series of logical steps. We can load the dplyr package as part of the tidyverse package:</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>When running the code in R, we will create a data frame that corresponds to each table in the relational database. These tables can be downloaded as individual .csv files <a href="">here</a> [need to add link]. Load the data into R using the following code:</p>
+<pre class="r"><code># Enter the file path to where the files are saved on your system
+filepath &lt;- &#39;tables/&#39;     
+
+# Read in the tables
+customers    &lt;- read_csv(paste0(filepath,&#39;customers.csv&#39;), na = &quot;NULL&quot;)
+employees    &lt;- read_csv(paste0(filepath,&#39;employees.csv&#39;), na = &quot;NULL&quot;)
+offices      &lt;- read_csv(paste0(filepath,&#39;offices.csv&#39;), na = &quot;NULL&quot;)
+orderdetails &lt;- read_csv(paste0(filepath,&#39;orderdetails.csv&#39;), na = &quot;NULL&quot;)
+orders       &lt;- read_csv(paste0(filepath,&#39;orders.csv&#39;), na = &quot;NULL&quot;)
+payments     &lt;- read_csv(paste0(filepath,&#39;payments.csv&#39;), na = &quot;NULL&quot;)
+productlines &lt;- read_csv(paste0(filepath,&#39;productlines.csv&#39;), na = &quot;NULL&quot;)
+products     &lt;- read_csv(paste0(filepath,&#39;products.csv&#39;),  
+               # prevent the model scale (e.g. 1:10) from being read as a date:
+               col_types = cols (productScale = col_character()), na = &quot;NULL&quot;)</code></pre>
+<p>Now we’re ready to start running SQL queries and the equivalent code in R!<br />
+<a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+</div>
+<div id="part1" class="section level1">
+<h1>1. Selecting data</h1>
+<div id="part1_1" class="section level4">
+<h4>1.1 Select all columns</h4>
+<p>The most simple select statement is one that returns all the information from a table.</p>
+<p><em>With SQL:</em></p>
+<p>To get data from a table in SQL we use the <code>SELECT</code> statement, to list the columns we are interested in, and <code>FROM</code>, to specify the table. If we want <em>all</em> records from a table, we use <code>SELECT *</code>. For example, to see all the records on the employees table we would use:</p>
+<pre class="markdown"><code>SELECT * 
+FROM employees</code></pre>
+<p><em>With R:</em></p>
+<p>To get the same results in R, we simply enter the name of table, as follows:</p>
+<pre class="r"><code>employees</code></pre>
+<p>This gives us the names and details of the 23 employees in the database:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+employeeNumber
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+lastName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+firstName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+extension
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+email
+</th>
+<th style="text-align:right;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+officeCode
+</th>
+<th style="text-align:right;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+reportsTo
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+jobTitle
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1002
+</td>
+<td style="text-align:left;">
+Murphy
+</td>
+<td style="text-align:left;">
+Diane
+</td>
+<td style="text-align:left;">
+x5800
+</td>
+<td style="text-align:left;">
+<a href="mailto:dmurphy@classicmodelcars.com" class="email">dmurphy@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+President
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1056
+</td>
+<td style="text-align:left;">
+Patterson
+</td>
+<td style="text-align:left;">
+Mary
+</td>
+<td style="text-align:left;">
+x4611
+</td>
+<td style="text-align:left;">
+<a href="mailto:mpatterso@classicmodelcars.com" class="email">mpatterso@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1002
+</td>
+<td style="text-align:left;">
+VP Sales
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1076
+</td>
+<td style="text-align:left;">
+Firrelli
+</td>
+<td style="text-align:left;">
+Jeff
+</td>
+<td style="text-align:left;">
+x9273
+</td>
+<td style="text-align:left;">
+<a href="mailto:jfirrelli@classicmodelcars.com" class="email">jfirrelli@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1002
+</td>
+<td style="text-align:left;">
+VP Marketing
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1088
+</td>
+<td style="text-align:left;">
+Patterson
+</td>
+<td style="text-align:left;">
+William
+</td>
+<td style="text-align:left;">
+x4871
+</td>
+<td style="text-align:left;">
+<a href="mailto:wpatterson@classicmodelcars.com" class="email">wpatterson@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1056
+</td>
+<td style="text-align:left;">
+Sales Manager (APAC)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1102
+</td>
+<td style="text-align:left;">
+Bondur
+</td>
+<td style="text-align:left;">
+Gerard
+</td>
+<td style="text-align:left;">
+x5408
+</td>
+<td style="text-align:left;">
+<a href="mailto:gbondur@classicmodelcars.com" class="email">gbondur@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1056
+</td>
+<td style="text-align:left;">
+Sale Manager (EMEA)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1143
+</td>
+<td style="text-align:left;">
+Bow
+</td>
+<td style="text-align:left;">
+Anthony
+</td>
+<td style="text-align:left;">
+x5428
+</td>
+<td style="text-align:left;">
+<a href="mailto:abow@classicmodelcars.com" class="email">abow@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1056
+</td>
+<td style="text-align:left;">
+Sales Manager (NA)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1165
+</td>
+<td style="text-align:left;">
+Jennings
+</td>
+<td style="text-align:left;">
+Leslie
+</td>
+<td style="text-align:left;">
+x3291
+</td>
+<td style="text-align:left;">
+<a href="mailto:ljennings@classicmodelcars.com" class="email">ljennings@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1143
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1166
+</td>
+<td style="text-align:left;">
+Thompson
+</td>
+<td style="text-align:left;">
+Leslie
+</td>
+<td style="text-align:left;">
+x4065
+</td>
+<td style="text-align:left;">
+<a href="mailto:lthompson@classicmodelcars.com" class="email">lthompson@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1143
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1188
+</td>
+<td style="text-align:left;">
+Firrelli
+</td>
+<td style="text-align:left;">
+Julie
+</td>
+<td style="text-align:left;">
+x2173
+</td>
+<td style="text-align:left;">
+<a href="mailto:jfirrelli@classicmodelcars.com" class="email">jfirrelli@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1143
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1216
+</td>
+<td style="text-align:left;">
+Patterson
+</td>
+<td style="text-align:left;">
+Steve
+</td>
+<td style="text-align:left;">
+x4334
+</td>
+<td style="text-align:left;">
+<a href="mailto:spatterson@classicmodelcars.com" class="email">spatterson@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1143
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1286
+</td>
+<td style="text-align:left;">
+Tseng
+</td>
+<td style="text-align:left;">
+Foon Yue
+</td>
+<td style="text-align:left;">
+x2248
+</td>
+<td style="text-align:left;">
+<a href="mailto:ftseng@classicmodelcars.com" class="email">ftseng@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1143
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1323
+</td>
+<td style="text-align:left;">
+Vanauf
+</td>
+<td style="text-align:left;">
+George
+</td>
+<td style="text-align:left;">
+x4102
+</td>
+<td style="text-align:left;">
+<a href="mailto:gvanauf@classicmodelcars.com" class="email">gvanauf@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1143
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1337
+</td>
+<td style="text-align:left;">
+Bondur
+</td>
+<td style="text-align:left;">
+Loui
+</td>
+<td style="text-align:left;">
+x6493
+</td>
+<td style="text-align:left;">
+<a href="mailto:lbondur@classicmodelcars.com" class="email">lbondur@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1102
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1370
+</td>
+<td style="text-align:left;">
+Hernandez
+</td>
+<td style="text-align:left;">
+Gerard
+</td>
+<td style="text-align:left;">
+x2028
+</td>
+<td style="text-align:left;">
+<a href="mailto:ghernande@classicmodelcars.com" class="email">ghernande@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1102
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1401
+</td>
+<td style="text-align:left;">
+Castillo
+</td>
+<td style="text-align:left;">
+Pamela
+</td>
+<td style="text-align:left;">
+x2759
+</td>
+<td style="text-align:left;">
+<a href="mailto:pcastillo@classicmodelcars.com" class="email">pcastillo@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1102
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1501
+</td>
+<td style="text-align:left;">
+Bott
+</td>
+<td style="text-align:left;">
+Larry
+</td>
+<td style="text-align:left;">
+x2311
+</td>
+<td style="text-align:left;">
+<a href="mailto:lbott@classicmodelcars.com" class="email">lbott@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+1102
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1504
+</td>
+<td style="text-align:left;">
+Jones
+</td>
+<td style="text-align:left;">
+Barry
+</td>
+<td style="text-align:left;">
+x102
+</td>
+<td style="text-align:left;">
+<a href="mailto:bjones@classicmodelcars.com" class="email">bjones@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+1102
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1611
+</td>
+<td style="text-align:left;">
+Fixter
+</td>
+<td style="text-align:left;">
+Andy
+</td>
+<td style="text-align:left;">
+x101
+</td>
+<td style="text-align:left;">
+<a href="mailto:afixter@classicmodelcars.com" class="email">afixter@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1088
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1612
+</td>
+<td style="text-align:left;">
+Marsh
+</td>
+<td style="text-align:left;">
+Peter
+</td>
+<td style="text-align:left;">
+x102
+</td>
+<td style="text-align:left;">
+<a href="mailto:pmarsh@classicmodelcars.com" class="email">pmarsh@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1088
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1619
+</td>
+<td style="text-align:left;">
+King
+</td>
+<td style="text-align:left;">
+Tom
+</td>
+<td style="text-align:left;">
+x103
+</td>
+<td style="text-align:left;">
+<a href="mailto:tking@classicmodelcars.com" class="email">tking@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1088
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1621
+</td>
+<td style="text-align:left;">
+Nishi
+</td>
+<td style="text-align:left;">
+Mami
+</td>
+<td style="text-align:left;">
+x101
+</td>
+<td style="text-align:left;">
+<a href="mailto:mnishi@classicmodelcars.com" class="email">mnishi@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1056
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1625
+</td>
+<td style="text-align:left;">
+Kato
+</td>
+<td style="text-align:left;">
+Yoshimi
+</td>
+<td style="text-align:left;">
+x102
+</td>
+<td style="text-align:left;">
+<a href="mailto:ykato@classicmodelcars.com" class="email">ykato@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1621
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1702
+</td>
+<td style="text-align:left;">
+Gerard
+</td>
+<td style="text-align:left;">
+Martin
+</td>
+<td style="text-align:left;">
+x2312
+</td>
+<td style="text-align:left;">
+<a href="mailto:mgerard@classicmodelcars.com" class="email">mgerard@classicmodelcars.com</a>
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1102
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part1_2" class="section level4">
+<h4>1.2 Select specific columns</h4>
+<p>What if you only want a subset of columns from a given table, such as employees’ first and last names?</p>
+<p><em>With SQL:</em></p>
+<p>In SQL you just list the column of interest in the <code>SELECT</code> clause as follows:</p>
+<pre class="markdown"><code>SELECT firstName, lastName 
+FROM employees</code></pre>
+<p><em>With R:</em></p>
+<p>The equivalent R code uses the <code>select()</code> function:</p>
+<pre class="r"><code>employees %&gt;% 
+  select(firstName, lastName)</code></pre>
+<p>Note for those learning R, it might be helpful to read the <code>%&gt;%</code> operator as “and then”.<br />
+<a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part1_3" class="section level4">
+<h4>1.3 Select distinct records</h4>
+<p>Say we want a list of distinct countries in which we have customers, i.e. without returning the same country name twice.</p>
+<p><em>With SQL:</em></p>
+<p>In SQL we would use <code>SELECT DISTINCT</code> clause, as follows:</p>
+<pre class="markdown"><code>SELECT DISTINCT country 
+FROM customers
+</code></pre>
+<p><em>With R:</em></p>
+<p>In R, we get the same result using the <code>distinct()</code> function:</p>
+<pre class="r"><code>customers %&gt;% 
+   distinct(country) </code></pre>
+Both approaches yield a list of 23 unique countries where the company has customers:
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+country
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Australia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Norway
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Poland
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Germany
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Spain
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sweden
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Singapore
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Portugal
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Japan
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Finland
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UK
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ireland
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Canada
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hong Kong
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Italy
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Switzerland
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Netherlands
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Belgium
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Zealand
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+South Africa
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Austria
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philippines
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Russia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Israel
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+</div>
+<div id="part1_4" class="section level4">
+<h4>1.4 Select distinct records with multiple columns</h4>
+<p>A similar approach can be used when you want to see distinct combinations of two or more variables / columns.</p>
+<p>For instance, say you want a list of all US cities in which the company has customers. We can’t simply look at distinct city names, as there can be more than one city with the same name: for example, in our database we have a ‘Glendale’ in California and a ‘Glendale’ in Connecticut.</p>
+<p>To address this we specify both city and state in our query, as follows (I’m jumping forward here and also adding a <code>WHERE</code> clause, to restrict our results to cities in the USA):</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT DISTINCT city,state 
+FROM customers
+WHERE country = &#39;USA&#39; </code></pre>
+<p><em>With R:</em></p>
+<p>The equivalent R code uses <code>filter()</code> instead of SQL’s <code>WHERE</code>, as will be discussed later:</p>
+<pre class="r"><code>customers %&gt;% 
+  filter(country == &#39;USA&#39;) %&gt;%  # ignore this for now!
+  distinct(city, state) </code></pre>
+<p>Both approaches return 24 rows containing distinct combinations of cities and states.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+city
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+state
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Las Vegas
+</td>
+<td style="text-align:left;">
+NV
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Rafael
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Francisco
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NYC
+</td>
+<td style="text-align:left;">
+NY
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Allentown
+</td>
+<td style="text-align:left;">
+PA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Burlingame
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Haven
+</td>
+<td style="text-align:left;">
+CT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cambridge
+</td>
+<td style="text-align:left;">
+MA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bridgewater
+</td>
+<td style="text-align:left;">
+CT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brickhaven
+</td>
+<td style="text-align:left;">
+MA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pasadena
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glendale
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Diego
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+White Plains
+</td>
+<td style="text-align:left;">
+NY
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Bedford
+</td>
+<td style="text-align:left;">
+MA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Newark
+</td>
+<td style="text-align:left;">
+NJ
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia
+</td>
+<td style="text-align:left;">
+PA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Los Angeles
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boston
+</td>
+<td style="text-align:left;">
+MA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nashua
+</td>
+<td style="text-align:left;">
+NH
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glendale
+</td>
+<td style="text-align:left;">
+CT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Jose
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Burbank
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brisbane
+</td>
+<td style="text-align:left;">
+CA
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+</div>
+<div id="part2" class="section level1">
+<h1>2. Sorting and ordering data</h1>
+<div id="part2_1" class="section level4">
+<h4>2.1 Basic sorting</h4>
+<p>Data can be sorted using the <code>ORDER BY</code> clause in SQL and the <code>arrange()</code> function in R. For example, say you wanted to sort customer locations in the USA alphabetically, first by state and then by city:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT DISTINCT state, city 
+FROM customers
+WHERE country = &#39;USA&#39;
+ORDER BY state, city</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>customers %&gt;% 
+  filter(country == &#39;USA&#39;) %&gt;% 
+  distinct(state, city) %&gt;% 
+  arrange(state, city)</code></pre>
+Both of which give the following:
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+state
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+city
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Brisbane
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Burbank
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Burlingame
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Glendale
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Los Angeles
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Pasadena
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Diego
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Francisco
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Jose
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Rafael
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CT
+</td>
+<td style="text-align:left;">
+Bridgewater
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CT
+</td>
+<td style="text-align:left;">
+Glendale
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CT
+</td>
+<td style="text-align:left;">
+New Haven
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+Boston
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+Brickhaven
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+Cambridge
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+New Bedford
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NH
+</td>
+<td style="text-align:left;">
+Nashua
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NJ
+</td>
+<td style="text-align:left;">
+Newark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+Las Vegas
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NY
+</td>
+<td style="text-align:left;">
+NYC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NY
+</td>
+<td style="text-align:left;">
+White Plains
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PA
+</td>
+<td style="text-align:left;">
+Allentown
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PA
+</td>
+<td style="text-align:left;">
+Philadelphia
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part2_2" class="section level4">
+<h4>2.2 Sort descending</h4>
+<p>What if you wanted to list states in reverse alphabetical order, while listing cities in alphabetical order?</p>
+<p><em>With SQL:</em></p>
+<p>In SQL, you can use <code>ORDER BY .... DESC</code>. Any columns listed before the <code>DESC</code> clause will be listed in descending order.</p>
+<pre class="markdown"><code>SELECT DISTINCT state, city 
+FROM customers
+WHERE country = &#39;USA&#39;
+ORDER BY state DESC, city</code></pre>
+<p><em>With R:</em></p>
+<p>Equivalently, in <code>R</code>, you can use <code>arrange(desc())</code>, where the parentheses include the name of the column(s) you want listed in descending order:</p>
+<pre class="r"><code>customers %&gt;% 
+  filter(country == &#39;USA&#39;) %&gt;% 
+  distinct(state, city) %&gt;% 
+  arrange(desc(state), city) </code></pre>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+state
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+city
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+PA
+</td>
+<td style="text-align:left;">
+Allentown
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PA
+</td>
+<td style="text-align:left;">
+Philadelphia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NY
+</td>
+<td style="text-align:left;">
+NYC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NY
+</td>
+<td style="text-align:left;">
+White Plains
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+Las Vegas
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NJ
+</td>
+<td style="text-align:left;">
+Newark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NH
+</td>
+<td style="text-align:left;">
+Nashua
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+Boston
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+Brickhaven
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+Cambridge
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MA
+</td>
+<td style="text-align:left;">
+New Bedford
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CT
+</td>
+<td style="text-align:left;">
+Bridgewater
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CT
+</td>
+<td style="text-align:left;">
+Glendale
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CT
+</td>
+<td style="text-align:left;">
+New Haven
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Brisbane
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Burbank
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Burlingame
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Glendale
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Los Angeles
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+Pasadena
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Diego
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Francisco
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Jose
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+San Rafael
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part2_3" class="section level4">
+<h4>2.3 Limiting the number of results</h4>
+<p>To limit the number of results that are shown, you can use SQL’s <code>LIMIT</code> clause and R’s <code>slice()</code> function. These can be combined with ordered data to return the top or bottom results from a table.</p>
+<p>For example, if you wanted to return the five customers with the highest credit limits you could use the following:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT customerName, creditLimit 
+FROM customers
+ORDER BY creditLimit DESC
+LIMIT 5</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>customers %&gt;% 
+  select(customerName, creditLimit) %&gt;% 
+  arrange(desc(creditLimit)) %&gt;% 
+  slice(1:5)</code></pre>
+Which give the following:
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;">
+customerName
+</th>
+<th style="text-align:right;font-size: 9px;">
+creditLimit
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+227600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+210500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vida Sport, Ltd
+</td>
+<td style="text-align:right;">
+141300
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:right;">
+138500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AV Stores, Co. 
+</td>
+<td style="text-align:right;">
+136800
+</td>
+</tr>
+</tbody>
+</table>
+<p>Another option in R would be to use the <code>top_n()</code> function, as described <a href="https://dplyr.tidyverse.org/reference/top_n.html">here</a>.</p>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+</div>
+<div id="part3" class="section level1">
+<h1>3. Filtering</h1>
+<div id="part3_1" class="section level4">
+<h4>3.1 Basic filtering</h4>
+<p>Filtering is used to restrict our results to records / rows that satisfy one or more criteria. We already saw some basic filtering in the above, in which we used SQL’s <code>WHERE</code> clause and R’s <code>filter()</code> to only shows cities that were within the United States.</p>
+<p>Another example would be to find the names of each employee whose job title is ‘Sales Rep’:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT lastName, firstName, jobTitle
+FROM employees
+WHERE jobTitle = &#39;Sales Rep&#39;</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>employees %&gt;% 
+  filter(jobTitle == &#39;Sales Rep&#39;) %&gt;% 
+  select(firstName,lastName,jobTitle)</code></pre>
+<p>Both sets of code return the names of the 17 sales reps:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+firstName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+lastName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+jobTitle
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Leslie
+</td>
+<td style="text-align:left;">
+Jennings
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leslie
+</td>
+<td style="text-align:left;">
+Thompson
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Julie
+</td>
+<td style="text-align:left;">
+Firrelli
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steve
+</td>
+<td style="text-align:left;">
+Patterson
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Foon Yue
+</td>
+<td style="text-align:left;">
+Tseng
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+George
+</td>
+<td style="text-align:left;">
+Vanauf
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Loui
+</td>
+<td style="text-align:left;">
+Bondur
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gerard
+</td>
+<td style="text-align:left;">
+Hernandez
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pamela
+</td>
+<td style="text-align:left;">
+Castillo
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Larry
+</td>
+<td style="text-align:left;">
+Bott
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Barry
+</td>
+<td style="text-align:left;">
+Jones
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Andy
+</td>
+<td style="text-align:left;">
+Fixter
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Peter
+</td>
+<td style="text-align:left;">
+Marsh
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tom
+</td>
+<td style="text-align:left;">
+King
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mami
+</td>
+<td style="text-align:left;">
+Nishi
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yoshimi
+</td>
+<td style="text-align:left;">
+Kato
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Martin
+</td>
+<td style="text-align:left;">
+Gerard
+</td>
+<td style="text-align:left;">
+Sales Rep
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>There are a couple of differences to note between SQL and R:</p>
+<ul>
+<li>R uses <code>==</code> instead of <code>=</code> when filtering</li>
+<li>In R, it is often necessary to use <code>filter()</code> before <code>select()</code>. This would be the case if the column you are filtering on (in this case ‘jobTitle’) was not also included in the <code>select()</code> function below. In SQL, this order is not an issue</li>
+<li>In R, the filter condition is case sensitive, but in SQL it is not<br />
+<a href="#contents"><em>(Top)</em></a></li>
+</ul>
+<hr>
+</div>
+<div id="part3_2" class="section level4">
+<h4>3.2 Filtering based on inequalities</h4>
+<p>We can use the ‘not equal to’ operator <code>!=</code> to filter records that do not match a certain criteria.</p>
+<p>For example, to see the names of the six employees who are <em>not</em> sales reps:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT lastName, firstName, jobTitle
+FROM employees
+WHERE jobTitle != &#39;Sales Rep&#39;</code></pre>
+<p>MySQL would also accept <code>&lt;&gt;</code> as the operator in this case.</p>
+<p><em>With R:</em></p>
+<pre class="r"><code>employees %&gt;% 
+  filter(jobTitle != &#39;Sales Rep&#39;) %&gt;% 
+  select(lastName, firstName, jobTitle)</code></pre>
+<p>If you are dealing with numeric data, you can also filter using the operators <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code> and <code>&lt;=</code>, which are the same in both languages.<br />
+<a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part3_3" class="section level4">
+<h4>3.3 Filtering with AND conditions</h4>
+<p>Sometime we want to select rows where multiple criteria all hold true. This can be done using <code>AND</code> operator in SQL, and the <code>&amp;</code> operator in R.</p>
+<p>For example, if we wanted to see the names of customers who are located in California <em>and</em> who have a credit limit over $100,000:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT customername, state, creditlimit 
+FROM customers 
+WHERE state = &#39;CA&#39; AND creditlimit &gt; 100000</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>customers %&gt;% 
+  filter(state == &#39;CA&#39; &amp; creditLimit &gt; 100000) %&gt;% 
+  select(customerName, state, creditLimit)</code></pre>
+<p>These sets of code return the three customers who are both located in California and have credit limits over $100,000:</p>
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;">
+customerName
+</th>
+<th style="text-align:left;font-size: 9px;">
+state
+</th>
+<th style="text-align:right;font-size: 9px;">
+creditLimit
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:right;">
+210500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectable Mini Designs Co. 
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:right;">
+105000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:right;">
+105000
+</td>
+</tr>
+</tbody>
+</table>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part3_4" class="section level4">
+<h4>3.4 Filtering with OR conditions</h4>
+<p>The OR condition returns rows where <em>any</em> of our criteria are satisfied. In SQL we use the <code>OR</code> operator, while in R the <code>|</code> symbol is used.</p>
+<p>For example, say we want to see a list of all customers who are located in the US or France:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT customerName, country
+FROM customers
+WHERE country = &#39;USA&#39; 
+  OR country =  &#39;FRANCE&#39;</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>customers %&gt;% 
+  filter (country == &#39;USA&#39; | country == &#39;France&#39;) %&gt;% 
+  select(customerName, country)</code></pre>
+<p>This gives us the 48 customers who are located in either USA or France:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+customerName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+country
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Atelier graphique
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Signal Gift Stores
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Wheels Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Saveley &amp; Henriot, Co. 
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Technics Stores Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+American Souvenirs Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Daedalus Designs Imports
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+La Corne D’abondance, Co. 
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cambridge Collectables Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gift Depot Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vitachrome Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Auto-Moto Classics Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Online Mini Collectables
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toys4GrownUps.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Caravy
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boards &amp; Toys Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectable Mini Designs Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alpha Cognac
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lyon Souveniers
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Auto Associés &amp; Cie.
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Marta’s Replicas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Classics
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Creations Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tekni Collectables Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Classic Gift Ideas, Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Men ‘R’ US Retailers, Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Marseille Mini Autos
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reims Collectables
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gifts4AllAges.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Online Diecast Creations Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectables For Less Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Auto Canal+ Petit
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Classic Legends Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gift Ideas Corp. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+The Sharp Gifts Warehouse
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Super Scale Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Microscale Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FunGiftIdeas.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+West Coast Collectables Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Motor Mint Distributors Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Signal Collectibles Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diecast Collectables
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part3_5" class="section level4">
+<h4>3.5 Filtering with both OR, AND conditions</h4>
+<p>The examples above can be extended to combine the OR and AND conditions.</p>
+<p>For example, if you wanted a list of customers with a credit limit of over $100,000 who are located in either the USA <em>or</em> France:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT customerName, country, creditLimit
+FROM customers
+WHERE (country = &#39;USA&#39; 
+  OR country =  &#39;FRANCE&#39;)
+  AND creditLimit &gt; 100000</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>customers %&gt;% 
+  filter(
+    (country == &#39;USA&#39; | country == &#39;France&#39;) &amp; creditLimit &gt; 100000
+    ) %&gt;% 
+  select(customerName, country, creditLimit)</code></pre>
+<p>The code above returns the 11 customers who are located in the USA <em>or</em> France, <em>and</em> who have credit limits over $100,000.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+customerName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+country
+</th>
+<th style="text-align:right;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+creditLimit
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:right;">
+118200
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+210500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+114900
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Saveley &amp; Henriot, Co. 
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:right;">
+123900
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+138500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+100600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectable Mini Designs Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+105000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Marta’s Replicas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+123700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Classics
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+102700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+105000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Online Diecast Creations Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+114200
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>By default both SQL and R evaluate the AND operator before the OR operator. This is why it was necessary to put the OR condition in parentheses above, to tell SQL/R to evaluate it first.</p>
+<p>If we <em>hadn’t</em> used parentheses, the code would have returned the list of customers who either (a) were located in the USA, or (b) were located in France and had a credit limit greater than $100,000. This would have returned the following 38 customers:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+customerName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+country
+</th>
+<th style="text-align:right;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+creditLimit
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Signal Gift Stores
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+71800
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:right;">
+118200
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+210500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Wheels Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+64600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+114900
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Saveley &amp; Henriot, Co. 
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:right;">
+123900
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+138500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+100600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Technics Stores Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+84600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+American Souvenirs Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cambridge Collectables Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+43400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gift Depot Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+84300
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vitachrome Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+76400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Auto-Moto Classics Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+23000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Online Mini Collectables
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+68700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toys4GrownUps.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+90700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boards &amp; Toys Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+11000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectable Mini Designs Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+105000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Marta’s Replicas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+123700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Classics
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+102700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Creations Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+94500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+105000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tekni Collectables Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+43000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Classic Gift Ideas, Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+81100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Men ‘R’ US Retailers, Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+57700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gifts4AllAges.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+41900
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Online Diecast Creations Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+114200
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectables For Less Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+70700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Classic Legends Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+67500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gift Ideas Corp. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+49700
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+The Sharp Gifts Warehouse
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+77600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Super Scale Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+95400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Microscale Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+39800
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FunGiftIdeas.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+85800
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+West Coast Collectables Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+55400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Motor Mint Distributors Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+72600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Signal Collectibles Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+60300
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diecast Collectables
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:right;">
+85100
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part3_6" class="section level4">
+<h4>3.6 The IN operator</h4>
+<p>In SQL, the <code>IN</code> clause is used select records where a value matches any value in a list or a subquery (we’ll look at subqueries later). The equivalent operator in R is <code>%in%</code>.</p>
+<p>When used on a list, the <code>IN</code> clause acts just like one or more <code>OR</code> conditions.
+For example, say we want a list of customers located in either France, USA or Australia:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT customerName, country
+FROM customers
+WHERE country IN (&#39;France&#39;, &#39;USA&#39;, &#39;Australia&#39;)</code></pre>
+<p><em>With R:</em></p>
+<p>With R, we need to <em>combine</em> the countries into a list using <code>c(...)</code>:</p>
+<pre class="r"><code>customers %&gt;% 
+  filter(country %in% c(&#39;France&#39;,&#39;USA&#39;,&#39;Australia&#39;)) %&gt;% 
+  select(customerName, country)</code></pre>
+This returns our 53 customers in France, the USA or Australia.
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+customerName
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+country
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Atelier graphique
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Signal Gift Stores
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Australian Collectors, Co. 
+</td>
+<td style="text-align:left;">
+Australia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Wheels Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Saveley &amp; Henriot, Co. 
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Technics Stores Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+American Souvenirs Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Daedalus Designs Imports
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+La Corne D’abondance, Co. 
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cambridge Collectables Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gift Depot Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vitachrome Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Auto-Moto Classics Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Online Mini Collectables
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toys4GrownUps.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Caravy
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boards &amp; Toys Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectable Mini Designs Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alpha Cognac
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lyon Souveniers
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Auto Associés &amp; Cie.
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anna’s Decorations, Ltd
+</td>
+<td style="text-align:left;">
+Australia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Souveniers And Things Co. 
+</td>
+<td style="text-align:left;">
+Australia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Marta’s Replicas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Classics
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Creations Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tekni Collectables Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Australian Gift Network, Co
+</td>
+<td style="text-align:left;">
+Australia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Classic Gift Ideas, Inc
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Men ‘R’ US Retailers, Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Marseille Mini Autos
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reims Collectables
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gifts4AllAges.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Online Diecast Creations Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Collectables For Less Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Auto Canal+ Petit
+</td>
+<td style="text-align:left;">
+France
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Classic Legends Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gift Ideas Corp. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+The Sharp Gifts Warehouse
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Super Scale Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Microscale Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FunGiftIdeas.com
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Australian Collectables, Ltd
+</td>
+<td style="text-align:left;">
+Australia
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+West Coast Collectables Co. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Motor Mint Distributors Inc. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Signal Collectibles Ltd. 
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diecast Collectables
+</td>
+<td style="text-align:left;">
+USA
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part3_7" class="section level4">
+<h4>3.7 The NOT IN operator</h4>
+<p>If we are interested in values are <em>not</em> in a list - for example, all customers who are not located in France, USA or Australia?</p>
+<p><em>With SQL:</em></p>
+<p>In SQL we can use the <code>NOT IN</code> operator:</p>
+<pre class="markdown"><code>SELECT customerName, country
+FROM customers
+WHERE country NOT IN (&#39;France&#39;,&#39;USA&#39;, &#39;Australia&#39;)</code></pre>
+<p><em>With R:</em></p>
+<p>In R, we negate the <code>%in%</code> operator by placing a <code>!</code> at the start of the filter function, as follows:</p>
+<pre class="r"><code>customers %&gt;% 
+  filter(!country %in% c(&#39;France&#39;,&#39;USA&#39;,&#39;Australia&#39;)) %&gt;% 
+  select(customerName, country)</code></pre>
+<p>Each approach gives us 69 customers who are located in countries other than France, USA or Australia.<br />
+<a href="#contents"><em>(Top)</em></a></p>
+<hr>
+</div>
+<div id="part3_8" class="section level4">
+<h4>3.8 Filtering with regular expressions</h4>
+<p>You can filter your results based on whether a column contains characters that follow a specified pattern. For example, you may want to find names that start with the letter ‘T’, or phone numbers that include the area code ‘214’.</p>
+<p>SQL offers a user-friendly way to do this using the <code>LIKE</code> operator, which is explained <a href="http://www.mysqltutorial.org/mysql-like/">here</a>. However, we are instead going to look at regular expressions, which are more flexible than SQL’s <code>LIKE</code> operator (though less user-friendly) and are consistent between SQL and R.</p>
+<p>To use regular expressions in SQL we use the <code>REGEXP</code> operator, and in R we use the <code>str_detect()</code> (‘string detect’) function.</p>
+<p>To see how this works, say we want to find all products with the word ‘Ford’ in them. We could use the following code:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT productName
+FROM products
+WHERE productName REGEXP &#39;Ford&#39;</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>products %&gt;% 
+  filter(str_detect(productName,&#39;Ford&#39;)) %&gt;% 
+  select(productName)</code></pre>
+<p>These sets of code return a list of 15 models with that include the word ‘Ford’:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+productName
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1968 Ford Mustang
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1969 Ford Falcon
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1940 Ford Pickup Truck
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1911 Ford Town Car
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1932 Model A Ford J-Coupe
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1926 Ford Fire Engine
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1913 Ford Model T Speedster
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1934 Ford V8 Coupe
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1903 Ford Model A
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1976 Ford Gran Torino
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1940s Ford truck
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1957 Ford Thunderbird
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1912 Ford Model T Delivery Wagon
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1940 Ford Delivery Sedan
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1928 Ford Phaeton Deluxe
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The main difference in the code above is that SQL is not case sensitive but R is. You can specify case sensitivity as follows:</p>
+<ul>
+<li>To make SQL case sensitive, replace <code>REGEXP</code> with <code>REGEXP BINARY</code></li>
+<li>To make R ignore cases, replace <code>str_detect(productName,'Ford')</code> in the example above with <code>str_detect(productName, regex('ford', ignore_case=TRUE))</code></li>
+</ul>
+<p>The beauty of SQL’s <code>REGEXP</code> and R’s <code>str_detect()</code> is that they will both work with many of the same regular expressions. You can modify both sets of code above to see the following:</p>
+<ul>
+<li>Use the <code>^</code> symbol to match the beginning of a string. For example, use <code>'^America'</code> to show products beginning with the words ‘America’ or ‘American’.</li>
+<li>Use <code>$</code> to denote the end of a string. For example, use <code>'ter$'</code> to return the names of all products that end in these three letters, such as ‘helicopter’ and ‘roadster’.</li>
+<li>Use <code>'[...]'</code> to match any of the strings listed within the brackets, which are separated with <code>|</code>. For example, use <code>'^[A|B|C]'</code> to match words beginning with either A, B, or C.</li>
+</ul>
+<p>We won’t go into the details of regular expressions here, but a further explanation can be found at <a href="http://www.mysqltutorial.org/mysql-regular-expression-regexp.aspx">mysqltutorial.org</a>.</p>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+<p>Part 2 of this post, to follow, will look at joins, using grouped data, and subqueries.</p>
+</div>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/statistical-tests/" data-tooltip="Common statistical tests are linear models">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/08/r-and-sql/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/08/r-and-sql/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/08/r-and-sql/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Steve Doogue. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/statistical-tests/" data-tooltip="Common statistical tests are linear models">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/08/r-and-sql/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/08/r-and-sql/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/08/r-and-sql/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2019%2F08%2Fr-and-sql%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2019%2F08%2Fr-and-sql%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2019%2F08%2Fr-and-sql%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Steve Doogue</h4>
+    
+      <div id="about-card-bio">A blog in which I explore various data analysis tools.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Data and finance guy
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Dallas, Texas
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Search" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no post found</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql/">
+                <h3 class="media-heading">R and SQL (Part 1)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/07/statistical-tests/">
+                <h3 class="media-heading">Common statistical tests are linear models</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
+The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/03/how-do-us-cities-raise-and-spend-money/">
+                <h3 class="media-heading">Comparing city spending with Tableau</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Mar 3, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">In this post I create a Tableau dashboard that compares how US cities raise and spend money, using data from the Fiscally Standardized Cities (FiSCs) database.
+I learned the basics of Tableau a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.
+One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/01/a-neighborhood-crime-map-using-shiny/">
+                <h3 class="media-heading">A neighborhood crime map using Shiny</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">In this post I created a crime map of my local neighborhood, using live data accessed from the City of Dallas’ OpenData portal.
+Shiny has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.
+With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/05/dallas-population/">
+                <h3 class="media-heading">A dot-density map of Dallas</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As a new arrival in Dallas, it’s taken me a while to get to grips with its layout. Its sheer size and sprawl make it difficult to identify where Dallas ends and neighboring cities begin.
+With this in mind, this post had two aims: to better understand the geography of Dallas, and to explore some of the GIS tools available in R, the open-source programming language.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/04/funding-cuts-and-deprivation/">
+                <h3 class="media-heading">Funding cuts and deprivation in England</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, this could bring relief to some of the hardest-hit local councils. However, this analysis shows that the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived parts of England.
+In 2010 the UK government embarked on a series of major spending cuts to reduce its budget deficit, in response to the financial crisis.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/04/welcome-to-my-blog/">
+                <h3 class="media-heading">Welcome to my blog</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Welcome to my new blog, which I’m using as an opportunity to explore and apply new data analysis tools. This is intended as an exercise in learning by doing.
+Most of the analysis carried out in this blog will use the R programming language. I’m increasingly relying on this powerful tool to complement Microsoft Excel in my day-to-day data analysis. For anyone getting started in R, I highly recommend the excellent and accessible R for Data Science by Hadley Wickham and Garrett Grolemund.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no post found"
+         data-message-one="1 post found"
+         data-message-other="{n} posts found">
+         7 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2019\/08\/r-and-sql\/';
+          
+            this.page.identifier = '\/2019\/08\/r-and-sql\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'https-stevedoogue-netlify-com';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+<script src="//yihui.name/js/math-code.js"></script>
+<script async
+src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+    
+  </body>
+</html>
+

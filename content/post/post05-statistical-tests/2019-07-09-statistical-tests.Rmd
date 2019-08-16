@@ -6,23 +6,42 @@ date: '2019-07-09'
 slug: statistical-tests
 categories: []
 tags: []
+#coverImage:
+#coverSize: partial
+#coverMeta: out
 thumbnailImagePosition: "left"
-thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1562705594/05%20Statistical%20tests/image_dummy2.png
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/c_thumb,w_200,g_face/v1563202273/05%20Statistical%20tests/swissarmy.png
 comments: true
 
 ---
 
-_[This is a book](https://steverxd.github.io/Stat_tests/) in which I demonstrate that most common statistical tests are special cases of simple linear models. It builds on an open-source book written by Jonas Lindeløv. This offers a simplified and intuitive way to teach and learn statistical tests._ 
+_[This book](https://steverxd.github.io/Stat_tests/) demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a 'Swiss Army knife' of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests._
 
 <hr>
 <!--more--->
 
-The book [Common statistical tests are linear models (or: how to teach stats)](https://lindeloev.github.io/tests-as-linear/), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model. It also demonstrates that many non-parametric tests, which are needed when certain test assumptions do not hold, can be approximated by linear models using the _rank_ of values.
+The book [Common statistical tests are linear models (or: how to teach stats)](https://lindeloev.github.io/tests-as-linear/), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model. 
 
-To better understand this I wrote my own version of the book, [Common statistical tests are linear models (a work through)](https://steverxd.github.io/Stat_tests/), which builds on the original. The objective of this was to solidify my understanding of the book, by reproducing the examples provided; by expanding on areas where there were gaps in my knowledge; and by paraphrasing some of the explanations, using concepts and terms with which I was more familiar. 
+To solidify my understanding, I wrote my own version of the book: [Common statistical tests are linear models (a work through)](https://steverxd.github.io/Stat_tests/). I used this to work through the examples provided in the original, to expand on areas where there were gaps in my knowledge, and to explain some of the ideas using terms and concepts with which I was more familiar.
 
-The approach explained in the book offers a way to greatly simplify the teaching of introductory statistics, using the simple model of the form _y = a + b⋅x_, which is familiar to most students. This approach brings coherence to a wide range of statistical tests, which are usually taught to students as independent tools. The approach also helps to explain the intuition underlying statistical tests, drawing on the familiar concept of linear regressions, which emphasizes understanding over rote learning.
+The main idea of the book is that most statistical tests can be explained as an application of the simple linear model, _$y = a + b⋅x$_,  which is familiar to most students of introductory statistics.   
 
-As well as solidifying my own understanding, I hope this book might be helpful to others following along with Lindeløv's book, but who require more background on some of the concepts being discussed. 
+For example, say you wanted to assess whether the average salaries of men and women in a company were equal, based on a sample of 50 women and 50 men. A common test that might be applied in this case is the __indendent sample t test__. The null hypothesis would be that there was no difference between the average salaries of men and women. 
 
-This book was written using the [bookdown](https://bookdown.org/) package in R. The GitHub repository can be found [here](https://github.com/SteveRxD/Stat_tests).
+An equivalent approach would be a linear model, of the form:
+
+$$income = \beta_0 + \beta_1 \cdot x_i$$
+
+where $x_i$ is a 'dummy' variable that takes the value of $0$ if the person sampled is a woman and $1$ if they are a man. In this case, $\beta_1$ would be the average difference in men's salaries relative to women, as illustrated below. 
+
+<center>
+![](https://res.cloudinary.com/ddjmrpbw4/image/upload/v1563649801/05%20Statistical%20tests/image_income_example.png){width=70%}
+</center>
+
+The results our independent sample t-test, of whether there are statistically significant differences between men's and women's salaries, are _exactly the same_ as our test for whether $\beta_1$ is different from zero! Both tests give the same p-value, which, if sufficiently low (typically below 5%) would lead us to reject the null hypothesis that there was no difference in salaries.
+
+The book shows how the linear model can be applied in a wide range of other cases, making it the 'Swiss Army knife' of statistical tests. It also demonstrates that many non-parametric tests, which are needed when certain test assumptions do not hold, can be approximated by linear models using the _rank_ of values. 
+
+This approach brings coherence to a wide range of statistical tests, which are usually taught to students as independent tools with a 'zoology' of names.  The approach also helps to explain the intuition underlying statistical tests (rather than relying on rote learning) by drawing on the familiar concept of linear regressions.
+
+As well as serving to solidify my own understanding, I hope this will be helpful to others following along with Lindeløv's original book. My version of the book was written using the [bookdown](https://bookdown.org/) package in R. The GitHub repository can be found [here](https://github.com/SteveRxD/Stat_tests).
