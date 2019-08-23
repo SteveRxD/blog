@@ -1,12 +1,12 @@
 ---
 title: "R and SQL (Part 1)"
 author: ''
-date: '2019-08-01'
+date: '2019-08-10'
 comments: yes
 categories: []
 slug: r-and-sql
 tags: []
-thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/c_thumb,w_200,g_face/v1563498573/06%20R%20SQL/r_to_sql_thumb1.png
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/w_500,c_pad,fl_ignore_aspect_ratio,b_white/v1563498573/06%20R%20SQL/r_to_sql_thumb1.png
 thumbnailImagePosition: left
 Summary: When analyzing data, many common SQL queries can be carried out using R, and vice versa. This post uses examples to demonstrate similarities between the two. In Part 1 we look at selecting, sorting and filtering data.
 ---
@@ -73,6 +73,7 @@ When working with R, I will be using the [dplyr](https://cran.r-project.org/web/
     -   [**1.2  Select specific columns**](#part1_2)
     -   [**1.3  Select distinct records**](#part1_3)
     -   [**1.4  Select distinct records with multiple columns**](#part1_4)
+    -   [**1.5  Create new columns**](#part1_5)
 -   [**2. Sorting and ordering data**](#part2)
     -   [**2.1  Basic sorting**](#part2_1)
     -   [**2.2  Sort descending**](#part2_2)   
@@ -132,7 +133,7 @@ library(tidyverse)
 ```
 
 
-When running the code in R, we will create a data frame that corresponds to each table in the relational database. These tables can be downloaded as individual .csv files [here]() [need to add link]. Load the data into R using the following code:
+When running the code in R, we will create a data frame that corresponds to each table in the relational database. These tables can be downloaded as individual .csv files [here](https://github.com/SteveRxD/Blog/tree/master/content/post/post06-r-sql-part1/tables). Load the data into R using the following code:
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -281,8 +282,48 @@ customers %>%
   showTable()
 ```  
 [_(Top)_](#contents)
-
 <hr>
+
+#### 1.5 Create new columns{#part1_5}
+
+What if we want to create a new column, using the information contained in existing columns?
+
+For example: The *orderdetails* table contains information on which products were included in each order (*productCode*), the quantity of each product (*quantityOrdered*) and the price per unit (*priceEach*). We could use this information to calculate the __value__ of each product that was ordered.
+
+_With SQL:_
+
+In SQL, within the `SELECT` clause, we can calculate our new column and as assign it a name ('alias') using the `AS` keyword, as follows:
+
+```markdown
+SELECT orderNumber, 
+        productCode,
+        quantityOrdered * priceEach AS value
+FROM orderdetails
+```
+
+_With R:_
+
+In R we would acheive the same results using the `mutate` function to create our new column:
+
+```{r, eval = FALSE}
+orderdetails %>% 
+  mutate(value = quantityOrdered * priceEach) %>% 
+  select(orderNumber, productCode, value)
+```
+
+The two sets of code return 2,996 records that show the value of each product in every order. The first 20 rows are displayed in the table below:
+
+```{r, echo = FALSE}
+orderdetails %>% 
+  mutate(value = quantityOrdered * priceEach) %>% 
+  select(orderNumber, productCode, value) %>% 
+  showTable(y = 20)
+```
+
+
+[_(Top)_](#contents)
+<hr>
+
 # 2. Sorting and ordering data{#part2}
 
 #### 2.1 Basic sorting{#part2_1}

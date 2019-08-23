@@ -7,7 +7,7 @@ slug: funding-cuts-and-deprivation
 categories: []
 tags: []
 thumbnailImagePosition: "left"
-thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/v1522274214/coins600.jpg
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/w_500,c_pad,fl_ignore_aspect_ratio,b_white/v1522274214/coins600.jpg
 comments: true
 
 ---

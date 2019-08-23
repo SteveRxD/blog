@@ -10,7 +10,7 @@ tags: []
 #coverSize: partial
 #coverMeta: out
 thumbnailImagePosition: "left"
-thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/c_thumb,w_200,g_face/v1563202273/05%20Statistical%20tests/swissarmy.png
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/w_450,c_pad,fl_ignore_aspect_ratio,b_white/v1563202273/05%20Statistical%20tests/swissarmy.png
 comments: true
 
 ---

@@ -48,7 +48,7 @@
     
 
     
-      <meta property="og:image" content="//res.cloudinary.com/ddjmrpbw4/image/upload/c_thumb,w_200,g_face/v1563498573/06%20R%20SQL/r_to_sql_thumb1.png">
+      <meta property="og:image" content="//res.cloudinary.com/ddjmrpbw4/image/upload/w_500,c_pad,fl_ignore_aspect_ratio,b_white/v1563498573/06%20R%20SQL/r_to_sql_thumb1.png">
     
     
     
@@ -173,9 +173,9 @@
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2019-08-01T00:00:00Z">
+      <time itemprop="datePublished" datetime="2019-08-10T00:00:00Z">
         
-  August 1, 2019
+  August 10, 2019
 
       </time>
     
@@ -212,6 +212,7 @@
 <li><a href="#part1_2"><strong>1.2 Select specific columns</strong></a></li>
 <li><a href="#part1_3"><strong>1.3 Select distinct records</strong></a></li>
 <li><a href="#part1_4"><strong>1.4 Select distinct records with multiple columns</strong></a></li>
+<li><a href="#part1_5"><strong>1.5 Create new columns</strong></a></li>
 </ul></li>
 <li><a href="#part2"><strong>2. Sorting and ordering data</strong></a>
 <ul>
@@ -274,7 +275,7 @@
 <h4>Running the code in R</h4>
 <p>We will be looking at equivalent R code using the <a href="https://www.r-bloggers.com/data-manipulation-with-dplyr/">dplyr</a> package. This includes the use of the pipe operator, <code>%&gt;%</code>, which allows you to chain code together in a series of logical steps. We can load the dplyr package as part of the tidyverse package:</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<p>When running the code in R, we will create a data frame that corresponds to each table in the relational database. These tables can be downloaded as individual .csv files <a href="">here</a> [need to add link]. Load the data into R using the following code:</p>
+<p>When running the code in R, we will create a data frame that corresponds to each table in the relational database. These tables can be downloaded as individual .csv files <a href="https://github.com/SteveRxD/Blog/tree/master/content/post/post06-r-sql-part1/tables">here</a>. Load the data into R using the following code:</p>
 <pre class="r"><code># Enter the file path to where the files are saved on your system
 filepath &lt;- &#39;tables/&#39;     
 
@@ -1344,7 +1345,265 @@ CA
 </tbody>
 </table>
 </div>
-<p><a href="#contents"><em>(Top)</em></a></p>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+</div>
+<div id="part1_5" class="section level4">
+<h4>1.5 Create new columns</h4>
+<p>What if we want to create a new column, using the information contained in existing columns?</p>
+<p>For example: The <em>orderdetails</em> table contains information on which products were included in each order (<em>productCode</em>), the quantity of each product (<em>quantityOrdered</em>) and the price per unit (<em>priceEach</em>). We could use this information to calculate the <strong>value</strong> of each product that was ordered.</p>
+<p><em>With SQL:</em></p>
+<p>In SQL, within the <code>SELECT</code> clause, we can calculate our new column and as assign it a name (‘alias’) using the <code>AS</code> keyword, as follows:</p>
+<pre class="markdown"><code>SELECT orderNumber, 
+        productCode,
+        quantityOrdered * priceEach AS value
+FROM orderdetails</code></pre>
+<p><em>With R:</em></p>
+<p>In R we would acheive the same results using the <code>mutate</code> function to create our new column:</p>
+<pre class="r"><code>orderdetails %&gt;% 
+  mutate(value = quantityOrdered * priceEach) %&gt;% 
+  select(orderNumber, productCode, value)</code></pre>
+<p>The two sets of code return 2,996 records that show the value of each product in every order. The first 20 rows are displayed in the table below:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+orderNumber
+</th>
+<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+productCode
+</th>
+<th style="text-align:right;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
+value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+10100
+</td>
+<td style="text-align:left;">
+S18_1749
+</td>
+<td style="text-align:right;">
+4080.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10100
+</td>
+<td style="text-align:left;">
+S18_2248
+</td>
+<td style="text-align:right;">
+2754.50
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10100
+</td>
+<td style="text-align:left;">
+S18_4409
+</td>
+<td style="text-align:right;">
+1660.12
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10100
+</td>
+<td style="text-align:left;">
+S24_3969
+</td>
+<td style="text-align:right;">
+1729.21
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10101
+</td>
+<td style="text-align:left;">
+S18_2325
+</td>
+<td style="text-align:right;">
+2701.50
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10101
+</td>
+<td style="text-align:left;">
+S18_2795
+</td>
+<td style="text-align:right;">
+4343.56
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10101
+</td>
+<td style="text-align:left;">
+S24_1937
+</td>
+<td style="text-align:right;">
+1463.85
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10101
+</td>
+<td style="text-align:left;">
+S24_2022
+</td>
+<td style="text-align:right;">
+2040.10
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10102
+</td>
+<td style="text-align:left;">
+S18_1342
+</td>
+<td style="text-align:right;">
+3726.45
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10102
+</td>
+<td style="text-align:left;">
+S18_1367
+</td>
+<td style="text-align:right;">
+1768.33
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S10_1949
+</td>
+<td style="text-align:right;">
+5571.80
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S10_4962
+</td>
+<td style="text-align:right;">
+5026.14
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S12_1666
+</td>
+<td style="text-align:right;">
+3284.28
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S18_1097
+</td>
+<td style="text-align:right;">
+3307.50
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S18_2432
+</td>
+<td style="text-align:right;">
+1283.48
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S18_2949
+</td>
+<td style="text-align:right;">
+2489.13
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S18_2957
+</td>
+<td style="text-align:right;">
+2164.40
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S18_3136
+</td>
+<td style="text-align:right;">
+2173.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S18_3320
+</td>
+<td style="text-align:right;">
+3970.26
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:left;">
+S18_4600
+</td>
+<td style="text-align:right;">
+3530.52
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<a href="#contents"><em>(Top)</em></a>
 <hr>
 </div>
 </div>
@@ -3814,7 +4073,7 @@ productName
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql-part2/" data-tooltip="R and SQL (Part 2)">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -3900,7 +4159,7 @@ productName
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql-part2/" data-tooltip="R and SQL (Part 2)">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -4041,6 +4300,25 @@ productName
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql-part2/">
+                <h3 class="media-heading">R and SQL (Part 2)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">This is part 2 of a series of posts demonstrating how equivalent analysis can be carried out in SQL and R. Here we look at joins, grouped data, and subqueries.
+Please note that this post is currently under construction. More sections will be added over time.
+IntroductionIn Part 1 of this series we looked at the similarities between SQL and R when selecting, sorting and filtering data.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="/2019/08/r-and-sql/">
                 <h3 class="media-heading">R and SQL (Part 1)</h3>
               </a>
@@ -4172,7 +4450,7 @@ Most of the analysis carried out in this blog will use the R programming languag
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         7 posts found
+         8 posts found
       </p>
     </div>
   </div>
