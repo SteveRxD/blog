@@ -28,15 +28,18 @@
     
 
     
-    <meta name="description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.">
-    <meta property="og:description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.">
+    <meta name="description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.
+In Part 1 of this series we look at the similarities between SQL and R when selecting, sorting and filtering data.">
+    <meta property="og:description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.
+In Part 1 of this series we look at the similarities between SQL and R when selecting, sorting and filtering data.">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="R and SQL (Part 1)">
     <meta property="og:url" content="/2019/08/r-and-sql/">
     <meta property="og:site_name" content="Steve Doogue">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Steve Doogue">
-    <meta name="twitter:description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.">
+    <meta name="twitter:description" content="When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.
+In Part 1 of this series we look at the similarities between SQL and R when selecting, sorting and filtering data.">
     
     
 
@@ -190,9 +193,12 @@
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
-<p><em>When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</em></p>
+<p><em>When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.</em></p>
 <hr>
 <!--more--->
+<div class="alert info ">
+  <p>In Part 1 of this series we look at the similarities between SQL and R when <em>selecting</em>, <em>sorting</em> and <em>filtering</em> data. In <a href="https://www.stevedoogue.com/2019/08/r-and-sql-part2/">Part 2</a> we move on to look at <em>joins</em>, <em>grouped data</em> and <em>subqueries</em>.</p>
+</div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>SQL is a language that allows users query, manipulate, and transform data. Many common queries carried out with SQL, such as filtering and joining tables, can be carried out using equivalent functions in R.</p>
@@ -948,8 +954,10 @@ Sales Rep
 <p>What if you only want a subset of columns from a given table, such as employees’ first and last names?</p>
 <p><em>With SQL:</em></p>
 <p>In SQL you just list the column of interest in the <code>SELECT</code> clause as follows:</p>
-<pre class="markdown"><code>SELECT firstName, lastName 
-FROM employees</code></pre>
+<pre class="markdown"><code>SELECT 
+  firstName, lastName 
+FROM 
+  employees</code></pre>
 <p><em>With R:</em></p>
 <p>The equivalent R code uses the <code>select()</code> function:</p>
 <pre class="r"><code>employees %&gt;% 
@@ -963,7 +971,8 @@ FROM employees</code></pre>
 <p>Say we want a list of distinct countries in which we have customers, i.e. without returning the same country name twice.</p>
 <p><em>With SQL:</em></p>
 <p>In SQL we would use <code>SELECT DISTINCT</code> clause, as follows:</p>
-<pre class="markdown"><code>SELECT DISTINCT country 
+<pre class="markdown"><code>SELECT 
+  DISTINCT country 
 FROM customers
 </code></pre>
 <p><em>With R:</em></p>
@@ -1128,9 +1137,12 @@ Israel
 <p>For instance, say you want a list of all US cities in which the company has customers. We can’t simply look at distinct city names, as there can be more than one city with the same name: for example, in our database we have a ‘Glendale’ in California and a ‘Glendale’ in Connecticut.</p>
 <p>To address this we specify both city and state in our query, as follows (I’m jumping forward here and also adding a <code>WHERE</code> clause, to restrict our results to cities in the USA):</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT DISTINCT city,state 
-FROM customers
-WHERE country = &#39;USA&#39; </code></pre>
+<pre class="markdown"><code>SELECT 
+  DISTINCT city,state 
+FROM 
+  customers
+WHERE 
+  country = &#39;USA&#39; </code></pre>
 <p><em>With R:</em></p>
 <p>The equivalent R code uses <code>filter()</code> instead of SQL’s <code>WHERE</code>, as will be discussed later:</p>
 <pre class="r"><code>customers %&gt;% 
@@ -1354,9 +1366,10 @@ CA
 <p>For example: The <em>orderdetails</em> table contains information on which products were included in each order (<em>productCode</em>), the quantity of each product (<em>quantityOrdered</em>) and the price per unit (<em>priceEach</em>). We could use this information to calculate the <strong>value</strong> of each product that was ordered.</p>
 <p><em>With SQL:</em></p>
 <p>In SQL, within the <code>SELECT</code> clause, we can calculate our new column and as assign it a name (‘alias’) using the <code>AS</code> keyword, as follows:</p>
-<pre class="markdown"><code>SELECT orderNumber, 
-        productCode,
-        quantityOrdered * priceEach AS value
+<pre class="markdown"><code>SELECT 
+  orderNumber, 
+  productCode,
+  quantityOrdered * priceEach AS value
 FROM orderdetails</code></pre>
 <p><em>With R:</em></p>
 <p>In R we would acheive the same results using the <code>mutate</code> function to create our new column:</p>
@@ -1613,10 +1626,14 @@ S18_4600
 <h4>2.1 Basic sorting</h4>
 <p>Data can be sorted using the <code>ORDER BY</code> clause in SQL and the <code>arrange()</code> function in R. For example, say you wanted to sort customer locations in the USA alphabetically, first by state and then by city:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT DISTINCT state, city 
-FROM customers
-WHERE country = &#39;USA&#39;
-ORDER BY state, city</code></pre>
+<pre class="markdown"><code>SELECT 
+  DISTINCT state, city 
+FROM 
+  customers
+WHERE 
+  country = &#39;USA&#39;
+ORDER BY 
+  state, city</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>customers %&gt;% 
   filter(country == &#39;USA&#39;) %&gt;% 
@@ -1839,10 +1856,14 @@ Philadelphia
 <p>What if you wanted to list states in reverse alphabetical order, while listing cities in alphabetical order?</p>
 <p><em>With SQL:</em></p>
 <p>In SQL, you can use <code>ORDER BY .... DESC</code>. Any columns listed before the <code>DESC</code> clause will be listed in descending order.</p>
-<pre class="markdown"><code>SELECT DISTINCT state, city 
-FROM customers
-WHERE country = &#39;USA&#39;
-ORDER BY state DESC, city</code></pre>
+<pre class="markdown"><code>SELECT 
+  DISTINCT state, city 
+FROM 
+  customers
+WHERE 
+  country = &#39;USA&#39;
+ORDER BY 
+  state DESC, city</code></pre>
 <p><em>With R:</em></p>
 <p>Equivalently, in <code>R</code>, you can use <code>arrange(desc())</code>, where the parentheses include the name of the column(s) you want listed in descending order:</p>
 <pre class="r"><code>customers %&gt;% 
@@ -2065,9 +2086,12 @@ San Rafael
 <p>To limit the number of results that are shown, you can use SQL’s <code>LIMIT</code> clause and R’s <code>slice()</code> function. These can be combined with ordered data to return the top or bottom results from a table.</p>
 <p>For example, if you wanted to return the five customers with the highest credit limits you could use the following:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT customerName, creditLimit 
-FROM customers
-ORDER BY creditLimit DESC
+<pre class="markdown"><code>SELECT 
+  customerName, creditLimit 
+FROM 
+  customers
+ORDER BY 
+  creditLimit DESC
 LIMIT 5</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>customers %&gt;% 
@@ -2141,9 +2165,12 @@ AV Stores, Co. 
 <p>Filtering is used to restrict our results to records / rows that satisfy one or more criteria. We already saw some basic filtering in the above, in which we used SQL’s <code>WHERE</code> clause and R’s <code>filter()</code> to only shows cities that were within the United States.</p>
 <p>Another example would be to find the names of each employee whose job title is ‘Sales Rep’:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT lastName, firstName, jobTitle
-FROM employees
-WHERE jobTitle = &#39;Sales Rep&#39;</code></pre>
+<pre class="markdown"><code>SELECT 
+  lastName, firstName, jobTitle
+FROM 
+  employees
+WHERE 
+  jobTitle = &#39;Sales Rep&#39;</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>employees %&gt;% 
   filter(jobTitle == &#39;Sales Rep&#39;) %&gt;% 
@@ -2369,9 +2396,12 @@ Sales Rep
 <p>We can use the ‘not equal to’ operator <code>!=</code> to filter records that do not match a certain criteria.</p>
 <p>For example, to see the names of the six employees who are <em>not</em> sales reps:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT lastName, firstName, jobTitle
-FROM employees
-WHERE jobTitle != &#39;Sales Rep&#39;</code></pre>
+<pre class="markdown"><code>SELECT 
+  lastName, firstName, jobTitle
+FROM 
+  employees
+WHERE 
+  jobTitle != &#39;Sales Rep&#39;</code></pre>
 <p>MySQL would also accept <code>&lt;&gt;</code> as the operator in this case.</p>
 <p><em>With R:</em></p>
 <pre class="r"><code>employees %&gt;% 
@@ -2386,9 +2416,12 @@ WHERE jobTitle != &#39;Sales Rep&#39;</code></pre>
 <p>Sometime we want to select rows where multiple criteria all hold true. This can be done using <code>AND</code> operator in SQL, and the <code>&amp;</code> operator in R.</p>
 <p>For example, if we wanted to see the names of customers who are located in California <em>and</em> who have a credit limit over $100,000:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT customername, state, creditlimit 
-FROM customers 
-WHERE state = &#39;CA&#39; AND creditlimit &gt; 100000</code></pre>
+<pre class="markdown"><code>SELECT 
+  customername, state, creditlimit 
+FROM 
+  customers 
+WHERE 
+  state = &#39;CA&#39; AND creditlimit &gt; 100000</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>customers %&gt;% 
   filter(state == &#39;CA&#39; &amp; creditLimit &gt; 100000) %&gt;% 
@@ -2452,10 +2485,12 @@ CA
 <p>The OR condition returns rows where <em>any</em> of our criteria are satisfied. In SQL we use the <code>OR</code> operator, while in R the <code>|</code> symbol is used.</p>
 <p>For example, say we want to see a list of all customers who are located in the US or France:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT customerName, country
-FROM customers
-WHERE country = &#39;USA&#39; 
-  OR country =  &#39;FRANCE&#39;</code></pre>
+<pre class="markdown"><code>SELECT 
+  customerName, country
+FROM 
+  customers
+WHERE 
+  country = &#39;USA&#39; OR country =  &#39;FRANCE&#39;</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>customers %&gt;% 
   filter (country == &#39;USA&#39; | country == &#39;France&#39;) %&gt;% 
@@ -2869,11 +2904,12 @@ USA
 <p>The examples above can be extended to combine the OR and AND conditions.</p>
 <p>For example, if you wanted a list of customers with a credit limit of over $100,000 who are located in either the USA <em>or</em> France:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT customerName, country, creditLimit
-FROM customers
-WHERE (country = &#39;USA&#39; 
-  OR country =  &#39;FRANCE&#39;)
-  AND creditLimit &gt; 100000</code></pre>
+<pre class="markdown"><code>SELECT 
+  customerName, country, creditLimit
+FROM 
+  customers
+WHERE 
+  (country = &#39;USA&#39; OR country =  &#39;FRANCE&#39;) AND creditLimit &gt; 100000</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>customers %&gt;% 
   filter(
@@ -3469,9 +3505,12 @@ USA
 <p>When used on a list, the <code>IN</code> clause acts just like one or more <code>OR</code> conditions.
 For example, say we want a list of customers located in either France, USA or Australia:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT customerName, country
-FROM customers
-WHERE country IN (&#39;France&#39;, &#39;USA&#39;, &#39;Australia&#39;)</code></pre>
+<pre class="markdown"><code>SELECT 
+  customerName, country
+FROM 
+  customers
+WHERE 
+  country IN (&#39;France&#39;, &#39;USA&#39;, &#39;Australia&#39;)</code></pre>
 <p><em>With R:</em></p>
 <p>With R, we need to <em>combine</em> the countries into a list using <code>c(...)</code>:</p>
 <pre class="r"><code>customers %&gt;% 
@@ -3926,9 +3965,12 @@ USA
 <p>If we are interested in values are <em>not</em> in a list - for example, all customers who are not located in France, USA or Australia?</p>
 <p><em>With SQL:</em></p>
 <p>In SQL we can use the <code>NOT IN</code> operator:</p>
-<pre class="markdown"><code>SELECT customerName, country
-FROM customers
-WHERE country NOT IN (&#39;France&#39;,&#39;USA&#39;, &#39;Australia&#39;)</code></pre>
+<pre class="markdown"><code>SELECT 
+  customerName, country
+FROM 
+  customers
+WHERE 
+  country NOT IN (&#39;France&#39;,&#39;USA&#39;, &#39;Australia&#39;)</code></pre>
 <p><em>With R:</em></p>
 <p>In R, we negate the <code>%in%</code> operator by placing a <code>!</code> at the start of the filter function, as follows:</p>
 <pre class="r"><code>customers %&gt;% 
@@ -3945,9 +3987,12 @@ WHERE country NOT IN (&#39;France&#39;,&#39;USA&#39;, &#39;Australia&#39;)</code
 <p>To use regular expressions in SQL we use the <code>REGEXP</code> operator, and in R we use the <code>str_detect()</code> (‘string detect’) function.</p>
 <p>To see how this works, say we want to find all products with the word ‘Ford’ in them. We could use the following code:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT productName
-FROM products
-WHERE productName REGEXP &#39;Ford&#39;</code></pre>
+<pre class="markdown"><code>SELECT 
+  productName
+FROM 
+  products
+WHERE 
+  productName REGEXP &#39;Ford&#39;</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>products %&gt;% 
   filter(str_detect(productName,&#39;Ford&#39;)) %&gt;% 
@@ -4327,7 +4372,8 @@ productName
                   Aug 8, 2019
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</div>
+              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.
+In Part 1 of this series we look at the similarities between SQL and R when selecting, sorting and filtering data.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>

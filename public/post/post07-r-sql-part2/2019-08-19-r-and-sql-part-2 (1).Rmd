@@ -1,0 +1,220 @@
+---
+title: "R and SQL (Part 2)"
+author: ''
+date: '2019-08-02'
+comments: yes
+categories: []
+slug: r-and-sql-part-2
+tags: []
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/w_500,c_pad,fl_ignore_aspect_ratio,b_white/v1563498573/06%20R%20SQL/r_to_sql_thumb1.png
+thumbnailImagePosition: "left"
+Summary: 'Part 2 of a post demonstrating how equivalent analysis can be carried out in SQL and R. Here we look at joins and grouped data.'
+---
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+```
+
+
+```{r, echo = FALSE, warning=FALSE, message = FALSE}
+
+# Create a function to show R output as a formatted table (kable)
+
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+
+#Create the function
+showTable <- function(x, y, scroll = "yes") { 
+
+  a <-  if (missing(y)){
+    x
+  } else {
+    x %>%  head(y)
+  }
+  
+  b <- kable(a) %>%
+    kable_styling(font_size = 11) %>% 
+    row_spec(0, font_size = 9) 
+  
+  if(scroll == "yes"){
+    b %>% scroll_box(height = "200px")
+  }  else {
+    b
+  }
+}
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'     
+
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),  
+               # prevent the model scale (e.g. 1:10) from being read as a date:
+               col_types = cols (productScale = col_character()), na = "NULL")
+
+```
+
+
+
+# Contents
+ -  [**1. Joins**](#part1)
+    -  [**1.1  Inner join**](#part1_1)
+    -  [**1.2  Left join**](#part1_2)
+<hr>
+
+
+# 1. Joins{#part1}
+
+This section assumes a basic understanding of the different types of joins, specifically left join, inner join and full join. For those who are new to SQL, this section of [R for Data Science](https://r4ds.had.co.nz/relational-data.html#understanding-joins), by Hadley Wickham, provides a nice explanation of the different types joins. 
+
+#### 1.1 Inner join{#part1_1}
+
+##### Example 1
+
+Say we want to list the name of every employee from the _employees_ table who has one or more customers recorded in the _customers_ table. We want to see the following information:
+
+- employee number
+- employee first name
+- employee second name
+- customer name(s)
+
+This is an example of an inner join, as we only want records that have a match in both tables. In this case, we want to match the _employeeNumber_ in in the _employees_ table with the _salesRepEmployeeNumber_ in the _customers_ table. 
+
+_With SQL:_
+
+```markdown
+SELECT employees.employeeNumber, 
+       employees.lastName, 
+       employees.firstName, 
+       customers.customerName
+FROM   employees 
+INNER JOIN customers 
+  ON employees.employeeNumber = customers.salesRepEmployeeNumber
+ORDER BY lastName, customerName
+```
+Note that we specify the table from which column is taken, for example using `employees.employeeNumber` rather than just `employeeNumber`. 
+
+
+_With R:_
+
+The same join could be carried out in R using the following code. In the `by` argument, we first list the column to match from the left hand table ('employeeNumber') followed by the corresponding column from the right hand table ('salesRepEmployeeNumber'). 
+
+```{r, eval = FALSE}
+employees %>%   #left hand table
+  inner_join(customers, by = c("employeeNumber" = "salesRepEmployeeNumber")) %>%
+  select(employeeNumber, lastName, firstName, customerName) %>% 
+  arrange(lastName, customerName)
+```
+
+These two sets of code return 100 records:
+```{r, echo = FALSE}
+employees %>%   #left hand table
+  inner_join(customers, by = c("employeeNumber" = "salesRepEmployeeNumber")) %>%
+  select(employeeNumber, lastName, firstName, customerName) %>% 
+  arrange(lastName, customerName) %>% 
+  showTable()
+```
+
+##### Example 2
+
+Say instead that we wanted to list every customer from the _customers_ table who has one or more orders in the _orders_ table. We want to see the following information:
+
+- customer number
+- customer name 
+- order number
+- current order status
+
+This is another example of an inner join, this time matching records using the 'customerNumber' column which is the same in both tables. 
+
+_With SQL:_
+
+The fact that the same column name is used in both tables means we can simplify our code with `USING` in place of the `ON` expression that was used above:
+
+```markdown
+SELECT c.customerNumber, 
+       c.customerName, 
+       o.orderNumber, 
+       o.status
+FROM       customers AS c 
+INNER JOIN orders AS o
+  USING    (customerNumber)
+ORDER BY   customerName
+```
+In the example above, we've also used [aliases](http://www.mysqltutorial.org/mysql-alias/) in place of the full table names, i.e. 'c' for 'customers' and 'o' for 'orders'. This is done with `AS` (though even this can be dropped). This makes the code shorter and easier to read. 
+
+_With R:_
+
+The equivalent R code is shown below. Note that we now only need to specify the one column name in the `by` argument.
+
+```{r, eval = FALSE}
+customers %>% 
+  inner_join(orders, by = "customerNumber") %>%
+  select(customerNumber, customerName, orderNumber, status) %>% 
+  arrange(customerName)
+```
+
+This code returns 326 rows, the first 50 of which are shown below:
+```{r, echo = FALSE}
+customers %>% 
+  inner_join(orders, by = c("customerNumber" = "customerNumber")) %>% 
+  select(customerNumber, customerName, orderNumber, status) %>% 
+  arrange(customerName) %>% 
+  showTable(y = 50)
+```
+
+[_(Top)_](#contents)
+<hr>
+
+#### 1.2 Left join{#part1_2}
+
+In the example above we were interested in the records of customers in the `customers` table which had a corresponding order in the `orders` table. But what if we wanted to see records of _all_ customers, even if they didn't have any associated orders? 
+
+To do this we can use `LEFT JOIN` in SQL and `left_join()` in R, as follows:
+
+_With SQL:_ 
+
+```markdown
+SELECT c.customerNumber, 
+       c.customerName, 
+       o.orderNumber, 
+       o.status
+FROM      customers AS c
+LEFT JOIN orders AS o
+  ON c.customerNumber = o.customerNumber
+ORDER BY customerName
+```
+
+_With R:_ 
+
+```{r, eval = FALSE}
+customers %>% 
+  left_join(orders, by = "customerNumber") %>% 
+  select(customerNumber, customerName, orderNumber, status) %>% 
+  arrange(customerName)
+```
+
+This returns 350 rows, including customers who do not have a corresponding order (such as 'American Souvenirs Inc') in which case the columns with order information will have NULL or NA values:
+```{r, echo = FALSE}
+customers %>% 
+  left_join(orders, by = "customerNumber") %>% 
+  select(customerNumber, customerName, orderNumber, status) %>% 
+  arrange(customerName) %>% 
+  showTable()
+```
+

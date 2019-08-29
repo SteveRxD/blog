@@ -1,0 +1,695 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+
+  
+
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.53 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Comparing city spending with Tableau</title>
+    <meta name="author" content="Steve Doogue">
+    <meta name="keywords" content="">
+
+    <link rel="icon" href="/favicon.png">
+    
+
+    
+    <meta name="description" content="In this post I create a Tableau dashboard that compares how US cities raise and spend money, using data from the Fiscally Standardized Cities (FiSCs) database.
+I learned the basics of Tableau a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.
+One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard.">
+    <meta property="og:description" content="In this post I create a Tableau dashboard that compares how US cities raise and spend money, using data from the Fiscally Standardized Cities (FiSCs) database.
+I learned the basics of Tableau a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.
+One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Comparing city spending with Tableau">
+    <meta property="og:url" content="/2019/03/how-do-us-cities-raise-and-spend-money/">
+    <meta property="og:site_name" content="Steve Doogue">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Steve Doogue">
+    <meta name="twitter:description" content="In this post I create a Tableau dashboard that compares how US cities raise and spend money, using data from the Fiscally Standardized Cities (FiSCs) database.
+I learned the basics of Tableau a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.
+One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard.">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg">
+    
+
+    
+      <meta property="og:image" content="//res.cloudinary.com/ddjmrpbw4/image/upload/v1554167519/City%20spend%20thumbnail.png">
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="/css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="/css/mystyle.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="/">Steve Doogue</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="/#about">
+          <img class="sidebar-profile-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Steve Doogue</h4>
+        
+          <h5 class="sidebar-profile-bio">A blog in which I explore various data analysis tools.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Comparing city spending with Tableau
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2019-03-15T00:00:00Z">
+        
+  March 15, 2019
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+
+<p><em>In this post I create a <a href="https://public.tableau.com/profile/steverd#!/vizhome/1902Version6_5/Dashboard1">Tableau dashboard that compares how US cities raise and spend money</a>, using data from the Fiscally Standardized Cities (FiSCs) database.</em></p>
+<hr>
+<!--more--->
+<p>I learned the basics of <a href="https://public.tableau.com/en-us/s/">Tableau</a> a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.</p>
+<p>One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard. This avoids overwhelming the user with too much data up front, while still giving them the freedom to explore the data in more detail should they choose. It can also help the user to understand hierarchies present in the data, and how the various parts make up the whole. (Pivot tables can be used to similar effect in Microsoft Excel, but I wanted to apply this in a Tableau dashboard.)</p>
+<p>As an example, I created a dashboard showing how major cities in the US raise and spend money. The animation below demonstrates the main features of the dashboard, the full version of which can be found <a href="https://public.tableau.com/profile/steverd#!/vizhome/1902Version6_5/Dashboard1">here</a>.</p>
+ <br />
+<strong>Demonstration:</strong>
+<hr>
+<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1554144819/cityspend.gif" />
+<hr>
+<p> <br />
+Notice how the user is first presented with overall revenue / expenditure per resident, and can then drill down to see the results at a finer level of detail. The chart to the right shows the city’s ranking for whichever service the user clicks on. The map allows the user compare revenue or expenditure per head between neighboring cities.</p>
+<p>Overall I find Tableau to be great for producing interactive visualizations, and for performing exploratory data analysis using its click-and-point interface. But while the interface works great for standard visualizations, I’m often surprised at the need to use workarounds to achieve seemingly simple tasks (for example, in the dashboard above, <a href="https://community.tableau.com/thread/296210">creating a text box that returned the name of the service currently selected by the user</a>). Tableau’s user-friendly interface lacks the conciseness and reproducibility of code, so a useful approach is to do as much work as possible in R first (e.g. cleaning and restructuring the data) and then using Tableau for the final visualization.</p>
+<p><strong>Tell me more about city spending!</strong></p>
+<p>I produced this dashboard using the <a href="https://www.lincolninst.edu/research-data/data-toolkits/fiscally-standardized-cities/search-database">Fiscally Standardized Cities (FiSCs)</a> database, which enables a meaningful comparison of the 150 largest cities in the US. It does so by adding the revenue and expenditure of each city government to the relevant portion of the revenue and expenditure of overlapping counties, independent school districts and special districts (e.g. airports and hospital districts). Without this standardization, comparisons across city governments alone can be misleading.</p>
+<p>The dashboard highlights some interesting facts about Dallas, where I live, such as:</p>
+<ul>
+<li>Schools account for the largest share of local expenditure, though Dallas is not unusual in this respect.</li>
+<li>Dallas spends a lot on airports on a per capita basis, presumably due to the Dallas-Fort Worth (DFW) airport. This also brings in revenue. However the questionable return on investment has led to some calls for <a href="https://www.dmagazine.com/publications/d-magazine/2019/march/why-dallas-fort-worth-should-sell-dfw-airport/">the airport to be sold off.</a><br />
+</li>
+<li>Hospitals are the third largest category of expenditure. This presumably reflects Parkland Hospital, a <a href="https://en.wikipedia.org/wiki/Safety_net_hospital">safety net hospital</a> that provides care for uninsured patients, funded through a property tax on Dallas county residents. This has <a href="https://www.dallasnews.com/news/dallas-county/2017/06/29/suburbs-booming-uninsured-growing-burden-dallas-county-taxpayers">raised questions of fairness</a> given that the hospital is used by low-income residents from surrounding counties, which boast lower property taxes and provide the bare minimum state requirements for indigent health care.</li>
+<li>Dallas spends a lot servicing its debt. Interest payments of $510 per resident are the 5th largest out of all the major cities, and is greater than its spending on police and fire services combined.</li>
+</ul>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="/tags/tableau/">Tableau</a>
+
+                  </div>
+                
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/statistical-tests/" data-tooltip="Common statistical tests are linear models">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/a-neighborhood-crime-map-using-shiny/" data-tooltip="A neighborhood crime map using Shiny">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/03/how-do-us-cities-raise-and-spend-money/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/03/how-do-us-cities-raise-and-spend-money/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/03/how-do-us-cities-raise-and-spend-money/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Steve Doogue. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/statistical-tests/" data-tooltip="Common statistical tests are linear models">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/a-neighborhood-crime-map-using-shiny/" data-tooltip="A neighborhood crime map using Shiny">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/03/how-do-us-cities-raise-and-spend-money/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/03/how-do-us-cities-raise-and-spend-money/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/03/how-do-us-cities-raise-and-spend-money/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2019%2F03%2Fhow-do-us-cities-raise-and-spend-money%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2019%2F03%2Fhow-do-us-cities-raise-and-spend-money%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2019%2F03%2Fhow-do-us-cities-raise-and-spend-money%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Steve Doogue</h4>
+    
+      <div id="about-card-bio">A blog in which I explore various data analysis tools.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Data and finance guy
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Dallas, Texas
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Search" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no post found</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql-part-2/">
+                <h3 class="media-heading">R and SQL (Part 2)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">library(tidyverse)Contents1. Joins1.1 Inner join1.2 Left join1. JoinsThis section assumes a basic understanding of the different types of joins, specifically left join, inner join and full join. For those who are new to SQL, this section of R for Data Science, by Hadley Wickham, provides a nice explanation of the different types joins.
+1.1 Inner joinExample 1Say we want to list the name of every employee from the employees table who has one or more customers recorded in the customers table.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql/">
+                <h3 class="media-heading">R and SQL (Part 1)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/07/statistical-tests/">
+                <h3 class="media-heading">Common statistical tests are linear models</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
+The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/03/how-do-us-cities-raise-and-spend-money/">
+                <h3 class="media-heading">Comparing city spending with Tableau</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Mar 3, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">In this post I create a Tableau dashboard that compares how US cities raise and spend money, using data from the Fiscally Standardized Cities (FiSCs) database.
+I learned the basics of Tableau a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.
+One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/01/a-neighborhood-crime-map-using-shiny/">
+                <h3 class="media-heading">A neighborhood crime map using Shiny</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">In this post I created a crime map of my local neighborhood, using live data accessed from the City of Dallas’ OpenData portal.
+Shiny has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.
+With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/05/dallas-population/">
+                <h3 class="media-heading">A dot-density map of Dallas</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As a new arrival in Dallas, it’s taken me a while to get to grips with its layout. Its sheer size and sprawl make it difficult to identify where Dallas ends and neighboring cities begin.
+With this in mind, this post had two aims: to better understand the geography of Dallas, and to explore some of the GIS tools available in R, the open-source programming language.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/04/funding-cuts-and-deprivation/">
+                <h3 class="media-heading">Funding cuts and deprivation in England</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, this could bring relief to some of the hardest-hit local councils. However, this analysis shows that the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived parts of England.
+In 2010 the UK government embarked on a series of major spending cuts to reduce its budget deficit, in response to the financial crisis.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/04/welcome-to-my-blog/">
+                <h3 class="media-heading">Welcome to my blog</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Welcome to my new blog, which I’m using as an opportunity to explore and apply new data analysis tools. This is intended as an exercise in learning by doing.
+Most of the analysis carried out in this blog will use the R programming language. I’m increasingly relying on this powerful tool to complement Microsoft Excel in my day-to-day data analysis. For anyone getting started in R, I highly recommend the excellent and accessible R for Data Science by Hadley Wickham and Garrett Grolemund.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no post found"
+         data-message-one="1 post found"
+         data-message-other="{n} posts found">
+         8 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2019\/03\/how-do-us-cities-raise-and-spend-money\/';
+          
+            this.page.identifier = '\/2019\/03\/how-do-us-cities-raise-and-spend-money\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'https-stevedoogue-netlify-com';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+<script src="//yihui.name/js/math-code.js"></script>
+<script async
+src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+    
+  </body>
+</html>
+

@@ -209,20 +209,26 @@
 <div id="contents" class="section level1">
 <h1>Contents</h1>
 <ul>
-<li><a href="#setup"><strong>The sample dataset</strong></a></li>
+<li><a href="#setup"><strong>The data</strong></a></li>
 <li><a href="#part1"><strong>1. Common joins</strong></a>
 <ul>
 <li><a href="#part1_1"><strong>1.1 Inner join</strong></a></li>
 <li><a href="#part1_2"><strong>1.2 Left join</strong></a></li>
 <li><a href="#part1_3"><strong>1.3 Right join</strong></a></li>
-<li><a href="#part1_4"><strong>1.4 Full join</strong></a>
+<li><a href="#part1_4"><strong>1.4 Full join</strong></a></li>
+</ul></li>
+<li><a href="#part2"><strong>2. Grouped data</strong></a>
+<ul>
+<li><a href="#part2_1"><strong>2.1 Summarizing grouped data</strong></a></li>
+<li><a href="#part2_2"><strong>2.2 Filtering grouped data</strong></a>
 <hr></li>
 </ul></li>
 </ul>
 </div>
 <div id="setup" class="section level1">
-<h1>The sample dataset</h1>
+<h1>The data</h1>
 <p>We will use the same sample dataset from <a href="http://www.mysqltutorial.org/">mysqltutorial.org</a> that was used in the first part of this post, as described <a href="https://www.stevedoogue.com/2019/08/r-and-sql/#the-sample-dataset">here</a>. The schema is reproduced below for ease of reference:
+<br><br />
 <br></p>
 <center>
 <img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1563847454/06%20R%20SQL/schema.png" style="width:90.0%" />
@@ -266,24 +272,28 @@
 <li>customer name(s)</li>
 </ul>
 <p><em>With SQL:</em></p>
-<p>To do this in SQL we would use <code>INNER JOIN</code> as follows:</p>
-<pre class="markdown"><code>SELECT employees.employeeNumber, 
-       employees.lastName, 
-       employees.firstName, 
-       customers.customerName
-FROM   employees 
-INNER JOIN customers 
-  ON employees.employeeNumber = customers.salesRepEmployeeNumber
-ORDER BY lastName, customerName</code></pre>
-<p>Note that we specify the table from which each column is taken, for example using <code>employees.employeeNumber</code> rather than just <code>employeeNumber</code>.</p>
+<p>To do this in SQL we would use <code>INNER JOIN</code>, followed by the name of the table we are joining to. We then use <code>ON</code> to specify the names of the columns (keys) that are being used to match the data in the two tables:</p>
+<pre class="markdown"><code>SELECT 
+  employees.employeeNumber, 
+  employees.lastName, 
+  employees.firstName, 
+  customers.customerName
+FROM   
+  employees 
+  INNER JOIN 
+  customers 
+    ON employees.employeeNumber = customers.salesRepEmployeeNumber
+ORDER BY 
+  lastName, customerName</code></pre>
+<p>Note that we’ve specified the table from which each column is taken; for example, using <code>employees.employeeNumber</code> rather than just <code>employeeNumber</code>. This is necessary in cases where the same column name appears in more than one table. In this particular example, we could have written the code without the table prefixes, but they have been included for illustrative purposes.</p>
 <p><em>With R:</em></p>
-<p>The same join could be carried out in R using the <code>inner_join</code> function. This includes the <code>by</code> argument, in which we list the names of the keys:</p>
+<p>The same join could be carried out in R using the <code>inner_join</code> function. This includes the <code>by</code> argument (equivalent to SQL’s <code>ON</code>), in which we list the names of the keys:</p>
 <pre class="r"><code>employees %&gt;%   #left-hand table
   #after &#39;by&#39; we list the key from the left-hand table first:
   inner_join(customers, by = c(&quot;employeeNumber&quot; = &quot;salesRepEmployeeNumber&quot;)) %&gt;%
   select(employeeNumber, lastName, firstName, customerName) %&gt;% 
   arrange(lastName, customerName)</code></pre>
-Both the SQL and R code above returns the following 100 records:
+Both the SQL and R code above returns the following 100 records. Note that each employee’s name appears more than once if they have more than one customer.
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
 <table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1720,14 +1730,18 @@ Tekni Collectables Inc. 
 </ul>
 <p><em>With SQL:</em></p>
 <p>The fact that the same column name is used in both tables means we can simplify our code with <code>USING</code> instead of <code>ON</code>, as follows:</p>
-<pre class="markdown"><code>SELECT c.customerNumber, 
-       c.customerName, 
-       o.orderNumber, 
-       o.status
-FROM       customers AS c 
-INNER JOIN orders AS o
-  USING    (customerNumber)
-ORDER BY   customerName</code></pre>
+<pre class="markdown"><code>SELECT 
+  c.customerNumber, 
+  c.customerName, 
+  o.orderNumber, 
+  o.status
+FROM
+  customers AS c 
+  INNER JOIN 
+  orders AS o
+    USING (customerNumber)
+ORDER BY
+  customerName</code></pre>
 <p>This simplifies the code as we only need to list one column after <code>USING</code>.</p>
 <p>In the example above, we’ve also used <a href="http://www.mysqltutorial.org/mysql-alias/">aliases</a> in place of the full table names, which further simplifies the code. This has assigned the short name ‘c’ to the ‘customers’ table and ‘o’ to the ‘orders’ table. This is done with the keyword <code>AS</code>, though even this could be excluded. Aliases makes the code shorter and easier to read.</p>
 <p><em>With R:</em></p>
@@ -2466,34 +2480,34 @@ Shipped
 </div>
 <div id="part1_2" class="section level4">
 <h4>1.2 Left join</h4>
-<p>A left join returns all rows from <em>x</em>, and all columns from <em>x</em> and <em>y</em>. Rows in <em>x</em> with no match in <em>y</em> will have NA or NULL values in the new columns.<br />
+<p>A left join (or outer left join) returns all rows from <em>x</em>, and all columns from <em>x</em> and <em>y</em>. Rows in <em>x</em> with no match in <em>y</em> will have NA or NULL values in the new columns.<br />
 <br></p>
 <center>
 <img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566494521/07%20R%20SQL%20p2/join_left_cropped.gif" style="width:60.0%" />
-</center>
-<p>If there are multiple matches between <em>x</em> and <em>y</em>, all combinations of the matches are returned. For example, in the table below there is one ‘x’ record and two ‘y’ records with a key value of 2:</p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566496205/07%20R%20SQL%20p2/join_left2_cropped.gif" style="width:60.0%" />
 </center>
 <div id="example-1.2" class="section level5">
 <h5>Example 1.2:</h5>
 <p>In the example above we wanted to see the names customers in the <em>customers</em> table who had a corresponding order in the <em>orders</em> table. But what if we wanted to see names of <strong>all</strong> customers and their order information, even if they don’t have any orders?</p>
 <p>This is an example of a left join. We can do this using <code>LEFT JOIN</code> in SQL and <code>left_join</code> in R, as follows:</p>
 <p><em>With SQL:</em></p>
-<pre class="markdown"><code>SELECT c.customerNumber, 
-       c.customerName, 
-       o.orderNumber, 
-       o.status
-FROM      customers AS c
-LEFT JOIN orders AS o
-  ON c.customerNumber = o.customerNumber
+<pre class="markdown"><code>SELECT 
+  c.customerNumber, 
+  c.customerName, 
+  o.orderNumber, 
+  o.status
+FROM  
+  customers AS c
+  LEFT JOIN 
+  orders AS o
+    ON c.customerNumber = o.customerNumber
 ORDER BY customerName</code></pre>
 <p><em>With R:</em></p>
 <pre class="r"><code>customers %&gt;% 
   left_join(orders, by = &quot;customerNumber&quot;) %&gt;% 
   select(customerNumber, customerName, orderNumber, status) %&gt;% 
   arrange(customerName)</code></pre>
-<p>This returns 350 records, the first 50 of which are shown in the table below. If you scroll down, you will see that some customers ‘NA’ for orderNumber and status (this will appear as ‘NULL’ in MySQL). These are customers who had no corresponding orders in the ‘orders’ table:</p>
+<p>This returns 350 records, the first 50 of which are shown in the table below. If you scroll down, you will see that some customers have ‘NA’ for <em>orderNumber</em> and <em>status</em> (this will appear as ‘NULL’ in MySQL). These are customers who had no corresponding orders in the <em>orders</em> table. Note that each customer will appear more than once if they have more than one order.</p>
+<br>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
 <table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
 <thead>
@@ -3222,19 +3236,19 @@ Shipped
 </div>
 <div id="part1_3" class="section level4">
 <h4>1.3 Right join</h4>
-<p>A right join returns all rows from <em>y</em>, and all columns from <em>x</em> and <em>y</em>. Rows in <em>y</em> with no match in <em>x</em> will have NA or NULL values in the new columns.</p>
+<p>A right join (or outer right join) returns all rows from <em>y</em>, and all columns from <em>x</em> and <em>y</em>. Rows in <em>y</em> with no match in <em>x</em> will have NA or NULL values in the new columns.</p>
 <center>
 <img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566503766/07%20R%20SQL%20p2/join_right_cropped.gif" style="width:60.0%" />
 </center>
 <p>This is exactly the same as a left join, described in the section above, but this time we’re returning all rows from the <em>right-hand</em> table (in this case, <em>y</em>) rather than those from the left-hand table.</p>
-<p>Note that a right join in which <em>y</em> was designated as the right-hand table (as in the animation above) would give <em>exactly the same result</em> as a left join in which <em>y</em> was designated as the left-hand table.</p>
-<p>Right joins can be carried out using <code>RIGHT JOIN</code> in SQL and <code>right_join</code> in R.</p>
+<p>A right join in which <em>y</em> is designated as the right-hand table (as in the animation above) would give <em>exactly the same result</em> as a left join in which <em>y</em> was designated as the left-hand table. The choice of whether a table is designated on the left or the right is entirely arbitrary.</p>
+<p>Right joins can be carried out using <code>RIGHT JOIN</code> in SQL and <code>right_join</code> in R. No example is provided here given the similarity to left joins.</p>
 <a href="#contents"><em>(Top)</em></a>
 <hr>
 </div>
 <div id="part1_4" class="section level4">
 <h4>1.4 Full join</h4>
-<p>A full join returns all rows and all columns from both <em>x</em> and <em>y</em>. Where there is no match for a particular key value, the missing values will appear as NA or NULL.</p>
+<p>A full join (or full outer join) returns all rows and all columns from both <em>x</em> and <em>y</em>. Where there is no match for a particular key value, the missing values will appear as NA or NULL.</p>
 <p><br></p>
 <center>
 <img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566496834/07%20R%20SQL%20p2/join_full_cropped.gif" style="width:60.0%" />
@@ -3254,24 +3268,31 @@ Shipped
 <li>each customer’s name</li>
 </ul>
 <p><em>With SQL:</em></p>
-<p>In SQL we are going to use a <code>LEFT JOIN</code> and a <code>RIGHT JOIN</code>, plus the <code>UNION</code> of the two, as follows:</p>
-<pre class="markdown"><code>SELECT e.lastName, e.firstName, c.customerName 
-  FROM employees AS e
-  LEFT JOIN customers AS c 
+<p>To simulate a full join in SQL, we are going to use a <code>LEFT JOIN</code>, a <code>RIGHT JOIN</code> and the <code>UNION</code> of the two, as follows:</p>
+<pre class="markdown"><code>SELECT 
+  e.lastName, e.firstName, c.customerName 
+FROM 
+  employees AS e
+  LEFT JOIN 
+  customers AS c 
     ON e.employeeNumber = c.salesRepEmployeeNumber
-    
+
 UNION
 
-SELECT e.lastName, e.firstName, c.customerName 
-  FROM employees AS e
-  RIGHT JOIN customers AS c 
+SELECT 
+  e.lastName, e.firstName, c.customerName 
+FROM 
+  employees AS e
+  RIGHT JOIN 
+  customers AS c 
     ON e.employeeNumber = c.salesRepEmployeeNumber</code></pre>
 <p><em>With R:</em></p>
 <p>In R, the syntax is much simpler as we can use <code>full_join</code>:</p>
 <pre class="r"><code>employees %&gt;% 
   full_join(customers, by = c(&#39;employeeNumber&#39; = &#39;salesRepEmployeeNumber&#39;)) %&gt;% 
   select(lastName, firstName, customerName)</code></pre>
-<p>The two sets of code above return the following 130 records. As expected, this shows the name of each employee matched to their customer(s), where such a match exists, but also the names of each employee and customer where there is no match.</p>
+<p>The two sets of code above return the following 130 records. As expected, this shows the name of each employee matched to their customer(s), where such a match exists, but also the names of each employee and customer even if there is no match:</p>
+<br>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
 <table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
 <thead>
@@ -4726,6 +4747,380 @@ Raanan Stores, Inc
 </div>
 </div>
 </div>
+<div id="part2" class="section level1">
+<h1>2. Grouped data</h1>
+<p>In SQL and R, it is possible to <strong>group</strong> a set of rows into a summary row. This summary row can include an aggregate measure of each group; for example, the sum, the average, or the count of records in each group.</p>
+<p>It is also possible to <em>filter</em> the data based on these aggregates. For example, you could filter to only show rows from groups with more than 20 records, or only show rows from groups where the average value of a certain variable was greater than 100.</p>
+<hr>
+<div id="part2_1" class="section level4">
+<h4>2.1 Summarizing grouped data</h4>
+<p>Grouped data is often summarized using aggregate functions such as <code>SUM</code>, <code>AVG</code>, <code>MAX</code>, <code>MIN</code> and <code>COUNT</code>. Here we look at a couple of examples using our sample database.</p>
+<div id="example-a" class="section level5">
+<h5>Example A</h5>
+<p>Say we want to find the total value (in $) of each order in our sample data set.</p>
+<p>To do this, we need to (1) calculate the value of each product in every order, i.e. the quantity times the price; and (2) group each product by its order number and add these values together.</p>
+<p><em>With SQL:</em></p>
+<p>In SQL we group the data using the <code>GROUP BY</code> clause, and specify our aggregate calculation in the <code>SELECT</code> clause, as follows:</p>
+<pre class="markdown"><code>SELECT 
+  orderNumber,
+  SUM(quantityOrdered * priceEach) AS value
+FROM 
+  orderdetails
+GROUP BY 
+  orderNumber</code></pre>
+<p><em>With R:</em></p>
+<p>In R, we would use <code>group_by()</code> to group the data, and <code>summarize()</code> to apply the aggregate function to each group:</p>
+<pre class="r"><code>orderdetails %&gt;% 
+  group_by(orderNumber) %&gt;% 
+  summarize(value = sum(quantityOrdered * priceEach)) %&gt;% 
+  select(orderNumber, value)</code></pre>
+The first 10 records (out of 326) are shown in the table below:
+<table class="table table" style="font-size: 11px; margin-left: auto; margin-right: auto; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:right;font-size: 9px;">
+orderNumber
+</th>
+<th style="text-align:right;font-size: 9px;">
+value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+10100
+</td>
+<td style="text-align:right;">
+10223.83
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10101
+</td>
+<td style="text-align:right;">
+10549.01
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10102
+</td>
+<td style="text-align:right;">
+5494.78
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10103
+</td>
+<td style="text-align:right;">
+50218.95
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10104
+</td>
+<td style="text-align:right;">
+40206.20
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10105
+</td>
+<td style="text-align:right;">
+53959.21
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10106
+</td>
+<td style="text-align:right;">
+52151.81
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10107
+</td>
+<td style="text-align:right;">
+22292.62
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10108
+</td>
+<td style="text-align:right;">
+51001.22
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10109
+</td>
+<td style="text-align:right;">
+25833.14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="example-b" class="section level5">
+<h5>Example B</h5>
+<p>We can also group using an <em>expression</em> rather than values that already exist in a column.</p>
+<p>For example, say we wanted to find the total value of orders in each year, where the order has been shipped.</p>
+<p>To do this, we need to do a combination of the following:</p>
+<ul>
+<li>Join the <em>orders</em> table, which has the date of each order, with the <em>orderdetails</em> table, which contains information on the quantity and price of the products ordered</li>
+<li>Use the <code>YEAR()</code> function in SQL, and <code>year()</code> in R (using the <a href="https://lubridate.tidyverse.org/">lubridate</a> package), which the returns the year corresponding to each order date. This is will be used to group the data</li>
+<li>Filter the data to only include orders whose status is ‘shipped’.</li>
+</ul>
+<p>This can be done in the following code:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT 
+  YEAR(orderDate) AS year,
+  SUM(quantityOrdered * priceEach) AS value
+FROM
+  orders
+  INNER JOIN
+  orderdetails 
+    USING (orderNumber)
+WHERE
+  status = &#39;Shipped&#39;
+GROUP BY 
+  YEAR(orderDate)</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>orders %&gt;% 
+  inner_join(orderdetails, by = &#39;orderNumber&#39;) %&gt;%
+  filter(status == &#39;Shipped&#39;) %&gt;% 
+  group_by(year = lubridate::year(orderDate)) %&gt;%
+  summarize(value = sum(quantityOrdered * priceEach))</code></pre>
+<p>Which gives the total value of shipped orders for the three years:</p>
+<table class="table table" style="font-size: 11px; margin-left: auto; margin-right: auto; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:right;font-size: 9px;">
+year
+</th>
+<th style="text-align:right;font-size: 9px;">
+value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2003
+</td>
+<td style="text-align:right;">
+3223096
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2004
+</td>
+<td style="text-align:right;">
+4300603
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2005
+</td>
+<td style="text-align:right;">
+1341396
+</td>
+</tr>
+</tbody>
+</table>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+</div>
+</div>
+<div id="part2_2" class="section level4">
+<h4>2.2 Filtering grouped data</h4>
+<p>In SQL and R we can specify filter conditions for a group of rows. This assumes that we have already grouped our data using <code>GROUP BY</code> in SQL or <code>group_by()</code> in R.</p>
+<p>When filtering grouped data in SQL we use the <code>HAVING</code> clause. Note that we do not use the <code>WHERE</code> clause, which is only used to filter ungrouped data.</p>
+<p>In R, we filter our grouped data using <code>filter()</code>, which was also used with ungrouped data.</p>
+<div id="example-a-1" class="section level5">
+<h5>Example A</h5>
+<p>Say we want to show all order numbers in which more than 650 individual items were ordered. This requires us to group by order number (<em>orderNumber</em>) from the <em>orderdetails</em> table, and to filter the results based on the total quantity of products in each order.</p>
+<p><em>With SQL:</em></p>
+<p>In SQL we apply our filter using the <code>HAVING</code> clause, as follows:</p>
+<pre class="markdown"><code>SELECT 
+  orderNumber, 
+  sum(quantityOrdered) as quantity
+FROM
+  orderdetails
+GROUP BY 
+  orderNumber
+HAVING 
+  sum(quantityOrdered) &gt; 650
+ORDER BY 
+  quantity DESC</code></pre>
+<p><em>With R:</em></p>
+<p>With R, we use the <code>filter()</code> function:</p>
+<pre class="r"><code>orderdetails %&gt;% 
+  group_by(orderNumber) %&gt;% 
+  summarize(quantity = sum(quantityOrdered)) %&gt;% 
+  filter(quantity &gt; 650) %&gt;% 
+  arrange(desc(quantity)) </code></pre>
+<p>This gives the following three orders with more than 650 items:</p>
+<table class="table table" style="font-size: 11px; margin-left: auto; margin-right: auto; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:right;font-size: 9px;">
+orderNumber
+</th>
+<th style="text-align:right;font-size: 9px;">
+quantity
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+10222
+</td>
+<td style="text-align:right;">
+717
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10106
+</td>
+<td style="text-align:right;">
+675
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10165
+</td>
+<td style="text-align:right;">
+670
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="example-b-1" class="section level5">
+<h5>Example B</h5>
+<p>Assume we want to find customers with an average order value over $3,800, for orders that have been shipped.</p>
+<p>This example is slightly more complex as we need to join three tables, as follows:</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT 
+  a.customerName,
+  b.status,
+  avg(c.quantityOrdered * c.priceEach) as avg_value
+FROM
+  customers a
+  INNER JOIN
+  orders b 
+    USING (customerNumber)
+  INNER JOIN
+  orderdetails c 
+    USING (orderNumber)
+GROUP BY 
+  customerName, status
+HAVING 
+  avg_value &gt; 3800 AND status = &#39;Shipped&#39;
+ORDER BY 
+  avg_value DESC</code></pre>
+<p>Note that in MySQL we can use the alias for average value (<em>avg_value</em>) in the <code>HAVING</code> clause, which was defined in the <code>SELECT</code> clause. Apparently not all versions of SQL support the use of aliases in the <code>HAVING</code> clause.</p>
+<p><em>With R:</em></p>
+<pre class="r"><code>customers %&gt;% 
+  left_join(orders, by = &#39;customerNumber&#39;) %&gt;% 
+  left_join(orderdetails, by = &#39;orderNumber&#39;) %&gt;% 
+  group_by(customerName, status) %&gt;% 
+  summarize(avg_value = mean(quantityOrdered * priceEach)) %&gt;% 
+  filter(avg_value &gt; 3800 &amp; status == &#39;Shipped&#39;) %&gt;% 
+  arrange(desc(avg_value))</code></pre>
+We find that the following five customers have average shipped order sizes that are over $3,800:
+<table class="table table" style="font-size: 11px; margin-left: auto; margin-right: auto; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;">
+customerName
+</th>
+<th style="text-align:left;font-size: 9px;">
+status
+</th>
+<th style="text-align:right;font-size: 9px;">
+avg_value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Tekni Collectables Inc. 
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+<td style="text-align:right;">
+4253.501
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Super Scale Inc. 
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+<td style="text-align:right;">
+4139.921
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UK Collectables, Ltd. 
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+<td style="text-align:right;">
+4077.812
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mini Caravy
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+<td style="text-align:right;">
+3992.596
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gift Depot Inc. 
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+<td style="text-align:right;">
+3816.985
+</td>
+</tr>
+</tbody>
+</table>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+</div>
+</div>
+</div>
 
               
             </div>
@@ -4995,7 +5390,8 @@ Raanan Stores, Inc
                   Aug 8, 2019
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</div>
+              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.
+In Part 1 of this series we look at the similarities between SQL and R when selecting, sorting and filtering data.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>

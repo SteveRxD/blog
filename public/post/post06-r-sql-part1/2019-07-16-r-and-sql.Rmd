@@ -12,7 +12,7 @@ Summary: When analyzing data, many common SQL queries can be carried out using R
 ---
 
 
-_When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries._
+_When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive._
 
 <hr>
 <!--more--->
@@ -51,7 +51,9 @@ showTable <- function(x, y, scroll = "yes") {
   }
 }
 ```
-
+{{<alert info>}} 
+In Part 1 of this series we look at the similarities between SQL and R when _selecting_, _sorting_ and _filtering_ data. In [Part 2](https://www.stevedoogue.com/2019/08/r-and-sql-part2/) we move on to look at _joins_, _grouped data_ and _subqueries_.
+{{</alert>}}
 
 # Introduction
 
@@ -199,8 +201,10 @@ _With SQL:_
 In SQL you just list the column of interest in the `SELECT` clause as follows:
 
 ```markdown
-SELECT firstName, lastName 
-FROM employees
+SELECT 
+  firstName, lastName 
+FROM 
+  employees
 ```
 
 _With R:_ 
@@ -225,7 +229,8 @@ _With SQL:_
 In SQL we would use `SELECT DISTINCT` clause, as follows:
 
 ```markdown
-SELECT DISTINCT country 
+SELECT 
+  DISTINCT country 
 FROM customers
 
 ```
@@ -259,9 +264,12 @@ To address this we specify both city and state in our query, as follows (I'm jum
 _With SQL:_
 
 ```markdown
-SELECT DISTINCT city,state 
-FROM customers
-WHERE country = 'USA' 
+SELECT 
+  DISTINCT city,state 
+FROM 
+  customers
+WHERE 
+  country = 'USA' 
 ```
 _With R:_ 
 
@@ -295,9 +303,10 @@ _With SQL:_
 In SQL, within the `SELECT` clause, we can calculate our new column and as assign it a name ('alias') using the `AS` keyword, as follows:
 
 ```markdown
-SELECT orderNumber, 
-        productCode,
-        quantityOrdered * priceEach AS value
+SELECT 
+  orderNumber, 
+  productCode,
+  quantityOrdered * priceEach AS value
 FROM orderdetails
 ```
 
@@ -334,10 +343,14 @@ Data can be sorted using the `ORDER BY` clause in SQL and the `arrange()` functi
 _With SQL:_
 
 ```markdown
-SELECT DISTINCT state, city 
-FROM customers
-WHERE country = 'USA'
-ORDER BY state, city
+SELECT 
+  DISTINCT state, city 
+FROM 
+  customers
+WHERE 
+  country = 'USA'
+ORDER BY 
+  state, city
 ```
 _With R:_
 
@@ -369,10 +382,14 @@ _With SQL:_
 In SQL, you can use `ORDER BY .... DESC`. Any columns listed before the `DESC` clause will be listed in descending order.
 
 ```markdown
-SELECT DISTINCT state, city 
-FROM customers
-WHERE country = 'USA'
-ORDER BY state DESC, city
+SELECT 
+  DISTINCT state, city 
+FROM 
+  customers
+WHERE 
+  country = 'USA'
+ORDER BY 
+  state DESC, city
 ```
 _With R:_
 
@@ -404,9 +421,12 @@ For example, if you wanted to return the five customers with the highest credit 
 _With SQL:_ 
 
 ```markdown
-SELECT customerName, creditLimit 
-FROM customers
-ORDER BY creditLimit DESC
+SELECT 
+  customerName, creditLimit 
+FROM 
+  customers
+ORDER BY 
+  creditLimit DESC
 LIMIT 5
 ```
 
@@ -444,9 +464,12 @@ Another example would be to find the names of each employee whose job title is '
 _With SQL:_
 
 ```markdown
-SELECT lastName, firstName, jobTitle
-FROM employees
-WHERE jobTitle = 'Sales Rep'
+SELECT 
+  lastName, firstName, jobTitle
+FROM 
+  employees
+WHERE 
+  jobTitle = 'Sales Rep'
 ```
 _With R:_ 
 
@@ -482,9 +505,12 @@ For example, to see the names of the six employees who are _not_ sales reps:
 _With SQL:_ 
 
 ```markdown
-SELECT lastName, firstName, jobTitle
-FROM employees
-WHERE jobTitle != 'Sales Rep'
+SELECT 
+  lastName, firstName, jobTitle
+FROM 
+  employees
+WHERE 
+  jobTitle != 'Sales Rep'
 ```
 
 MySQL would also accept `<>` as the operator in this case.
@@ -511,9 +537,12 @@ For example, if we wanted to see the names of customers who are located in Calif
 _With SQL:_
 
 ```markdown
-SELECT customername, state, creditlimit 
-FROM customers 
-WHERE state = 'CA' AND creditlimit > 100000
+SELECT 
+  customername, state, creditlimit 
+FROM 
+  customers 
+WHERE 
+  state = 'CA' AND creditlimit > 100000
 ```
 
 _With R:_
@@ -543,10 +572,12 @@ For example, say we want to see a list of all customers who are located in the U
 _With SQL:_
 
 ```markdown
-SELECT customerName, country
-FROM customers
-WHERE country = 'USA' 
-  OR country =  'FRANCE'
+SELECT 
+  customerName, country
+FROM 
+  customers
+WHERE 
+  country = 'USA' OR country =  'FRANCE'
 ```
 
 _With R:_
@@ -577,11 +608,12 @@ For example, if you wanted a list of customers with a credit limit of over $100,
 
 _With SQL:_
 ```markdown
-SELECT customerName, country, creditLimit
-FROM customers
-WHERE (country = 'USA' 
-  OR country =  'FRANCE')
-  AND creditLimit > 100000
+SELECT 
+  customerName, country, creditLimit
+FROM 
+  customers
+WHERE 
+  (country = 'USA' OR country =  'FRANCE') AND creditLimit > 100000
 ```
 
 _With R:_
@@ -630,9 +662,12 @@ For example, say we want a list of customers located in either France, USA or Au
 
 _With SQL:_
 ```markdown
-SELECT customerName, country
-FROM customers
-WHERE country IN ('France', 'USA', 'Australia')
+SELECT 
+  customerName, country
+FROM 
+  customers
+WHERE 
+  country IN ('France', 'USA', 'Australia')
 ```
 
 _With R:_
@@ -662,9 +697,12 @@ _With SQL:_
 
 In SQL we can use the `NOT IN` operator:
 ```markdown
-SELECT customerName, country
-FROM customers
-WHERE country NOT IN ('France','USA', 'Australia')
+SELECT 
+  customerName, country
+FROM 
+  customers
+WHERE 
+  country NOT IN ('France','USA', 'Australia')
 ```
 
 _With R:_
@@ -694,9 +732,12 @@ To see how this works, say we want to find all products with the word 'Ford' in 
 _With SQL:_
 
 ```markdown
-SELECT productName
-FROM products
-WHERE productName REGEXP 'Ford'
+SELECT 
+  productName
+FROM 
+  products
+WHERE 
+  productName REGEXP 'Ford'
 ```
 
 _With R:_

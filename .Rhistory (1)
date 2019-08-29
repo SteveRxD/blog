@@ -1,0 +1,512 @@
+showTable()
+blogdown:::serve_site()
+# Create a function to show R output as a formatted table (kable)
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+#Create the function
+showTable <- function(x, y, scroll = "yes") {
+a <-  if (missing(y)){
+x
+} else {
+x %>%  head(y)
+}
+b <- kable(a) %>%
+kable_styling(font_size = 11) %>%
+row_spec(0, font_size = 9)
+if(scroll == "yes"){
+b %>% scroll_box(height = "200px")
+}  else {
+b
+}
+}
+library(tidyverse)
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),
+# prevent the model scale (e.g. 1:10) from being read as a date:
+col_types = cols (productScale = col_character()), na = "NULL")
+employees %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(city, state) %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(state, city) %>%
+arrange(state, city) %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(state, city) %>%
+arrange(desc(state), city) %>%
+showTable()
+customers %>%
+select(customerName, creditLimit) %>%
+arrange(desc(creditLimit)) %>%
+slice(1:5) %>%
+showTable(scroll = "no")
+employees %>%
+filter(jobTitle == 'Sales Rep') %>%
+select(firstName,lastName,jobTitle) %>%
+showTable()
+customers %>%
+filter(state == 'CA' & creditLimit > 100000) %>%
+select(customerName, state, creditLimit) %>%
+showTable(scroll = "no")
+customers %>%
+filter (country == 'USA' | country == 'France') %>%
+select(customerName, country) %>%
+showTable()
+customers %>%
+filter (
+(country == 'USA' | country == 'France')
+& creditLimit > 100000
+) %>%
+select(customerName, country, creditLimit) %>%
+showTable()
+customers %>%
+filter (
+country == 'USA' | country == 'France' & creditLimit > 100000
+) %>%
+select(customerName, country, creditLimit) %>%
+showTable()
+customers %>%
+filter(country %in% c('France','USA','Australia')) %>%
+select(customerName, country) %>%
+showTable()
+products %>%
+filter(str_detect(productName,'Ford')) %>%
+select(productName) %>%
+showTable()
+blogdown:::serve_site()
+View(employees)
+employees %>%
+select(first = firstName)
+customers %>%
+select(customerNumber, customer Name) %>%
+customers %>%
+select(customerNumber, customerName) %>%
+left_join(select(orders))
+customers %>%
+select(customerNumber, customerName) %>%
+left_join(select(orders), by = "customerNumber")
+customers %>%
+select(customerNumber, customerName) %>%
+left_join(order, by = "customerNumber")
+customers %>%
+select(customerNumber, customerName) %>%
+left_join(orders, by = "customerNumber")
+customers %>%
+left_join(orders, by = "customerNumber")
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status)
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(status, customerNumber)
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(desc(status), customerNumber)
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status)
+customers %>%
+left_join(orders, by = "customrNumber") %>%
+select(customerNumber, customerName, orderNumber, status)
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status)
+# Create a function to show R output as a formatted table (kable)
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+#Create the function
+showTable <- function(x, y, scroll = "yes") {
+a <-  if (missing(y)){
+x
+} else {
+x %>%  head(y)
+}
+b <- kable(a) %>%
+kable_styling(font_size = 11) %>%
+row_spec(0, font_size = 9)
+if(scroll == "yes"){
+b %>% scroll_box(height = "200px")
+}  else {
+b
+}
+}
+library(tidyverse)
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),
+# prevent the model scale (e.g. 1:10) from being read as a date:
+col_types = cols (productScale = col_character()), na = "NULL")
+employees %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(city, state) %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(state, city) %>%
+arrange(state, city) %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(state, city) %>%
+arrange(desc(state), city) %>%
+showTable()
+customers %>%
+select(customerName, creditLimit) %>%
+arrange(desc(creditLimit)) %>%
+slice(1:5) %>%
+showTable(scroll = "no")
+employees %>%
+filter(jobTitle == 'Sales Rep') %>%
+select(firstName,lastName,jobTitle) %>%
+showTable()
+customers %>%
+filter(state == 'CA' & creditLimit > 100000) %>%
+select(customerName, state, creditLimit) %>%
+showTable(scroll = "no")
+customers %>%
+filter (country == 'USA' | country == 'France') %>%
+select(customerName, country) %>%
+showTable()
+customers %>%
+filter (
+(country == 'USA' | country == 'France')
+& creditLimit > 100000
+) %>%
+select(customerName, country, creditLimit) %>%
+showTable()
+customers %>%
+filter (
+country == 'USA' | country == 'France' & creditLimit > 100000
+) %>%
+select(customerName, country, creditLimit) %>%
+showTable()
+customers %>%
+filter(country %in% c('France','USA','Australia')) %>%
+select(customerName, country) %>%
+showTable()
+products %>%
+filter(str_detect(productName,'Ford')) %>%
+select(productName) %>%
+showTable()
+customers %>%
+inner_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+showTable()
+blogdown:::serve_site()
+customers %>%
+inner_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName)
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName)
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable()
+# Create a function to show R output as a formatted table (kable)
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+#Create the function
+showTable <- function(x, y, scroll = "yes") {
+a <-  if (missing(y)){
+x
+} else {
+x %>%  head(y)
+}
+b <- kable(a) %>%
+kable_styling(font_size = 11) %>%
+row_spec(0, font_size = 9)
+if(scroll == "yes"){
+b %>% scroll_box(height = "200px")
+}  else {
+b
+}
+}
+library(tidyverse)
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),
+# prevent the model scale (e.g. 1:10) from being read as a date:
+col_types = cols (productScale = col_character()), na = "NULL")
+employees %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(city, state) %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(state, city) %>%
+arrange(state, city) %>%
+showTable()
+customers %>%
+filter(country == 'USA') %>%
+distinct(state, city) %>%
+arrange(desc(state), city) %>%
+showTable()
+customers %>%
+select(customerName, creditLimit) %>%
+arrange(desc(creditLimit)) %>%
+slice(1:5) %>%
+showTable(scroll = "no")
+employees %>%
+filter(jobTitle == 'Sales Rep') %>%
+select(firstName,lastName,jobTitle) %>%
+showTable()
+customers %>%
+filter(state == 'CA' & creditLimit > 100000) %>%
+select(customerName, state, creditLimit) %>%
+showTable(scroll = "no")
+customers %>%
+filter (country == 'USA' | country == 'France') %>%
+select(customerName, country) %>%
+showTable()
+customers %>%
+filter (
+(country == 'USA' | country == 'France')
+& creditLimit > 100000
+) %>%
+select(customerName, country, creditLimit) %>%
+showTable()
+customers %>%
+filter (
+country == 'USA' | country == 'France' & creditLimit > 100000
+) %>%
+select(customerName, country, creditLimit) %>%
+showTable()
+customers %>%
+filter(country %in% c('France','USA','Australia')) %>%
+select(customerName, country) %>%
+showTable()
+products %>%
+filter(str_detect(productName,'Ford')) %>%
+select(productName) %>%
+showTable()
+customers %>%
+inner_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable()
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable()
+blogdown:::serve_site()
+blogdown:::serve_site()
+blogdown:::new_post_addin()
+blogdown:::new_post_addin()
+blogdown:::serve_site()
+blogdown:::serve_site()
+# Create a function to show R output as a formatted table (kable)
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+#Create the function
+showTable <- function(x, y, scroll = "yes") {
+a <-  if (missing(y)){
+x
+} else {
+x %>%  head(y)
+}
+b <- kable(a) %>%
+kable_styling(font_size = 11) %>%
+row_spec(0, font_size = 9)
+if(scroll == "yes"){
+b %>% scroll_box(height = "200px")
+}  else {
+b
+}
+}
+library(tidyverse)
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),
+# prevent the model scale (e.g. 1:10) from being read as a date:
+col_types = cols (productScale = col_character()), na = "NULL")
+library(tidyverse)
+# Create a function to show R output as a formatted table (kable)
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+#Create the function
+showTable <- function(x, y, scroll = "yes") {
+a <-  if (missing(y)){
+x
+} else {
+x %>%  head(y)
+}
+b <- kable(a) %>%
+kable_styling(font_size = 11) %>%
+row_spec(0, font_size = 9)
+if(scroll == "yes"){
+b %>% scroll_box(height = "200px")
+}  else {
+b
+}
+}
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),
+# prevent the model scale (e.g. 1:10) from being read as a date:
+col_types = cols (productScale = col_character()), na = "NULL")
+customers %>%
+inner_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable()
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable()
+blogdown:::serve_site()
+library(tidyverse)
+# Create a function to show R output as a formatted table (kable)
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+#Create the function
+showTable <- function(x, y, scroll = "yes") {
+a <-  if (missing(y)){
+x
+} else {
+x %>%  head(y)
+}
+b <- kable(a) %>%
+kable_styling(font_size = 11) %>%
+row_spec(0, font_size = 9)
+if(scroll == "yes"){
+b %>% scroll_box(height = "200px")
+}  else {
+b
+}
+}
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),
+# prevent the model scale (e.g. 1:10) from being read as a date:
+col_types = cols (productScale = col_character()), na = "NULL")
+customers %>%
+inner_join(orders, by = c("customerNumber" = "customerNumber")) %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable(y = 50)
+customers %>%
+inner_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable(y = 50)
+customers %>%
+left_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName) %>%
+showTable()
+employees %>%
+inner_join(customers, by = c("employeeNumber" = "salesRepEmployeeNumber")) %>%
+select(employeeNumber, lastName, firstName, customerName) %>%
+arrange(lastName)
+employees %>%
+inner_join(customers, by = c("employeeNumber" = "salesRepEmployeeNumber")) %>%
+select(employeeNumber, lastName, firstName, customerName) %>%
+arrange(lastName, customerName)
+blogdown:::serve_site()
+customers %>%
+inner_join(orders, by = "customerNumber") %>%
+select(customerNumber, customerName, orderNumber, status) %>%
+arrange(customerName)
+blogdown:::serve_site()

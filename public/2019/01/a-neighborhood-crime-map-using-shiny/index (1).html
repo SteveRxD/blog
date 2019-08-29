@@ -1,0 +1,690 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+
+  
+
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.53 with theme Tranquilpeak 0.4.3-BETA">
+    <title>A neighborhood crime map using Shiny</title>
+    <meta name="author" content="Steve Doogue">
+    <meta name="keywords" content="">
+
+    <link rel="icon" href="/favicon.png">
+    
+
+    
+    <meta name="description" content="In this post I created a crime map of my local neighborhood, using live data accessed from the City of Dallas’ OpenData portal.
+Shiny has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.
+With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood.">
+    <meta property="og:description" content="In this post I created a crime map of my local neighborhood, using live data accessed from the City of Dallas’ OpenData portal.
+Shiny has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.
+With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="A neighborhood crime map using Shiny">
+    <meta property="og:url" content="/2019/01/a-neighborhood-crime-map-using-shiny/">
+    <meta property="og:site_name" content="Steve Doogue">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Steve Doogue">
+    <meta name="twitter:description" content="In this post I created a crime map of my local neighborhood, using live data accessed from the City of Dallas’ OpenData portal.
+Shiny has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.
+With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood.">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg">
+    
+
+    
+      <meta property="og:image" content="//res.cloudinary.com/ddjmrpbw4/image/upload/v1546397538/crimemap.png">
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="/css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="/css/mystyle.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="/">Steve Doogue</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="/#about">
+          <img class="sidebar-profile-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Steve Doogue</h4>
+        
+          <h5 class="sidebar-profile-bio">A blog in which I explore various data analysis tools.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      A neighborhood crime map using Shiny
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2019-01-15T00:00:00Z">
+        
+  January 15, 2019
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+
+<p><em>In this post I created a <a href="https://stevedoogue.shinyapps.io/crimemap/">crime map of my local neighborhood</a>, using live data accessed from the City of Dallas’ OpenData portal.</em></p>
+<hr>
+<!--more--->
+<p><a href="https://shiny.rstudio.com/">Shiny</a> has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.</p>
+<p>With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood. The app can be found <a href="https://stevedoogue.shinyapps.io/crimemap/">here</a>. This accesses the latest data from the City of Dallas’ <a href="https://www.dallasopendata.com/Public-Safety/Police-Incidents/qv6i-rri7">OpenData API</a> which is updated daily.</p>
+<p>The main features are illustrated below (and yep, there’s a Hollywood Santa Monica in Dallas!):<br />
+ </p>
+<div class="figure">
+<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1546723680/crimemapgif.gif" />
+
+</div>
+<p>As can be seen, the app allows the user select the neighborhoods they’re interested in, and then displays incidents occurring in those neighborhoods over the selected time frame (from the past month to past three years).</p>
+<p>Note that to preserve the anonymity of my neighbors, I added some random ‘noise’ to the location data, so that the points displayed on the map would be within around 150 feet of the actual location.</p>
+<p>The concept of Shiny is brilliant: it allows you to provide a user-friendly interface to your R code (like a dashboard) which can be accessed through a website. The user does not need to see any of the underlying code, and, because it is web-based, does not need to download anything. Your app can be hosted for free at <a href="https://shiny.rstudio.com/deploy/">Shinyapps.io</a> (though the free version is subject to limitations on how long it can be accessed each month).</p>
+<p><strong>Technical stuff</strong></p>
+<p>All the code used to produce this app is available on <a href="https://github.com/SteveRxD/Blog/tree/master/content/post/post03-crime-map">Github</a>. The main steps were as follows:<br />
+ </p>
+<ol style="list-style-type: decimal">
+<li><strong>Access the data</strong> from City of Dallas API. The data was read using the <a href="https://cran.r-project.org/web/packages/jsonlite/jsonlite.pdf">jsonlite</a> package, with help from the <a href="https://cran.r-project.org/web/packages/soql/soql.pdf">soql</a> package to construct the URL needed to access the relevant ZIP codes.<br />
+</li>
+<li><strong>Filter the data</strong> to exclude incidents where there was not an actual offence, such as false alarms.<br />
+</li>
+<li><strong>Create longitude and latitude columns</strong>. The downloaded data included a ‘geocoded coordinates’ column, but I couldn’t get this to play nicely with my map. I converted this to separate latitude and longitude columns, which worked fine.</li>
+<li><strong>Create shapefiles of my local neighbourhoods</strong>. I wanted to identify incidents that occurred in specific neighborhoods, as opposed to the wider ZIP codes. I could not find these boundary maps online (in the form of shapefiles), so I drew them manually in <a href="https://www.google.com/maps/about/mymaps/">Google MyMaps</a>. These boundaries could be downloaded as .kml files and converted to shapefiles <a href="https://mygeodata.cloud/converter/kml-to-shp">here</a>. The shapefiles were then read into R using the <code>readOGR()</code> function.</li>
+<li><strong>Only show those incidents occurring in relevant neighborhoods</strong>. The next step was to identify those incidents whose coordinates fell without the neighborhood boundaries described above. This was done using the <code>over()</code> function. The data was then filtered to only include those relevant incidents.</li>
+<li><strong>Randomise locations</strong>. To preserve the anonymity of my neighbors, I changed street numbers to block numbers and added some random ‘noise’ to the coordinates of each incident.</li>
+<li><strong>Create the Shiny app</strong>. The app essentially plots all the incidents on a map using <a href="https://rstudio.github.io/leaflet/">Leaflet</a>. The incidents shown are filtered based on two sets of values entered by the user: the relevant neighborhood(s), and the time frame. The user is also able to click on the table to select an individual incident or incidents. This selection serves as another input, filtering the data to only include the selected incident(s) and overlying this second set of points on the map using red markers.</li>
+</ol>
+<p>The final step was the hardest, given the learning curve associated with Shiny. However I was able to learn 90% of what I needed from this excellent DataCamp course, <a href="https://www.datacamp.com/courses/building-web-applications-in-r-with-shiny">Building Web Applications in R with Shiny</a>.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/how-do-us-cities-raise-and-spend-money/" data-tooltip="Comparing city spending with Tableau">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/05/dallas-population/" data-tooltip="A dot-density map of Dallas">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/01/a-neighborhood-crime-map-using-shiny/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/01/a-neighborhood-crime-map-using-shiny/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/01/a-neighborhood-crime-map-using-shiny/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Steve Doogue. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/how-do-us-cities-raise-and-spend-money/" data-tooltip="Comparing city spending with Tableau">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/05/dallas-population/" data-tooltip="A dot-density map of Dallas">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/01/a-neighborhood-crime-map-using-shiny/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/01/a-neighborhood-crime-map-using-shiny/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/01/a-neighborhood-crime-map-using-shiny/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2019%2F01%2Fa-neighborhood-crime-map-using-shiny%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2019%2F01%2Fa-neighborhood-crime-map-using-shiny%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2019%2F01%2Fa-neighborhood-crime-map-using-shiny%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1547145861/coverphoto5.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Steve Doogue</h4>
+    
+      <div id="about-card-bio">A blog in which I explore various data analysis tools.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Data and finance guy
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Dallas, Texas
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Search" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no post found</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql-part-2/">
+                <h3 class="media-heading">R and SQL (Part 2)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">library(tidyverse)Contents1. Joins1.1 Inner join1.2 Left join1. JoinsThis section assumes a basic understanding of the different types of joins, specifically left join, inner join and full join. For those who are new to SQL, this section of R for Data Science, by Hadley Wickham, provides a nice explanation of the different types joins.
+1.1 Inner joinExample 1Say we want to list the name of every employee from the employees table who has one or more customers recorded in the customers table.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql/">
+                <h3 class="media-heading">R and SQL (Part 1)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/07/statistical-tests/">
+                <h3 class="media-heading">Common statistical tests are linear models</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">This book demonstrates the idea that most common statistical tests are special cases of simple linear models. It builds on a book written by Jonas Lindeløv, in which he presents the linear model as a ‘Swiss Army knife’ of statistical tests. The approach offers a simplified and intuitive way to teach statistical tests.
+The book Common statistical tests are linear models (or: how to teach stats), by Jonas Lindeløv, beautifully demonstrates how many common statistical tests (such as the t-test, ANOVA and chi-squared) are special cases of a linear model.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/03/how-do-us-cities-raise-and-spend-money/">
+                <h3 class="media-heading">Comparing city spending with Tableau</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Mar 3, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">In this post I create a Tableau dashboard that compares how US cities raise and spend money, using data from the Fiscally Standardized Cities (FiSCs) database.
+I learned the basics of Tableau a few years ago, and have been impressed with its ability to produce interactive visualizations and share them online.
+One feature I wanted to explore further was the ability for users to ‘drill down’ into the results presented in a dashboard.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/01/a-neighborhood-crime-map-using-shiny/">
+                <h3 class="media-heading">A neighborhood crime map using Shiny</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">In this post I created a crime map of my local neighborhood, using live data accessed from the City of Dallas’ OpenData portal.
+Shiny has been on my list of things to learn for quite a while now. With it you can make interactive web apps straight from R.
+With this in mind, I built a simple app that accesses crime data from the City of Dallas and maps the locations in my neighborhood.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/05/dallas-population/">
+                <h3 class="media-heading">A dot-density map of Dallas</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As a new arrival in Dallas, it’s taken me a while to get to grips with its layout. Its sheer size and sprawl make it difficult to identify where Dallas ends and neighboring cities begin.
+With this in mind, this post had two aims: to better understand the geography of Dallas, and to explore some of the GIS tools available in R, the open-source programming language.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/04/funding-cuts-and-deprivation/">
+                <h3 class="media-heading">Funding cuts and deprivation in England</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">The most deprived parts of England have borne the brunt of public spending cuts since 2010. As spending now begins to increase, this could bring relief to some of the hardest-hit local councils. However, this analysis shows that the gains - unlike the cuts - will be shared fairly evenly among both affluent and deprived parts of England.
+In 2010 the UK government embarked on a series of major spending cuts to reduce its budget deficit, in response to the financial crisis.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/04/welcome-to-my-blog/">
+                <h3 class="media-heading">Welcome to my blog</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Welcome to my new blog, which I’m using as an opportunity to explore and apply new data analysis tools. This is intended as an exercise in learning by doing.
+Most of the analysis carried out in this blog will use the R programming language. I’m increasingly relying on this powerful tool to complement Microsoft Excel in my day-to-day data analysis. For anyone getting started in R, I highly recommend the excellent and accessible R for Data Science by Hadley Wickham and Garrett Grolemund.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no post found"
+         data-message-one="1 post found"
+         data-message-other="{n} posts found">
+         8 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2019\/01\/a-neighborhood-crime-map-using-shiny\/';
+          
+            this.page.identifier = '\/2019\/01\/a-neighborhood-crime-map-using-shiny\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'https-stevedoogue-netlify-com';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+<script src="//yihui.name/js/math-code.js"></script>
+<script async
+src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+    
+  </body>
+</html>
+

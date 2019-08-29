@@ -1,0 +1,694 @@
+---
+title: "R and SQL (Part 1)"
+author: ''
+date: '2019-08-01'
+comments: yes
+categories: []
+slug: r-and-sql
+tags: []
+thumbnailImage: //res.cloudinary.com/ddjmrpbw4/image/upload/w_500,c_pad,fl_ignore_aspect_ratio,b_white/v1563498573/06%20R%20SQL/r_to_sql_thumb1.png
+thumbnailImagePosition: left
+Summary: When analyzing data, many common SQL queries can be carried out using R, and vice versa. This post uses examples to demonstrate similarities between the two. In Part 1 we look at selecting, sorting and filtering data.
+---
+
+
+_When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries._
+
+<hr>
+<!--more--->
+
+```{r, echo = FALSE, warning=FALSE}
+
+# Create a function to show R output as a formatted table (kable)
+
+# Creates the showTable(x,y, scroll) function, where
+# x = the dataframe to be displayed;
+# y = the number of rows to show (defaults to all rows)
+# scroll = will include a scroll bar unless you specify 'no'
+
+# Tables use knitr and kableExtra
+# Seehttps://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html#overview
+library(knitr)
+library(kableExtra)
+
+#Create the function
+showTable <- function(x, y, scroll = "yes") { 
+
+  a <-  if (missing(y)){
+    x
+  } else {
+    x %>%  head(y)
+  }
+  
+  b <- kable(a) %>%
+    kable_styling(font_size = 11) %>% 
+    row_spec(0, font_size = 9) 
+  
+  if(scroll == "yes"){
+    b %>% scroll_box(height = "200px")
+  }  else {
+    b
+  }
+}
+```
+
+
+# Introduction
+
+SQL is a language that allows users query, manipulate, and transform data. Many common queries carried out with SQL, such as filtering and joining tables, can be carried out using equivalent functions in R.  
+
+In this post, I  wanted to draw some comparisons between two languages. I illustrate this using a sample database, first running queries using SQL, and then demonstrating how identical results could be achieved in R. 
+
+The purpose of this post is __not__ to suggest that R is a substitute for SQL, but to examine how the two approaches can achieve the same results when working with data. For people who have a basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.    
+
+When working with R, I will be using the [dplyr](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html) package. This is a data manipulation package that includes simple verbs (e.g. 'select' and 'filter'), as well as joins (e.g. 'left_join' and 'inner_join'), that can replicate many common queries carried out in SQL. 
+
+<hr>
+
+# Contents
+-   [**The sample dataset**](#the-sample-dataset)
+-   [**Setting up**](#setting-up)
+-   [**1. Selecting data**](#part1)
+    -   [**1.1  Select all columns**](#part1_1)
+    -   [**1.2  Select specific columns**](#part1_2)
+    -   [**1.3  Select distinct records**](#part1_3)
+    -   [**1.4  Select distinct records with multiple columns**](#part1_4)
+-   [**2. Sorting and ordering data**](#part2)
+    -   [**2.1  Basic sorting**](#part2_1)
+    -   [**2.2  Sort descending**](#part2_2)   
+    -   [**2.3  Limiting the number of results**](#part2_3)   
+-   [**3. Filtering**](#part3)
+    -   [**3.1  Basic filtering**](#part3_1)
+    -   [**3.2  Filtering based on inequalities**](#part3_2)
+    -   [**3.3  Filtering with AND conditions**](#part3_3)
+    -   [**3.4  Filtering with OR conditions**](#part3_4)    
+    -   [**3.5  Filtering with both OR, AND conditions**](#part3_5)    
+    -   [**3.6  The IN operator**](#part3_6)  
+    -   [**3.7  The NOT IN operator**](#part3_7)
+    -   [**3.8  Filtering with regular expressions**](#part3_8)
+
+<hr>
+
+# The sample dataset
+
+We will be using a fictional database called __classicmodels__ from the [MySQL Tutorial](http://www.mysqltutorial.org/) website. I will also use a number of examples provided in their tutorials, which is useful for comparing and validating our results.
+
+The sample database is for a fictional company that sells model planes, cars and so on. It comprises the follow tables: 
+
+- __customers__: customer details including name and address
+- __products__: a list of models, their description, vendor, quantity in stock and prices
+- __productlines__: includes the product line (e.g. 'motorcycles') and a description
+- __orders__: sales orders placed by customers, including the date and current status
+- __orderdetails__: details of each order, including products, quantities and prices
+- __payments__: payments made by each customer, including the date and the amount
+- __employees:__ employees' names, titles, offices, contact details, and supervisor
+- __offices:__ address and contact details of each office
+
+This is shown in the following [schema](http://www.mysqltutorial.org/wp-content/uploads/2018/04/MySQL-Sample-Database-Diagram-PDF-A4.pdf):
+
+<br>
+<center>
+![](https://res.cloudinary.com/ddjmrpbw4/image/upload/v1563847454/06%20R%20SQL/schema.png){width=90%}
+</center>   
+[_(Top)_](#contents)
+
+<hr>
+# Setting up
+ 
+#### Running the queries in SQL
+
+There are least two ways you can perform SQL queries on this sample database:
+
+1. Type queries straight into the browser using the [TryIt](http://www.mysqltutorial.org/tryit/) tool provided at mysqltutorial.org; or
+
+2. Load the sample database into MySQL or another database management system. Instructions on how to install MySQL can be found [here](https://www.youtube.com/watch?v=iHTI_Nk7uwo). Instructions on how to load in the sample database can be found [here](https://www.youtube.com/watch?v=7QN600zGUIo) (just substitute the SQL file referred to the video with the one being used in this exercise). The SQL file for the 'classicmodel' database can be downloaded from [mysqltutorial.org](http://www.mysqltutorial.org/mysql-sample-database.aspx).
+
+#### Running the code in R
+
+We will be looking at equivalent R code using the [dplyr](https://www.r-bloggers.com/data-manipulation-with-dplyr/) package. This includes the use of the pipe operator, `%>%`, which allows you to chain code together in a series of logical steps. We can load the dplyr package as part of the tidyverse package:
+
+```{r, message=FALSE, warning =FALSE}
+library(tidyverse)
+```
+
+
+When running the code in R, we will create a data frame that corresponds to each table in the relational database. These tables can be downloaded as individual .csv files [here]() [need to add link]. Load the data into R using the following code:
+
+```{r, message=FALSE, warning=FALSE}
+
+# Enter the file path to where the files are saved on your system
+filepath <- 'tables/'     
+
+# Read in the tables
+customers    <- read_csv(paste0(filepath,'customers.csv'), na = "NULL")
+employees    <- read_csv(paste0(filepath,'employees.csv'), na = "NULL")
+offices      <- read_csv(paste0(filepath,'offices.csv'), na = "NULL")
+orderdetails <- read_csv(paste0(filepath,'orderdetails.csv'), na = "NULL")
+orders       <- read_csv(paste0(filepath,'orders.csv'), na = "NULL")
+payments     <- read_csv(paste0(filepath,'payments.csv'), na = "NULL")
+productlines <- read_csv(paste0(filepath,'productlines.csv'), na = "NULL")
+products     <- read_csv(paste0(filepath,'products.csv'),  
+               # prevent the model scale (e.g. 1:10) from being read as a date:
+               col_types = cols (productScale = col_character()), na = "NULL")
+
+```
+
+Now we're ready to start running SQL queries and the equivalent code in R!  
+[_(Top)_](#contents)
+
+<hr>
+# 1. Selecting data{#part1}
+
+#### 1.1 Select all columns{#part1_1} 
+
+The most simple select statement is one that returns all the information from a table.
+
+_With SQL:_  
+
+To get data from a table in SQL we use the `SELECT` statement, to list the columns we are interested in, and `FROM`, to specify the table. If we want _all_ records from a table, we use `SELECT *`. For example, to see all the records on the employees table we would use:
+
+```markdown
+SELECT * 
+FROM employees
+```
+
+_With R:_ 
+
+To get the same results in R, we simply enter the name of table, as follows:
+
+```{r, eval=FALSE}
+employees
+```
+
+This gives us the names and details of the 23 employees in the database:
+
+```{r, echo=FALSE}
+employees %>% 
+  showTable()
+```
+[_(Top)_](#contents)
+
+<hr>
+#### 1.2 Select specific columns{#part1_2}
+
+What if you only want a subset of columns from a given table, such as employees' first and last names?
+
+_With SQL:_ 
+
+In SQL you just list the column of interest in the `SELECT` clause as follows:
+
+```markdown
+SELECT firstName, lastName 
+FROM employees
+```
+
+_With R:_ 
+
+The equivalent R code uses the `select()` function:
+
+```{r, eval =  FALSE}
+employees %>% 
+  select(firstName, lastName)
+```
+
+Note for those learning R, it might be helpful to read the `%>%` operator as "and then".  
+[_(Top)_](#contents)
+
+<hr>
+#### 1.3 Select distinct records{#part1_3}
+
+Say we want a list of distinct countries in which we have customers, i.e. without returning the same country name twice. 
+
+_With SQL:_  
+
+In SQL we would use `SELECT DISTINCT` clause, as follows:
+
+```markdown
+SELECT DISTINCT country 
+FROM customers
+
+```
+
+_With R:_  
+
+In R, we get the same result using the `distinct()` function:
+```{r, eval = FALSE}
+customers %>% 
+   distinct(country) 
+```
+
+Both approaches yield a list of 23 unique countries where the company has customers:
+```{r, echo = FALSE}
+customers %>% 
+   distinct(country) %>% 
+   showTable()
+```
+
+[_(Top)_](#contents)
+<hr>
+
+#### 1.4 Select distinct records with multiple columns{#part1_4}
+
+A similar approach can be used when you want to see distinct combinations of two or more variables / columns. 
+
+For instance, say you want a list of all US cities in which the company has customers. We can't simply look at distinct city names, as there can be more than one city with the same name: for example, in our database we have a 'Glendale' in California and a 'Glendale' in Connecticut.
+
+To address this we specify both city and state in our query, as follows (I'm jumping forward here and also adding a `WHERE` clause, to restrict our results to cities in the USA):
+
+_With SQL:_
+
+```markdown
+SELECT DISTINCT city,state 
+FROM customers
+WHERE country = 'USA' 
+```
+_With R:_ 
+
+The equivalent R code uses `filter()` instead of SQL's `WHERE`, as will be discussed later:
+```{r, eval=FALSE}
+customers %>% 
+  filter(country == 'USA') %>%  # ignore this for now!
+  distinct(city, state) 
+```
+
+
+Both approaches return 24 rows containing distinct combinations of cities and states. 
+
+```{r, echo=FALSE}
+customers %>% 
+  filter(country == 'USA') %>% 
+  distinct(city, state) %>% 
+  showTable()
+```  
+[_(Top)_](#contents)
+
+<hr>
+# 2. Sorting and ordering data{#part2}
+
+#### 2.1 Basic sorting{#part2_1}
+
+Data can be sorted using the `ORDER BY` clause in SQL and the `arrange()` function in R. For example, say you wanted to sort customer locations in the USA alphabetically, first by state and then by city:
+
+
+_With SQL:_
+
+```markdown
+SELECT DISTINCT state, city 
+FROM customers
+WHERE country = 'USA'
+ORDER BY state, city
+```
+_With R:_
+
+
+```{r, eval=FALSE}
+customers %>% 
+  filter(country == 'USA') %>% 
+  distinct(state, city) %>% 
+  arrange(state, city)
+```
+
+Both of which give the following:
+```{r, echo=FALSE}
+customers %>% 
+  filter(country == 'USA') %>% 
+  distinct(state, city) %>% 
+  arrange(state, city) %>% 
+  showTable()
+```
+[_(Top)_](#contents)
+
+<hr>
+#### 2.2 Sort descending{#part2_2}
+
+What if you wanted to list states in reverse alphabetical order, while listing cities in alphabetical order?
+
+_With SQL:_
+
+In SQL, you can use `ORDER BY .... DESC`. Any columns listed before the `DESC` clause will be listed in descending order.
+
+```markdown
+SELECT DISTINCT state, city 
+FROM customers
+WHERE country = 'USA'
+ORDER BY state DESC, city
+```
+_With R:_
+
+Equivalently, in `R`, you can use `arrange(desc())`, where the parentheses include the name of the column(s) you want listed in descending order:
+
+```{r, eval=FALSE}
+customers %>% 
+  filter(country == 'USA') %>% 
+  distinct(state, city) %>% 
+  arrange(desc(state), city) 
+```
+
+```{r, echo=FALSE}
+customers %>% 
+  filter(country == 'USA') %>% 
+  distinct(state, city) %>% 
+  arrange(desc(state), city) %>% 
+  showTable()
+```  
+[_(Top)_](#contents)
+
+<hr>
+#### 2.3 Limiting the number of results{#part2_3}
+
+To limit the number of results that are shown, you can use SQL's `LIMIT` clause and R's `slice()` function. These can be combined with ordered data to return the top or bottom results from a table. 
+
+For example, if you wanted to return the five customers with the highest credit limits you could use the following:
+
+_With SQL:_ 
+
+```markdown
+SELECT customerName, creditLimit 
+FROM customers
+ORDER BY creditLimit DESC
+LIMIT 5
+```
+
+_With R:_
+
+```{r, eval = FALSE}
+customers %>% 
+  select(customerName, creditLimit) %>% 
+  arrange(desc(creditLimit)) %>% 
+  slice(1:5)
+```
+
+Which give the following:
+```{r, echo = FALSE}
+customers %>% 
+  select(customerName, creditLimit) %>% 
+  arrange(desc(creditLimit)) %>% 
+  slice(1:5) %>% 
+  showTable(scroll = "no")
+```
+
+Another option in R would be to use the `top_n()` function, as described [here](https://dplyr.tidyverse.org/reference/top_n.html). 
+
+[_(Top)_](#contents)
+
+<hr>
+# 3. Filtering{#part3}
+
+#### 3.1 Basic filtering{#part3_1}
+
+Filtering is used to restrict our results to records / rows that satisfy one or more criteria. We already saw some basic filtering in the above, in which we used SQL's `WHERE` clause and R's `filter()` to only shows cities that were within the United States. 
+
+Another example would be to find the names of each employee whose job title is 'Sales Rep':
+
+_With SQL:_
+
+```markdown
+SELECT lastName, firstName, jobTitle
+FROM employees
+WHERE jobTitle = 'Sales Rep'
+```
+_With R:_ 
+
+```{r, eval=FALSE}
+employees %>% 
+  filter(jobTitle == 'Sales Rep') %>% 
+  select(firstName,lastName,jobTitle)
+```
+Both sets of code return the names of the 17 sales reps:
+
+```{r, echo=FALSE}
+employees %>% 
+  filter(jobTitle == 'Sales Rep') %>% 
+  select(firstName,lastName,jobTitle) %>% 
+  showTable()
+```
+
+
+There are a couple of differences to note between SQL and R:  
+
+- R uses `==` instead of `=` when filtering
+- In R, it is often necessary to use `filter()` before `select()`. This would be the case if the column you are filtering on (in this case 'jobTitle') was not also included in the `select()` function below. In SQL, this order is not an issue
+- In R, the filter condition is case sensitive, but in SQL it is not  
+[_(Top)_](#contents)
+
+<hr>
+#### 3.2 Filtering based on inequalities{#part3_2}
+
+We can use the 'not equal to' operator `!=` to filter records that do not match a certain criteria. 
+
+For example, to see the names of the six employees who are _not_ sales reps:
+
+_With SQL:_ 
+
+```markdown
+SELECT lastName, firstName, jobTitle
+FROM employees
+WHERE jobTitle != 'Sales Rep'
+```
+
+MySQL would also accept `<>` as the operator in this case.
+
+_With R:_
+
+```{r, eval=FALSE}
+employees %>% 
+  filter(jobTitle != 'Sales Rep') %>% 
+  select(lastName, firstName, jobTitle)
+
+```
+
+If you are dealing with numeric data, you can also filter using the operators `>`, `>=`, `<` and `<=`, which are the same in both languages.  
+[_(Top)_](#contents)
+
+<hr>
+#### 3.3 Filtering with AND conditions{#part3_3}
+
+Sometime we want to select rows where multiple criteria all hold true. This can be done using `AND` operator in SQL, and the `&` operator in R. 
+
+For example, if we wanted to see the names of customers who are located in California _and_ who have a credit limit over $100,000:
+
+_With SQL:_
+
+```markdown
+SELECT customername, state, creditlimit 
+FROM customers 
+WHERE state = 'CA' AND creditlimit > 100000
+```
+
+_With R:_
+```{r, eval = FALSE}
+customers %>% 
+  filter(state == 'CA' & creditLimit > 100000) %>% 
+  select(customerName, state, creditLimit)
+```
+
+These sets of code return the three customers who are both located in California and have credit limits over $100,000:  
+
+```{r, echo=FALSE}
+customers %>% 
+  filter(state == 'CA' & creditLimit > 100000) %>% 
+  select(customerName, state, creditLimit) %>% 
+  showTable(scroll = "no")
+```  
+[_(Top)_](#contents)
+
+<hr>
+#### 3.4 Filtering with OR conditions{#part3_4}
+
+The OR condition returns rows where _any_ of our criteria are satisfied. In SQL we use the `OR` operator, while in R the `|` symbol is used.
+
+For example, say we want to see a list of all customers who are located in the US or France:
+
+_With SQL:_
+
+```markdown
+SELECT customerName, country
+FROM customers
+WHERE country = 'USA' 
+  OR country =  'FRANCE'
+```
+
+_With R:_
+
+```{r, eval=FALSE}
+customers %>% 
+  filter (country == 'USA' | country == 'France') %>% 
+  select(customerName, country)
+```
+
+This gives us the 48 customers who are located in either USA or France:  
+
+```{r, echo=FALSE}
+customers %>% 
+  filter (country == 'USA' | country == 'France') %>% 
+  select(customerName, country) %>% 
+  showTable()
+```  
+[_(Top)_](#contents)
+
+
+<hr>
+#### 3.5 Filtering with both OR, AND conditions{#part3_5}
+
+The examples above can be extended to combine the OR and AND conditions.
+
+For example, if you wanted a list of customers with a credit limit of over $100,000 who are located in either the USA _or_ France:
+
+_With SQL:_
+```markdown
+SELECT customerName, country, creditLimit
+FROM customers
+WHERE (country = 'USA' 
+  OR country =  'FRANCE')
+  AND creditLimit > 100000
+```
+
+_With R:_
+```{r, eval=FALSE}
+customers %>% 
+  filter(
+    (country == 'USA' | country == 'France') & creditLimit > 100000
+    ) %>% 
+  select(customerName, country, creditLimit)
+```
+
+The code above returns the 11 customers who are located in the USA _or_ France, _and_ who have credit limits over $100,000.
+
+```{r, echo=FALSE}
+customers %>% 
+  filter (
+    (country == 'USA' | country == 'France')
+    & creditLimit > 100000
+    ) %>% 
+  select(customerName, country, creditLimit) %>% 
+  showTable()
+```
+
+By default both SQL and R evaluate the AND operator before the OR operator. This is why it was necessary to put the OR condition in parentheses above, to tell SQL/R to evaluate it first.
+
+If we _hadn't_ used parentheses, the code would have returned the list of customers who either (a) were located in the USA, or (b) were located in France and had a credit limit greater than $100,000. This would have returned the following 38 customers:  
+
+
+```{r, echo=FALSE}
+customers %>% 
+  filter (
+    country == 'USA' | country == 'France' & creditLimit > 100000
+    ) %>% 
+  select(customerName, country, creditLimit) %>% 
+  showTable()
+```  
+[_(Top)_](#contents)
+
+<hr>
+#### 3.6 The IN operator{#part3_6}
+
+In SQL, the `IN` clause is used select records where a value matches any value in a list or a subquery (we'll look at subqueries later). The equivalent operator in R is `%in%`.
+
+When used on a list, the `IN` clause acts just like one or more `OR` conditions. 
+For example, say we want a list of customers located in either France, USA or Australia:
+
+_With SQL:_
+```markdown
+SELECT customerName, country
+FROM customers
+WHERE country IN ('France', 'USA', 'Australia')
+```
+
+_With R:_
+
+With R, we need to _combine_ the countries into a list using `c(...)`:
+
+```{r, eval=FALSE}
+customers %>% 
+  filter(country %in% c('France','USA','Australia')) %>% 
+  select(customerName, country)
+```
+This returns our 53 customers in France, the USA or Australia. 
+```{r, echo=FALSE}
+customers %>% 
+  filter(country %in% c('France','USA','Australia')) %>% 
+  select(customerName, country) %>% 
+  showTable()
+```  
+[_(Top)_](#contents)
+
+<hr>
+#### 3.7 The NOT IN operator{#part3_7}
+
+If we are interested in values are _not_ in a list - for example, all customers who are not located in France, USA or Australia? 
+
+_With SQL:_
+
+In SQL we can use the `NOT IN` operator:
+```markdown
+SELECT customerName, country
+FROM customers
+WHERE country NOT IN ('France','USA', 'Australia')
+```
+
+_With R:_
+
+In R, we negate the `%in%` operator by placing a `!` at the start of the filter function, as follows:
+
+```{r, eval=FALSE}
+customers %>% 
+  filter(!country %in% c('France','USA','Australia')) %>% 
+  select(customerName, country)
+```
+
+Each approach gives us 69 customers who are located in countries other than France, USA or Australia.  
+[_(Top)_](#contents)
+
+<hr>
+#### 3.8 Filtering with regular expressions{#part3_8}
+
+You can filter your results based on whether a column contains characters that follow a specified pattern. For example, you may want to find names that start with the letter 'T', or phone numbers that include the area code '214'.
+
+SQL offers a user-friendly way to do this using the `LIKE` operator, which is explained [here](http://www.mysqltutorial.org/mysql-like/). However, we are instead going to look at regular expressions, which are more flexible than SQL's `LIKE` operator (though less user-friendly) and are consistent between SQL and R.
+
+To use regular expressions in SQL we use the `REGEXP` operator, and in R we use the `str_detect()` ('string detect') function.
+
+To see how this works, say we want to find all products with the word 'Ford' in them. We could use the following code:
+
+_With SQL:_
+
+```markdown
+SELECT productName
+FROM products
+WHERE productName REGEXP 'Ford'
+```
+
+_With R:_
+
+```{r, eval = FALSE}
+products %>% 
+  filter(str_detect(productName,'Ford')) %>% 
+  select(productName)
+```
+
+These sets of code return a list of 15 models with that include the word 'Ford':
+
+```{r, echo = FALSE}
+products %>% 
+  filter(str_detect(productName,'Ford')) %>% 
+  select(productName) %>% 
+  showTable()
+```
+
+The main difference in the code above is that SQL is not case sensitive but R is. You can specify case sensitivity as follows:  
+
+- To make SQL case sensitive, replace `REGEXP` with `REGEXP BINARY`
+- To make R ignore cases, replace `str_detect(productName,'Ford')` in the example above with `str_detect(productName, regex('ford', ignore_case=TRUE))`
+
+The beauty of SQL's `REGEXP` and R's `str_detect()` is that they will both work with many of the same regular expressions. You can modify both sets of code above to see the following:
+
+- Use the `^` symbol to match the beginning of a string. For example, use `'^America'` to show products beginning with the words 'America' or 'American'.
+- Use `$` to denote the end of a string. For example, use `'ter$'` to return the names of all products that end in these three letters, such as 'helicopter' and 'roadster'. 
+- Use `'[...]'` to match any of the strings listed within the brackets, which are separated with `|`. For example, use `'^[A|B|C]'` to match words beginning with either A, B, or C. 
+
+We won't go into the details of regular expressions here, but a further explanation can be found at [mysqltutorial.org](http://www.mysqltutorial.org/mysql-regular-expression-regexp.aspx).  
+  
+[_(Top)_](#contents)
+<hr>
+
+Part 2 of this post, to follow, will look at joins, using grouped data, and subqueries. 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/2019/08/r-and-sql-part-2/</loc>
+    <lastmod>2019-08-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2019/08/r-and-sql/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2019/07/statistical-tests/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2019/03/how-do-us-cities-raise-and-spend-money/</loc>
+    <lastmod>2019-03-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2019/01/a-neighborhood-crime-map-using-shiny/</loc>
+    <lastmod>2019-01-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2018/05/dallas-population/</loc>
+    <lastmod>2018-05-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2018/04/funding-cuts-and-deprivation/</loc>
+    <lastmod>2018-04-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2018/04/welcome-to-my-blog/</loc>
+    <lastmod>2018-04-08T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/archives/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2019-08-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2019-08-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/tableau/</loc>
+    <lastmod>2019-03-15T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-03-15T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

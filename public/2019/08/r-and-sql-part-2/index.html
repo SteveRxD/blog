@@ -28,18 +28,15 @@
     
 
     
-    <meta name="description" content="ContentsThe sample dataset1. Common joins1.1 Inner join1.2 Left join1.3 Right join1.4 Full joinThe sample datasetWe will use the same sample dataset from mysqltutorial.org that was used in the first part of this blog, as described here. The schema is reproduced below:
-Instructions on how to load the sample dataset into MySQL and R were provided here.">
-    <meta property="og:description" content="ContentsThe sample dataset1. Common joins1.1 Inner join1.2 Left join1.3 Right join1.4 Full joinThe sample datasetWe will use the same sample dataset from mysqltutorial.org that was used in the first part of this blog, as described here. The schema is reproduced below:
-Instructions on how to load the sample dataset into MySQL and R were provided here.">
+    <meta name="description" content="library(tidyverse)Contents1. Joins1.1 Inner join1.2 Left join1. JoinsA join allows you to combine variables or columns from two tables. It first matches observations by their keys, then copies across variables from one table to another.For those who are new to SQL, this section of R for Data Science, by Hadley Wickham, provides a nice explanation of the different types joins.">
+    <meta property="og:description" content="library(tidyverse)Contents1. Joins1.1 Inner join1.2 Left join1. JoinsA join allows you to combine variables or columns from two tables. It first matches observations by their keys, then copies across variables from one table to another.For those who are new to SQL, this section of R for Data Science, by Hadley Wickham, provides a nice explanation of the different types joins.">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="R and SQL (Part 2)">
     <meta property="og:url" content="/2019/08/r-and-sql-part-2/">
     <meta property="og:site_name" content="Steve Doogue">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Steve Doogue">
-    <meta name="twitter:description" content="ContentsThe sample dataset1. Common joins1.1 Inner join1.2 Left join1.3 Right join1.4 Full joinThe sample datasetWe will use the same sample dataset from mysqltutorial.org that was used in the first part of this blog, as described here. The schema is reproduced below:
-Instructions on how to load the sample dataset into MySQL and R were provided here.">
+    <meta name="twitter:description" content="library(tidyverse)Contents1. Joins1.1 Inner join1.2 Left join1. JoinsA join allows you to combine variables or columns from two tables. It first matches observations by their keys, then copies across variables from one table to another.For those who are new to SQL, this section of R for Data Science, by Hadley Wickham, provides a nice explanation of the different types joins.">
     
     
 
@@ -193,61 +190,35 @@
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
+<pre class="r"><code>library(tidyverse)</code></pre>
 <div id="contents" class="section level1">
 <h1>Contents</h1>
 <ul>
-<li><a href="#setup"><strong>The sample dataset</strong></a></li>
-<li><a href="#part1"><strong>1. Common joins</strong></a>
+<li><a href="#part1"><strong>1. Joins</strong></a>
 <ul>
 <li><a href="#part1_1"><strong>1.1 Inner join</strong></a></li>
-<li><a href="#part1_2"><strong>1.2 Left join</strong></a></li>
-<li><a href="#part1_4"><strong>1.3 Right join</strong></a></li>
-<li><a href="#part1_4"><strong>1.4 Full join</strong></a>
+<li><a href="#part1_2"><strong>1.2 Left join</strong></a>
 <hr></li>
 </ul></li>
 </ul>
 </div>
-<div id="setup" class="section level1">
-<h1>The sample dataset</h1>
-<p>We will use the same sample dataset from <a href="http://www.mysqltutorial.org/">mysqltutorial.org</a> that was used in the first part of this blog, as described <a href="https://www.stevedoogue.com/2019/08/r-and-sql/#the-sample-dataset">here</a>. The schema is reproduced below:<br />
-<br></p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1563847454/06%20R%20SQL/schema.png" style="width:90.0%" />
-</center>
-<p>Instructions on how to load the sample dataset into MySQL and R were provided <a href="https://www.stevedoogue.com/2019/08/r-and-sql/#setting-up">here</a>.<br />
-<br></p>
-<a href="#contents"><em>(Top)</em></a>
-<hr>
-</div>
 <div id="part1" class="section level1">
-<h1>1. Common joins</h1>
-<p>A join allows you to combine variables or columns from two tables. It first matches observations by their keys, then copies across variables from one table to another.</p>
-<p>To understand joins, we are going to use the explanation provided by Hadley Wickham in <a href="https://r4ds.had.co.nz/relational-data.html#understanding-joins">R for Data Science</a>, and the related <a href="https://github.com/gadenbuie/tidyexplain">animations</a> that were produced by Garrick Aden-Buie.</p>
-<p>These illustrations show different ways that we can join the data in table <em>x</em>, below, with the data in table <em>y</em>. The coloured columns represent the “key” variable that is used to match the rows between the tables.</p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566488664/07%20R%20SQL%20p2/join_original.png" style="width:65.0%" />
-</center>
-<a href="#contents"><em>(Top)</em></a>
-<hr>
+<h1>1. Joins</h1>
+<p>A join allows you to combine variables or columns from two tables. It first matches observations by their keys, then copies across variables from one table to another.
+For those who are new to SQL, this section of <a href="https://r4ds.had.co.nz/relational-data.html#understanding-joins">R for Data Science</a>, by Hadley Wickham, provides a nice explanation of the different types joins. It explains the different ways you could join table <em>x</em> and table <em>y</em></p>
 <div id="part1_1" class="section level4">
 <h4>1.1 Inner join</h4>
-<p>An inner join shows all rows from <em>x</em> where there are matching values in <em>y</em>, and all columns from <em>x</em> and <em>y</em>:</p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566493838/07%20R%20SQL%20p2/join_inner_cropped.gif" style="width:60.0%" />
-</center>
-<div id="example-1.1.1" class="section level5">
-<h5>Example 1.1.1:</h5>
-<p>Say we want to list the name of every employee from the <em>employees</em> table who has one or more customers recorded in the <em>customers</em> table.</p>
-<p>This is an example of an inner join, as we only want records that have a match in both tables. In this case our keys will be the <em>employeeNumber</em> in in the <em>employees</em> table and the <em>salesRepEmployeeNumber</em> in the <em>customers</em> table.</p>
-<p>We would like the code to return the following information:</p>
+<div id="example-1" class="section level5">
+<h5>Example 1:</h5>
+<p>Say we want to list the name of every employee from the <em>employees</em> table who has one or more customers recorded in the <em>customers</em> table. We want to see the following information:</p>
 <ul>
 <li>employee number</li>
 <li>employee first name</li>
 <li>employee second name</li>
 <li>customer name(s)</li>
 </ul>
+<p>This is an example of an inner join, as we only want records that have a match in both tables. In this case, we want to match the <em>employeeNumber</em> in in the <em>employees</em> table with the <em>salesRepEmployeeNumber</em> in the <em>customers</em> table.</p>
 <p><em>With SQL:</em></p>
-<p>To do this in SQL we would use <code>INNER JOIN</code> as follows:</p>
 <pre class="markdown"><code>SELECT employees.employeeNumber, 
        employees.lastName, 
        employees.firstName, 
@@ -256,11 +227,10 @@ FROM   employees
 INNER JOIN customers 
   ON employees.employeeNumber = customers.salesRepEmployeeNumber
 ORDER BY lastName, customerName</code></pre>
-<p>Note that we specify the table from which each column is taken, for example using <code>employees.employeeNumber</code> rather than just <code>employeeNumber</code>.</p>
+<p>Note that we specify the table from which column is taken, for example using <code>employees.employeeNumber</code> rather than just <code>employeeNumber</code>.</p>
 <p><em>With R:</em></p>
-<p>The same join could be carried out in R using the <code>inner_join</code> function. This includes the <code>by</code> argument, in which we list the names of the key columns:</p>
-<pre class="r"><code>employees %&gt;%   #left-hand table
-  # In the &#39;by&#39; argument, list the key from the left-hand table first:
+<p>The same join could be carried out in R using the following code. In the <code>by</code> argument, we first list the column to match from the left hand table (‘employeeNumber’) followed by the corresponding column from the right hand table (‘salesRepEmployeeNumber’).</p>
+<pre class="r"><code>employees %&gt;%   #left hand table
   inner_join(customers, by = c(&quot;employeeNumber&quot; = &quot;salesRepEmployeeNumber&quot;)) %&gt;%
   select(employeeNumber, lastName, firstName, customerName) %&gt;% 
   arrange(lastName, customerName)</code></pre>
@@ -1688,17 +1658,16 @@ Tekni Collectables Inc. 
 </table>
 </div>
 </div>
-<div id="example-1.1b" class="section level5">
-<h5>Example 1.1b:</h5>
-<p>Say instead that we wanted to list every customer from the <em>customers</em> table who has one or more orders in the <em>orders</em> table.</p>
-<p>This is another example of an inner join, this time matching records using the ‘customerNumber’ column as our key, which is the same in both tables.</p>
-<p>We want the query to return the following information:</p>
+<div id="example-2" class="section level5">
+<h5>Example 2:</h5>
+<p>Say instead that we wanted to list every customer from the <em>customers</em> table who has one or more orders in the <em>orders</em> table. We want to see the following information:</p>
 <ul>
 <li>customer number</li>
 <li>customer name</li>
 <li>order number</li>
 <li>current order status</li>
 </ul>
+<p>This is another example of an inner join, this time matching records using the ‘customerNumber’ column which is the same in both tables.</p>
 <p><em>With SQL:</em></p>
 <p>The fact that the same column name is used in both tables means we can simplify our code with <code>USING</code> in place of the <code>ON</code> expression that was used above:</p>
 <pre class="markdown"><code>SELECT c.customerNumber, 
@@ -1709,14 +1678,13 @@ FROM       customers AS c
 INNER JOIN orders AS o
   USING    (customerNumber)
 ORDER BY   customerName</code></pre>
-<p>In the example above, we’ve also used <a href="http://www.mysqltutorial.org/mysql-alias/">aliases</a> in place of the full table names, designating the short name ‘c’ for ‘customers’ and ‘o’ for ‘orders’. This is done with <code>AS</code> (though this could be excluded). This makes the code shorter and easier to read.</p>
+<p>In the example above, we’ve also used <a href="http://www.mysqltutorial.org/mysql-alias/">aliases</a> in place of the full table names, i.e. ‘c’ for ‘customers’ and ‘o’ for ‘orders’. This is done with <code>AS</code> (though even this can be dropped). This makes the code shorter and easier to read.</p>
 <p><em>With R:</em></p>
 <p>The equivalent R code is shown below. Note that we now only need to specify the one column name in the <code>by</code> argument.</p>
 <pre class="r"><code>customers %&gt;% 
   inner_join(orders, by = &quot;customerNumber&quot;) %&gt;%
   select(customerNumber, customerName, orderNumber, status) %&gt;% 
   arrange(customerName)</code></pre>
-<p><br></p>
 This code returns 326 rows, the first 50 of which are shown below:
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
 <table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
@@ -2446,19 +2414,8 @@ Shipped
 </div>
 <div id="part1_2" class="section level4">
 <h4>1.2 Left join</h4>
-<p>A left join returns all rows from <em>x</em>, and all columns from <em>x</em> and <em>y</em>. Rows in <em>x</em> with no match in <em>y</em> will have NA or NULL values in the new columns.<br />
-<br></p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566494521/07%20R%20SQL%20p2/join_left_cropped.gif" style="width:60.0%" />
-</center>
-<p>If there are multiple matches between <em>x</em> and <em>y</em>, all combinations of the matches are returned. For example, in the table below there is one ‘x’ record and two ‘y’ records with a key value of 2:</p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566496205/07%20R%20SQL%20p2/join_left2_cropped.gif" style="width:60.0%" />
-</center>
-<div id="example-1.2" class="section level5">
-<h5>Example 1.2:</h5>
-<p>In the example above we wanted to see the names customers in the <em>customers</em> table who had a corresponding order in the <em>orders</em> table. But what if we wanted to see names of <strong>all</strong> customers and their order information, even if they don’t have any orders?</p>
-<p>This is an example of a left join. To do this using <code>LEFT JOIN</code> in SQL and <code>left_join</code> in R, as follows:</p>
+<p>In the example above we were interested in the records of customers in the <code>customers</code> table which had a corresponding order in the <code>orders</code> table. But what if we wanted to see records of <em>all</em> customers, even if they didn’t have any associated orders?</p>
+<p>To do this we can use <code>LEFT JOIN</code> in SQL and <code>left_join()</code> in R, as follows:</p>
 <p><em>With SQL:</em></p>
 <pre class="markdown"><code>SELECT c.customerNumber, 
        c.customerName, 
@@ -2473,8 +2430,7 @@ ORDER BY customerName</code></pre>
   left_join(orders, by = &quot;customerNumber&quot;) %&gt;% 
   select(customerNumber, customerName, orderNumber, status) %&gt;% 
   arrange(customerName)</code></pre>
-<p><br></p>
-<p>This returns 350 records, the first 50 of which are shown in the table below. If you scroll down, you will see that some customers have ‘NULL’ (in MySQL) or ‘NA’ (in R) in the order number and status. These are customers who have no corresponding orders recorded in the ‘orders’ table:</p>
+This returns 350 rows, including customers who do not have a corresponding order (such as ‘American Souvenirs Inc’) in which case the columns with order information will have NULL or NA values:
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
 <table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
 <thead>
@@ -3194,1529 +3150,4208 @@ Boards &amp; Toys Co. 
 Shipped
 </td>
 </tr>
-</tbody>
-</table>
-</div>
-<a href="#contents"><em>(Top)</em></a>
-<hr>
-</div>
-</div>
-<div id="part1_3" class="section level4">
-<h4>1.3 Right join</h4>
-<p>A right join returns all rows from <em>y</em>, and all columns from <em>x</em> and <em>y</em>. Rows in <em>y</em> with no match in <em>x</em> will have NA or NULL values in the new columns.</p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566503766/07%20R%20SQL%20p2/join_right_cropped.gif" style="width:60.0%" />
-</center>
-<p>This is exactly the same as a left join, described in the section above, but this time we’re returning all rows from the <em>right-hand</em> table (in this case, <em>y</em>) rather than those from the left-hand table.</p>
-<p>A right join in which <em>y</em> was designated as the right-hand table would give exactly the same results as a left join in which <em>y</em> was designated as the left-hand table.</p>
-<p>Right joins can be carried out using <code>RIGHT JOIN</code> in SQL and <code>right_join</code> in R.</p>
-<a href="#contents"><em>(Top)</em></a>
-<hr>
-</div>
-<div id="part1_4" class="section level4">
-<h4>1.4 Full join</h4>
-<p>A full join returns rows and all columns from both <em>x</em> and <em>y</em>. Where there is no match for a particular key value, the missing values will appear as NA or NULL.</p>
-<p><br></p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566496834/07%20R%20SQL%20p2/join_full_cropped.gif" style="width:60.0%" />
-</center>
-<p>Full joins are not supported in MySQL. However, a full join is equivalent to a combination of the left join and right join described above. To combine the results of these two joins, we need to use <strong>union</strong>.</p>
-<p><strong>Union</strong> returns all unique rows from tables <em>x</em> and <em>y</em> as follows:</p>
-<center>
-<img src="https://res.cloudinary.com/ddjmrpbw4/image/upload/v1566501323/07%20R%20SQL%20p2/union.gif" style="width:60.0%" />
-</center>
-<div id="example-1.4" class="section level5">
-<h5>Example 1.4:</h5>
-<p>Say we want to list the name of every employee from the <em>employees</em> table, and every customer from the <em>customers</em> table. Where possible, we want to match the name of each employee to his/her customers. However we also want to return the names of all employees without customers, and the names of all customers without an associated employee. This is an example of a full join.</p>
-<p>Assume that we want our query to return each employee’s last name, each employee’s first name, and each customer’s name</p>
-<p><em>With SQL:</em></p>
-<p>In SQL we are going to use a <code>LEFT JOIN</code>, a <code>RIGHT JOIN</code> and the <code>UNION</code> of the two, as follows:</p>
-<pre class="markdown"><code>SELECT e.lastName, e.firstName, c.customerName 
-  FROM employees AS e
-  LEFT JOIN customers AS c 
-    ON e.employeeNumber = c.salesRepEmployeeNumber
-    
-UNION
-
-SELECT e.lastName, e.firstName, c.customerName 
-  FROM employees AS e
-  RIGHT JOIN customers AS c 
-    ON e.employeeNumber = c.salesRepEmployeeNumber</code></pre>
-<p><em>With R:</em></p>
-<p>In R, the syntax is much simpler, as we can use <code>full_join</code>:</p>
-<pre class="r"><code>employees %&gt;% 
-  full_join(customers, by = c(&#39;employeeNumber&#39; = &#39;salesRepEmployeeNumber&#39;)) %&gt;% 
-  select(lastName, firstName, customerName)</code></pre>
-<p><br></p>
-<p>The two sets of code above return the following 130 records. As expected, this shows the name of each employee matched to their customer(s), where such a match exists, but also the names of each employee and customer where there is no match.</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; ">
-<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
-<thead>
 <tr>
-<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
-lastName
-</th>
-<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
-firstName
-</th>
-<th style="text-align:left;font-size: 9px;position: sticky; top:0; background-color: #FFFFFF;">
-customerName
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Murphy
-</td>
-<td style="text-align:left;">
-Diane
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-Mary
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Firrelli
-</td>
-<td style="text-align:left;">
-Jeff
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-William
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bondur
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bow
-</td>
-<td style="text-align:left;">
-Anthony
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jennings
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Mini Gifts Distributors Ltd. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jennings
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Mini Wheels Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jennings
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Technics Stores Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jennings
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Corporate Gift Ideas Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jennings
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-The Sharp Gifts Warehouse
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jennings
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Signal Collectibles Ltd. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Thompson
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Signal Gift Stores
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Thompson
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Toys4GrownUps.com
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Thompson
-</td>
-<td style="text-align:left;">
-Leslie
+<td style="text-align:right;">
+219
 </td>
 <td style="text-align:left;">
 Boards &amp; Toys Co. 
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Thompson
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Collectable Mini Designs Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Thompson
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-Men ‘R’ US Retailers, Ltd. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Thompson
-</td>
-<td style="text-align:left;">
-Leslie
-</td>
-<td style="text-align:left;">
-West Coast Collectables Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Firrelli
-</td>
-<td style="text-align:left;">
-Julie
-</td>
-<td style="text-align:left;">
-Cambridge Collectables Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Firrelli
-</td>
-<td style="text-align:left;">
-Julie
-</td>
-<td style="text-align:left;">
-Online Mini Collectables
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Firrelli
-</td>
-<td style="text-align:left;">
-Julie
-</td>
-<td style="text-align:left;">
-Mini Creations Ltd. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Firrelli
-</td>
-<td style="text-align:left;">
-Julie
-</td>
-<td style="text-align:left;">
-Classic Gift Ideas, Inc
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Firrelli
-</td>
-<td style="text-align:left;">
-Julie
-</td>
-<td style="text-align:left;">
-Collectables For Less Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Firrelli
-</td>
-<td style="text-align:left;">
-Julie
-</td>
-<td style="text-align:left;">
-Diecast Collectables
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-Steve
-</td>
-<td style="text-align:left;">
-Diecast Classics Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-Steve
-</td>
-<td style="text-align:left;">
-Auto-Moto Classics Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-Steve
-</td>
-<td style="text-align:left;">
-Marta’s Replicas Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-Steve
-</td>
-<td style="text-align:left;">
-Gifts4AllAges.com
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-Steve
-</td>
-<td style="text-align:left;">
-Online Diecast Creations Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Patterson
-</td>
-<td style="text-align:left;">
-Steve
-</td>
-<td style="text-align:left;">
-FunGiftIdeas.com
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Tseng
-</td>
-<td style="text-align:left;">
-Foon Yue
-</td>
-<td style="text-align:left;">
-Muscle Machine Inc
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Tseng
-</td>
-<td style="text-align:left;">
-Foon Yue
-</td>
-<td style="text-align:left;">
-American Souvenirs Inc
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Tseng
-</td>
-<td style="text-align:left;">
-Foon Yue
-</td>
-<td style="text-align:left;">
-Vitachrome Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Tseng
-</td>
-<td style="text-align:left;">
-Foon Yue
-</td>
-<td style="text-align:left;">
-Québec Home Shopping Network
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Tseng
-</td>
-<td style="text-align:left;">
-Foon Yue
-</td>
-<td style="text-align:left;">
-Classic Legends Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Tseng
-</td>
-<td style="text-align:left;">
-Foon Yue
-</td>
-<td style="text-align:left;">
-Super Scale Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Tseng
-</td>
-<td style="text-align:left;">
-Foon Yue
-</td>
-<td style="text-align:left;">
-Microscale Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Land of Toys Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Gift Depot Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Canadian Gift Exchange Network
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Royal Canadian Collectables, Ltd. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Mini Classics
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Tekni Collectables Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Gift Ideas Corp. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Vanauf
-</td>
-<td style="text-align:left;">
-George
-</td>
-<td style="text-align:left;">
-Motor Mint Distributors Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bondur
-</td>
-<td style="text-align:left;">
-Loui
-</td>
-<td style="text-align:left;">
-Saveley &amp; Henriot, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bondur
-</td>
-<td style="text-align:left;">
-Loui
-</td>
-<td style="text-align:left;">
-La Corne D’abondance, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bondur
-</td>
-<td style="text-align:left;">
-Loui
-</td>
-<td style="text-align:left;">
-Lyon Souveniers
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bondur
-</td>
-<td style="text-align:left;">
-Loui
-</td>
-<td style="text-align:left;">
-Marseille Mini Autos
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bondur
-</td>
-<td style="text-align:left;">
-Loui
-</td>
-<td style="text-align:left;">
-Reims Collectables
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bondur
-</td>
-<td style="text-align:left;">
-Loui
-</td>
-<td style="text-align:left;">
-Auto Canal+ Petit
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hernandez
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Atelier graphique
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hernandez
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-La Rochelle Gifts
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hernandez
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Euro+ Shopping Channel
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hernandez
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Daedalus Designs Imports
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hernandez
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Mini Caravy
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hernandez
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Alpha Cognac
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hernandez
-</td>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Auto Associés &amp; Cie.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Danish Wholesale Imports
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Heintze Collectables
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Amica Models &amp; Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Rovelli Gifts
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Petit Auto
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Royale Belge
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Salzburg Collectables
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-L’ordine Souveniers
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Mini Auto Werke
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Castillo
-</td>
-<td style="text-align:left;">
-Pamela
-</td>
-<td style="text-align:left;">
-Frau da Collezione
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-Toys of Finland, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-AV Stores, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-UK Collectables, Ltd. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-giftsbymail.co.uk
+<td style="text-align:right;">
+10376
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-Oulu Toy Supplies, Inc. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-Stylish Desk Decors, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-Suominen Souveniers
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bott
-</td>
-<td style="text-align:left;">
-Larry
-</td>
-<td style="text-align:left;">
-Double Decker Gift Stores, Ltd
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Baane Mini Imports
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Blauer See Auto, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Volvo Model Replicas, Co
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Herkku Gifts
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Clover Collections, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Toms Spezialitäten, Ltd
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Norway Gifts By Mail, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Bavarian Collectables Imports, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Jones
-</td>
-<td style="text-align:left;">
-Barry
-</td>
-<td style="text-align:left;">
-Scandinavian Gift Ideas
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Fixter
-</td>
-<td style="text-align:left;">
-Andy
-</td>
-<td style="text-align:left;">
-Australian Collectors, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Fixter
-</td>
-<td style="text-align:left;">
-Andy
-</td>
-<td style="text-align:left;">
-Anna’s Decorations, Ltd
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Fixter
-</td>
-<td style="text-align:left;">
-Andy
-</td>
-<td style="text-align:left;">
-Souveniers And Things Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Fixter
-</td>
-<td style="text-align:left;">
-Andy
-</td>
-<td style="text-align:left;">
-Australian Gift Network, Co
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Fixter
-</td>
-<td style="text-align:left;">
-Andy
-</td>
-<td style="text-align:left;">
-Australian Collectables, Ltd
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Marsh
-</td>
-<td style="text-align:left;">
-Peter
-</td>
-<td style="text-align:left;">
-Handji Gifts&amp; Co
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Marsh
-</td>
-<td style="text-align:left;">
-Peter
-</td>
-<td style="text-align:left;">
-Down Under Souveniers, Inc
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Marsh
-</td>
-<td style="text-align:left;">
-Peter
-</td>
-<td style="text-align:left;">
-GiftsForHim.com
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Marsh
-</td>
-<td style="text-align:left;">
-Peter
-</td>
-<td style="text-align:left;">
-Extreme Desk Decorations, Ltd
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Marsh
-</td>
-<td style="text-align:left;">
-Peter
-</td>
-<td style="text-align:left;">
-Kelly’s Gift Shop
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-King
-</td>
-<td style="text-align:left;">
-Tom
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nishi
-</td>
-<td style="text-align:left;">
-Mami
-</td>
-<td style="text-align:left;">
-Dragon Souveniers, Ltd. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nishi
-</td>
-<td style="text-align:left;">
-Mami
-</td>
-<td style="text-align:left;">
-Osaka Souveniers Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nishi
-</td>
-<td style="text-align:left;">
-Mami
-</td>
-<td style="text-align:left;">
-King Kong Collectables, Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nishi
-</td>
-<td style="text-align:left;">
-Mami
-</td>
-<td style="text-align:left;">
-Cruz &amp; Sons Co. 
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nishi
-</td>
-<td style="text-align:left;">
-Mami
-</td>
-<td style="text-align:left;">
-Tokyo Collectables, Ltd
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Kato
-</td>
-<td style="text-align:left;">
-Yoshimi
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Martin
-</td>
-<td style="text-align:left;">
-Enaco Distributors
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Gerard
-</td>
 <td style="text-align:left;">
-Martin
+Shipped
 </td>
-<td style="text-align:left;">
-Vida Sport, Ltd
-</td>
 </tr>
 <tr>
-<td style="text-align:left;">
-Gerard
-</td>
-<td style="text-align:left;">
-Martin
+<td style="text-align:right;">
+344
 </td>
 <td style="text-align:left;">
 CAF Imports
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Gerard
+<td style="text-align:right;">
+10177
 </td>
 <td style="text-align:left;">
-Martin
-</td>
-<td style="text-align:left;">
-Precious Collectables
+Shipped
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-Gerard
+<td style="text-align:right;">
+344
 </td>
 <td style="text-align:left;">
-Martin
+CAF Imports
+</td>
+<td style="text-align:right;">
+10231
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+173
+</td>
+<td style="text-align:left;">
+Cambridge Collectables Co. 
+</td>
+<td style="text-align:right;">
+10228
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+173
+</td>
+<td style="text-align:left;">
+Cambridge Collectables Co. 
+</td>
+<td style="text-align:right;">
+10249
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+202
+</td>
+<td style="text-align:left;">
+Canadian Gift Exchange Network
+</td>
+<td style="text-align:right;">
+10206
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+202
+</td>
+<td style="text-align:left;">
+Canadian Gift Exchange Network
+</td>
+<td style="text-align:right;">
+10313
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+339
+</td>
+<td style="text-align:left;">
+Classic Gift Ideas, Inc
+</td>
+<td style="text-align:right;">
+10183
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+339
+</td>
+<td style="text-align:left;">
+Classic Gift Ideas, Inc
+</td>
+<td style="text-align:right;">
+10307
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+424
+</td>
+<td style="text-align:left;">
+Classic Legends Inc. 
+</td>
+<td style="text-align:right;">
+10115
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+424
+</td>
+<td style="text-align:left;">
+Classic Legends Inc. 
+</td>
+<td style="text-align:right;">
+10163
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+424
+</td>
+<td style="text-align:left;">
+Classic Legends Inc. 
+</td>
+<td style="text-align:right;">
+10337
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+189
+</td>
+<td style="text-align:left;">
+Clover Collections, Co. 
+</td>
+<td style="text-align:right;">
+10220
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+189
+</td>
+<td style="text-align:left;">
+Clover Collections, Co. 
+</td>
+<td style="text-align:right;">
+10297
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+239
+</td>
+<td style="text-align:left;">
+Collectable Mini Designs Co. 
+</td>
+<td style="text-align:right;">
+10222
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+239
+</td>
+<td style="text-align:left;">
+Collectable Mini Designs Co. 
+</td>
+<td style="text-align:right;">
+10226
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+379
+</td>
+<td style="text-align:left;">
+Collectables For Less Inc. 
+</td>
+<td style="text-align:right;">
+10147
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+379
+</td>
+<td style="text-align:left;">
+Collectables For Less Inc. 
+</td>
+<td style="text-align:right;">
+10274
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+379
+</td>
+<td style="text-align:left;">
+Collectables For Less Inc. 
+</td>
+<td style="text-align:right;">
+10369
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+321
+</td>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:right;">
+10159
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+321
+</td>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:right;">
+10162
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+321
+</td>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:right;">
+10381
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+321
+</td>
+<td style="text-align:left;">
+Corporate Gift Ideas Co. 
+</td>
+<td style="text-align:right;">
+10384
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+458
 </td>
 <td style="text-align:left;">
 Corrida Auto Replicas, Ltd
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Gerard
+<td style="text-align:right;">
+10126
 </td>
 <td style="text-align:left;">
-Martin
-</td>
-<td style="text-align:left;">
-Iberia Gift Imports, Corp. 
+Shipped
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-NA
+<td style="text-align:right;">
+458
 </td>
 <td style="text-align:left;">
-NA
+Corrida Auto Replicas, Ltd
+</td>
+<td style="text-align:right;">
+10214
 </td>
 <td style="text-align:left;">
-Havel &amp; Zbyszek Co
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Porto Imports Co. 
+Shipped
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-NA
+<td style="text-align:right;">
+458
 </td>
 <td style="text-align:left;">
-NA
+Corrida Auto Replicas, Ltd
+</td>
+<td style="text-align:right;">
+10348
 </td>
 <td style="text-align:left;">
-Asian Shopping Network, Co
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Natürlich Autos
+Shipped
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-ANG Resellers
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Messner Shopping Network
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Franken Gifts, Co
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-BG&amp;E Collectables
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Schuyler Imports
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Der Hund Imports
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
+<td style="text-align:right;">
+335
 </td>
 <td style="text-align:left;">
 Cramer Spezialitäten, Ltd
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
 NA
-</td>
-<td style="text-align:left;">
-Asian Treasures, Inc. 
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-NA
+<td style="text-align:right;">
+385
 </td>
 <td style="text-align:left;">
-NA
+Cruz &amp; Sons Co. 
+</td>
+<td style="text-align:right;">
+10108
 </td>
 <td style="text-align:left;">
-SAR Distributors, Co
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Kommission Auto
+Shipped
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-NA
+<td style="text-align:right;">
+385
 </td>
 <td style="text-align:left;">
-NA
+Cruz &amp; Sons Co. 
+</td>
+<td style="text-align:right;">
+10198
 </td>
 <td style="text-align:left;">
-Lisboa Souveniers, Inc
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Stuttgart Collectable Exchange
+Shipped
 </td>
 </tr>
 <tr>
+<td style="text-align:right;">
+385
+</td>
 <td style="text-align:left;">
+Cruz &amp; Sons Co. 
+</td>
+<td style="text-align:right;">
+10330
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+171
+</td>
+<td style="text-align:left;">
+Daedalus Designs Imports
+</td>
+<td style="text-align:right;">
+10180
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+171
+</td>
+<td style="text-align:left;">
+Daedalus Designs Imports
+</td>
+<td style="text-align:right;">
+10224
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:left;">
+Danish Wholesale Imports
+</td>
+<td style="text-align:right;">
+10105
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:left;">
+Danish Wholesale Imports
+</td>
+<td style="text-align:right;">
+10238
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:left;">
+Danish Wholesale Imports
+</td>
+<td style="text-align:right;">
+10256
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:left;">
+Danish Wholesale Imports
+</td>
+<td style="text-align:right;">
+10327
+</td>
+<td style="text-align:left;">
+Resolved
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:left;">
+Danish Wholesale Imports
+</td>
+<td style="text-align:right;">
+10406
+</td>
+<td style="text-align:left;">
+Disputed
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+307
+</td>
+<td style="text-align:left;">
+Der Hund Imports
+</td>
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
 NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+157
+</td>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:right;">
+10272
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+157
+</td>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:right;">
+10281
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+157
+</td>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:right;">
+10318
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+157
+</td>
+<td style="text-align:left;">
+Diecast Classics Inc. 
+</td>
+<td style="text-align:right;">
+10422
+</td>
+<td style="text-align:left;">
+In Process
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+495
+</td>
+<td style="text-align:left;">
+Diecast Collectables
+</td>
+<td style="text-align:right;">
+10207
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+495
+</td>
+<td style="text-align:left;">
+Diecast Collectables
+</td>
+<td style="text-align:right;">
+10243
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+489
+</td>
+<td style="text-align:left;">
+Double Decker Gift Stores, Ltd
+</td>
+<td style="text-align:right;">
+10186
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+489
+</td>
+<td style="text-align:left;">
+Double Decker Gift Stores, Ltd
+</td>
+<td style="text-align:right;">
+10213
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+323
+</td>
+<td style="text-align:left;">
+Down Under Souveniers, Inc
+</td>
+<td style="text-align:right;">
+10132
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+323
+</td>
+<td style="text-align:left;">
+Down Under Souveniers, Inc
+</td>
+<td style="text-align:right;">
+10254
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+323
+</td>
+<td style="text-align:left;">
+Down Under Souveniers, Inc
+</td>
+<td style="text-align:right;">
+10354
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+323
+</td>
+<td style="text-align:left;">
+Down Under Souveniers, Inc
+</td>
+<td style="text-align:right;">
+10393
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+323
+</td>
+<td style="text-align:left;">
+Down Under Souveniers, Inc
+</td>
+<td style="text-align:right;">
+10404
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:left;">
+Dragon Souveniers, Ltd. 
+</td>
+<td style="text-align:right;">
+10117
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:left;">
+Dragon Souveniers, Ltd. 
+</td>
+<td style="text-align:right;">
+10150
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:left;">
+Dragon Souveniers, Ltd. 
+</td>
+<td style="text-align:right;">
+10165
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:left;">
+Dragon Souveniers, Ltd. 
+</td>
+<td style="text-align:right;">
+10277
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:left;">
+Dragon Souveniers, Ltd. 
+</td>
+<td style="text-align:right;">
+10387
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+216
+</td>
+<td style="text-align:left;">
+Enaco Distributors
+</td>
+<td style="text-align:right;">
+10118
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+216
+</td>
+<td style="text-align:left;">
+Enaco Distributors
+</td>
+<td style="text-align:right;">
+10197
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+216
+</td>
+<td style="text-align:left;">
+Enaco Distributors
+</td>
+<td style="text-align:right;">
+10340
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10104
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10128
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10133
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10153
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10156
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10190
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10203
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10205
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10212
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10244
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10246
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10262
+</td>
+<td style="text-align:left;">
+Cancelled
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10279
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10311
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10350
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10355
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10358
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10378
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10379
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10380
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10383
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10386
+</td>
+<td style="text-align:left;">
+Resolved
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10394
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10412
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10417
+</td>
+<td style="text-align:left;">
+Disputed
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:left;">
+Euro+ Shopping Channel
+</td>
+<td style="text-align:right;">
+10424
+</td>
+<td style="text-align:left;">
+In Process
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+412
+</td>
+<td style="text-align:left;">
+Extreme Desk Decorations, Ltd
+</td>
+<td style="text-align:right;">
+10234
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+412
+</td>
+<td style="text-align:left;">
+Extreme Desk Decorations, Ltd
+</td>
+<td style="text-align:right;">
+10268
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+412
+</td>
+<td style="text-align:left;">
+Extreme Desk Decorations, Ltd
+</td>
+<td style="text-align:right;">
+10418
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+443
 </td>
 <td style="text-align:left;">
 Feuer Online Stores, Inc
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
 NA
-</td>
-<td style="text-align:left;">
-Warburg Exchange
 </td>
 </tr>
 <tr>
+<td style="text-align:right;">
+273
+</td>
 <td style="text-align:left;">
+Franken Gifts, Co
+</td>
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
 NA
-</td>
-<td style="text-align:left;">
-Anton Designs, Ltd. 
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-NA
+<td style="text-align:right;">
+473
 </td>
 <td style="text-align:left;">
-NA
+Frau da Collezione
+</td>
+<td style="text-align:right;">
+10157
 </td>
 <td style="text-align:left;">
-Mit Vergnügen &amp; Co. 
+Shipped
 </td>
 </tr>
 <tr>
+<td style="text-align:right;">
+473
+</td>
 <td style="text-align:left;">
+Frau da Collezione
+</td>
+<td style="text-align:right;">
+10218
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+462
+</td>
+<td style="text-align:left;">
+FunGiftIdeas.com
+</td>
+<td style="text-align:right;">
+10166
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+462
+</td>
+<td style="text-align:left;">
+FunGiftIdeas.com
+</td>
+<td style="text-align:right;">
+10321
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+462
+</td>
+<td style="text-align:left;">
+FunGiftIdeas.com
+</td>
+<td style="text-align:right;">
+10388
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+175
+</td>
+<td style="text-align:left;">
+Gift Depot Inc. 
+</td>
+<td style="text-align:right;">
+10172
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+175
+</td>
+<td style="text-align:left;">
+Gift Depot Inc. 
+</td>
+<td style="text-align:right;">
+10263
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+175
+</td>
+<td style="text-align:left;">
+Gift Depot Inc. 
+</td>
+<td style="text-align:right;">
+10413
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+447
+</td>
+<td style="text-align:left;">
+Gift Ideas Corp. 
+</td>
+<td style="text-align:right;">
+10131
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+447
+</td>
+<td style="text-align:left;">
+Gift Ideas Corp. 
+</td>
+<td style="text-align:right;">
+10146
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+447
+</td>
+<td style="text-align:left;">
+Gift Ideas Corp. 
+</td>
+<td style="text-align:right;">
+10353
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+362
+</td>
+<td style="text-align:left;">
+Gifts4AllAges.com
+</td>
+<td style="text-align:right;">
+10264
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+362
+</td>
+<td style="text-align:left;">
+Gifts4AllAges.com
+</td>
+<td style="text-align:right;">
+10295
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+362
+</td>
+<td style="text-align:left;">
+Gifts4AllAges.com
+</td>
+<td style="text-align:right;">
+10414
+</td>
+<td style="text-align:left;">
+On Hold
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+240
+</td>
+<td style="text-align:left;">
+giftsbymail.co.uk
+</td>
+<td style="text-align:right;">
+10232
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+240
+</td>
+<td style="text-align:left;">
+giftsbymail.co.uk
+</td>
+<td style="text-align:right;">
+10316
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+357
+</td>
+<td style="text-align:left;">
+GiftsForHim.com
+</td>
+<td style="text-align:right;">
+10202
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+357
+</td>
+<td style="text-align:left;">
+GiftsForHim.com
+</td>
+<td style="text-align:right;">
+10260
+</td>
+<td style="text-align:left;">
+Cancelled
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+357
+</td>
+<td style="text-align:left;">
+GiftsForHim.com
+</td>
+<td style="text-align:right;">
+10410
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+166
+</td>
+<td style="text-align:left;">
+Handji Gifts&amp; Co
+</td>
+<td style="text-align:right;">
+10217
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+166
+</td>
+<td style="text-align:left;">
+Handji Gifts&amp; Co
+</td>
+<td style="text-align:right;">
+10259
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+166
+</td>
+<td style="text-align:left;">
+Handji Gifts&amp; Co
+</td>
+<td style="text-align:right;">
+10288
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+166
+</td>
+<td style="text-align:left;">
+Handji Gifts&amp; Co
+</td>
+<td style="text-align:right;">
+10409
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+125
+</td>
+<td style="text-align:left;">
+Havel &amp; Zbyszek Co
+</td>
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
 NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+227
+</td>
+<td style="text-align:left;">
+Heintze Collectables
+</td>
+<td style="text-align:right;">
+10161
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+227
+</td>
+<td style="text-align:left;">
+Heintze Collectables
+</td>
+<td style="text-align:right;">
+10314
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+167
+</td>
+<td style="text-align:left;">
+Herkku Gifts
+</td>
+<td style="text-align:right;">
+10181
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+167
+</td>
+<td style="text-align:left;">
+Herkku Gifts
+</td>
+<td style="text-align:right;">
+10188
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+167
+</td>
+<td style="text-align:left;">
+Herkku Gifts
+</td>
+<td style="text-align:right;">
+10289
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+484
+</td>
+<td style="text-align:left;">
+Iberia Gift Imports, Corp. 
+</td>
+<td style="text-align:right;">
+10184
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+484
+</td>
+<td style="text-align:left;">
+Iberia Gift Imports, Corp. 
+</td>
+<td style="text-align:right;">
+10303
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+496
+</td>
+<td style="text-align:left;">
+Kelly’s Gift Shop
+</td>
+<td style="text-align:right;">
+10138
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+496
+</td>
+<td style="text-align:left;">
+Kelly’s Gift Shop
+</td>
+<td style="text-align:right;">
+10179
+</td>
+<td style="text-align:left;">
+Cancelled
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+496
+</td>
+<td style="text-align:left;">
+Kelly’s Gift Shop
+</td>
+<td style="text-align:right;">
+10360
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+496
+</td>
+<td style="text-align:left;">
+Kelly’s Gift Shop
+</td>
+<td style="text-align:right;">
+10399
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+211
+</td>
+<td style="text-align:left;">
+King Kong Collectables, Co. 
+</td>
+<td style="text-align:right;">
+10187
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+211
+</td>
+<td style="text-align:left;">
+King Kong Collectables, Co. 
+</td>
+<td style="text-align:right;">
+10200
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+361
+</td>
+<td style="text-align:left;">
+Kommission Auto
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+480
 </td>
 <td style="text-align:left;">
 Kremlin Collectables, Co. 
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
 NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+386
+</td>
+<td style="text-align:left;">
+L’ordine Souveniers
+</td>
+<td style="text-align:right;">
+10176
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+386
+</td>
+<td style="text-align:left;">
+L’ordine Souveniers
+</td>
+<td style="text-align:right;">
+10266
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+386
+</td>
+<td style="text-align:left;">
+L’ordine Souveniers
+</td>
+<td style="text-align:right;">
+10416
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+172
+</td>
+<td style="text-align:left;">
+La Corne D’abondance, Co. 
+</td>
+<td style="text-align:right;">
+10114
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+172
+</td>
+<td style="text-align:left;">
+La Corne D’abondance, Co. 
+</td>
+<td style="text-align:right;">
+10286
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+172
+</td>
+<td style="text-align:left;">
+La Corne D’abondance, Co. 
+</td>
+<td style="text-align:right;">
+10336
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+119
+</td>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:right;">
+10275
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+119
+</td>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:right;">
+10315
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+119
+</td>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:right;">
+10375
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+119
+</td>
+<td style="text-align:left;">
+La Rochelle Gifts
+</td>
+<td style="text-align:right;">
+10425
+</td>
+<td style="text-align:left;">
+In Process
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+131
+</td>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:right;">
+10107
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+131
+</td>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:right;">
+10248
+</td>
+<td style="text-align:left;">
+Cancelled
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+131
+</td>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:right;">
+10292
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+131
+</td>
+<td style="text-align:left;">
+Land of Toys Inc. 
+</td>
+<td style="text-align:right;">
+10329
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+369
+</td>
+<td style="text-align:left;">
+Lisboa Souveniers, Inc
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+250
+</td>
+<td style="text-align:left;">
+Lyon Souveniers
+</td>
+<td style="text-align:right;">
+10134
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+250
+</td>
+<td style="text-align:left;">
+Lyon Souveniers
+</td>
+<td style="text-align:right;">
+10356
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+250
+</td>
+<td style="text-align:left;">
+Lyon Souveniers
+</td>
+<td style="text-align:right;">
+10395
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+350
+</td>
+<td style="text-align:left;">
+Marseille Mini Autos
+</td>
+<td style="text-align:right;">
+10122
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+350
+</td>
+<td style="text-align:left;">
+Marseille Mini Autos
+</td>
+<td style="text-align:right;">
+10344
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+350
+</td>
+<td style="text-align:left;">
+Marseille Mini Autos
+</td>
+<td style="text-align:right;">
+10364
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+286
+</td>
+<td style="text-align:left;">
+Marta’s Replicas Co. 
+</td>
+<td style="text-align:right;">
+10285
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+286
+</td>
+<td style="text-align:left;">
+Marta’s Replicas Co. 
+</td>
+<td style="text-align:right;">
+10305
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+347
+</td>
+<td style="text-align:left;">
+Men ‘R’ US Retailers, Ltd. 
+</td>
+<td style="text-align:right;">
+10160
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+347
+</td>
+<td style="text-align:left;">
+Men ‘R’ US Retailers, Ltd. 
+</td>
+<td style="text-align:right;">
+10209
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+247
+</td>
+<td style="text-align:left;">
+Messner Shopping Network
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+456
+</td>
+<td style="text-align:left;">
+Microscale Inc. 
+</td>
+<td style="text-align:right;">
+10242
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+456
+</td>
+<td style="text-align:left;">
+Microscale Inc. 
+</td>
+<td style="text-align:right;">
+10319
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+452
+</td>
+<td style="text-align:left;">
+Mini Auto Werke
+</td>
+<td style="text-align:right;">
+10164
+</td>
+<td style="text-align:left;">
+Resolved
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+452
+</td>
+<td style="text-align:left;">
+Mini Auto Werke
+</td>
+<td style="text-align:right;">
+10170
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+452
+</td>
+<td style="text-align:left;">
+Mini Auto Werke
+</td>
+<td style="text-align:right;">
+10392
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+209
+</td>
+<td style="text-align:left;">
+Mini Caravy
+</td>
+<td style="text-align:right;">
+10241
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+209
+</td>
+<td style="text-align:left;">
+Mini Caravy
+</td>
+<td style="text-align:right;">
+10255
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+209
+</td>
+<td style="text-align:left;">
+Mini Caravy
+</td>
+<td style="text-align:right;">
+10405
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+319
+</td>
+<td style="text-align:left;">
+Mini Classics
+</td>
+<td style="text-align:right;">
+10195
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+319
+</td>
+<td style="text-align:left;">
+Mini Classics
+</td>
+<td style="text-align:right;">
+10308
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+320
+</td>
+<td style="text-align:left;">
+Mini Creations Ltd. 
+</td>
+<td style="text-align:right;">
+10143
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+320
+</td>
+<td style="text-align:left;">
+Mini Creations Ltd. 
+</td>
+<td style="text-align:right;">
+10185
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+320
+</td>
+<td style="text-align:left;">
+Mini Creations Ltd. 
+</td>
+<td style="text-align:right;">
+10365
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10113
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10135
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10142
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10182
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10229
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10271
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10282
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10312
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10335
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10357
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10368
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10371
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10382
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10385
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10390
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10396
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:left;">
+Mini Gifts Distributors Ltd. 
+</td>
+<td style="text-align:right;">
+10421
+</td>
+<td style="text-align:left;">
+In Process
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+129
+</td>
+<td style="text-align:left;">
+Mini Wheels Co. 
+</td>
+<td style="text-align:right;">
+10111
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+129
+</td>
+<td style="text-align:left;">
+Mini Wheels Co. 
+</td>
+<td style="text-align:right;">
+10201
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+129
+</td>
+<td style="text-align:left;">
+Mini Wheels Co. 
+</td>
+<td style="text-align:right;">
+10333
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+477
+</td>
+<td style="text-align:left;">
+Mit Vergnügen &amp; Co. 
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+486
+</td>
+<td style="text-align:left;">
+Motor Mint Distributors Inc. 
+</td>
+<td style="text-align:right;">
+10109
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+486
+</td>
+<td style="text-align:left;">
+Motor Mint Distributors Inc. 
+</td>
+<td style="text-align:right;">
+10236
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+486
+</td>
+<td style="text-align:left;">
+Motor Mint Distributors Inc. 
+</td>
+<td style="text-align:right;">
+10331
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+151
+</td>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:right;">
+10127
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+151
+</td>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:right;">
+10204
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+151
+</td>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:right;">
+10267
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+151
+</td>
+<td style="text-align:left;">
+Muscle Machine Inc
+</td>
+<td style="text-align:right;">
+10349
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+223
+</td>
+<td style="text-align:left;">
+Natürlich Autos
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+299
+</td>
+<td style="text-align:left;">
+Norway Gifts By Mail, Co. 
+</td>
+<td style="text-align:right;">
+10284
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+299
+</td>
+<td style="text-align:left;">
+Norway Gifts By Mail, Co. 
+</td>
+<td style="text-align:right;">
+10301
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+363
+</td>
+<td style="text-align:left;">
+Online Diecast Creations Co. 
+</td>
+<td style="text-align:right;">
+10100
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+363
+</td>
+<td style="text-align:left;">
+Online Diecast Creations Co. 
+</td>
+<td style="text-align:right;">
+10192
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+363
+</td>
+<td style="text-align:left;">
+Online Diecast Creations Co. 
+</td>
+<td style="text-align:right;">
+10322
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+204
+</td>
+<td style="text-align:left;">
+Online Mini Collectables
+</td>
+<td style="text-align:right;">
+10276
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+204
+</td>
+<td style="text-align:left;">
+Online Mini Collectables
+</td>
+<td style="text-align:right;">
+10294
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+177
+</td>
+<td style="text-align:left;">
+Osaka Souveniers Co. 
+</td>
+<td style="text-align:right;">
+10210
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+177
+</td>
+<td style="text-align:left;">
+Osaka Souveniers Co. 
+</td>
+<td style="text-align:right;">
+10240
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+Oulu Toy Supplies, Inc. 
+</td>
+<td style="text-align:right;">
+10151
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+Oulu Toy Supplies, Inc. 
+</td>
+<td style="text-align:right;">
+10239
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+Oulu Toy Supplies, Inc. 
+</td>
+<td style="text-align:right;">
+10373
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+314
+</td>
+<td style="text-align:left;">
+Petit Auto
+</td>
+<td style="text-align:right;">
+10221
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+314
+</td>
+<td style="text-align:left;">
+Petit Auto
+</td>
+<td style="text-align:right;">
+10273
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+314
+</td>
+<td style="text-align:left;">
+Petit Auto
+</td>
+<td style="text-align:right;">
+10423
+</td>
+<td style="text-align:left;">
+In Process
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+169
+</td>
+<td style="text-align:left;">
+Porto Imports Co. 
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+376
+</td>
+<td style="text-align:left;">
+Precious Collectables
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+233
+</td>
+<td style="text-align:left;">
+Québec Home Shopping Network
+</td>
+<td style="text-align:right;">
+10171
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+233
+</td>
+<td style="text-align:left;">
+Québec Home Shopping Network
+</td>
+<td style="text-align:right;">
+10261
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+233
+</td>
+<td style="text-align:left;">
+Québec Home Shopping Network
+</td>
+<td style="text-align:right;">
+10411
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+481
 </td>
 <td style="text-align:left;">
 Raanan Stores, Inc
 </td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+353
+</td>
+<td style="text-align:left;">
+Reims Collectables
+</td>
+<td style="text-align:right;">
+10121
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+353
+</td>
+<td style="text-align:left;">
+Reims Collectables
+</td>
+<td style="text-align:right;">
+10137
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+353
+</td>
+<td style="text-align:left;">
+Reims Collectables
+</td>
+<td style="text-align:right;">
+10343
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+353
+</td>
+<td style="text-align:left;">
+Reims Collectables
+</td>
+<td style="text-align:right;">
+10359
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+353
+</td>
+<td style="text-align:left;">
+Reims Collectables
+</td>
+<td style="text-align:right;">
+10398
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+278
+</td>
+<td style="text-align:left;">
+Rovelli Gifts
+</td>
+<td style="text-align:right;">
+10106
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+278
+</td>
+<td style="text-align:left;">
+Rovelli Gifts
+</td>
+<td style="text-align:right;">
+10173
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+278
+</td>
+<td style="text-align:left;">
+Rovelli Gifts
+</td>
+<td style="text-align:right;">
+10328
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+260
+</td>
+<td style="text-align:left;">
+Royal Canadian Collectables, Ltd. 
+</td>
+<td style="text-align:right;">
+10235
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+260
+</td>
+<td style="text-align:left;">
+Royal Canadian Collectables, Ltd. 
+</td>
+<td style="text-align:right;">
+10283
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+381
+</td>
+<td style="text-align:left;">
+Royale Belge
+</td>
+<td style="text-align:right;">
+10116
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+381
+</td>
+<td style="text-align:left;">
+Royale Belge
+</td>
+<td style="text-align:right;">
+10144
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+381
+</td>
+<td style="text-align:left;">
+Royale Belge
+</td>
+<td style="text-align:right;">
+10338
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+381
+</td>
+<td style="text-align:left;">
+Royale Belge
+</td>
+<td style="text-align:right;">
+10366
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+382
+</td>
+<td style="text-align:left;">
+Salzburg Collectables
+</td>
+<td style="text-align:right;">
+10119
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+382
+</td>
+<td style="text-align:left;">
+Salzburg Collectables
+</td>
+<td style="text-align:right;">
+10269
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+382
+</td>
+<td style="text-align:left;">
+Salzburg Collectables
+</td>
+<td style="text-align:right;">
+10341
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+382
+</td>
+<td style="text-align:left;">
+Salzburg Collectables
+</td>
+<td style="text-align:right;">
+10419
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+356
+</td>
+<td style="text-align:left;">
+SAR Distributors, Co
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+146
+</td>
+<td style="text-align:left;">
+Saveley &amp; Henriot, Co. 
+</td>
+<td style="text-align:right;">
+10194
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+146
+</td>
+<td style="text-align:left;">
+Saveley &amp; Henriot, Co. 
+</td>
+<td style="text-align:right;">
+10208
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+146
+</td>
+<td style="text-align:left;">
+Saveley &amp; Henriot, Co. 
+</td>
+<td style="text-align:right;">
+10227
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+448
+</td>
+<td style="text-align:left;">
+Scandinavian Gift Ideas
+</td>
+<td style="text-align:right;">
+10167
+</td>
+<td style="text-align:left;">
+Cancelled
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+448
+</td>
+<td style="text-align:left;">
+Scandinavian Gift Ideas
+</td>
+<td style="text-align:right;">
+10291
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+448
+</td>
+<td style="text-align:left;">
+Scandinavian Gift Ideas
+</td>
+<td style="text-align:right;">
+10389
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+303
+</td>
+<td style="text-align:left;">
+Schuyler Imports
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+487
+</td>
+<td style="text-align:left;">
+Signal Collectibles Ltd. 
+</td>
+<td style="text-align:right;">
+10149
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+487
+</td>
+<td style="text-align:left;">
+Signal Collectibles Ltd. 
+</td>
+<td style="text-align:right;">
+10219
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:left;">
+Signal Gift Stores
+</td>
+<td style="text-align:right;">
+10124
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:left;">
+Signal Gift Stores
+</td>
+<td style="text-align:right;">
+10278
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:left;">
+Signal Gift Stores
+</td>
+<td style="text-align:right;">
+10346
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+282
+</td>
+<td style="text-align:left;">
+Souveniers And Things Co. 
+</td>
+<td style="text-align:right;">
+10139
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+282
+</td>
+<td style="text-align:left;">
+Souveniers And Things Co. 
+</td>
+<td style="text-align:right;">
+10270
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+282
+</td>
+<td style="text-align:left;">
+Souveniers And Things Co. 
+</td>
+<td style="text-align:right;">
+10361
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+282
+</td>
+<td style="text-align:left;">
+Souveniers And Things Co. 
+</td>
+<td style="text-align:right;">
+10420
+</td>
+<td style="text-align:left;">
+In Process
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+409
+</td>
+<td style="text-align:left;">
+Stuttgart Collectable Exchange
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+324
+</td>
+<td style="text-align:left;">
+Stylish Desk Decors, Co. 
+</td>
+<td style="text-align:right;">
+10129
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+324
+</td>
+<td style="text-align:left;">
+Stylish Desk Decors, Co. 
+</td>
+<td style="text-align:right;">
+10175
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+324
+</td>
+<td style="text-align:left;">
+Stylish Desk Decors, Co. 
+</td>
+<td style="text-align:right;">
+10351
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+334
+</td>
+<td style="text-align:left;">
+Suominen Souveniers
+</td>
+<td style="text-align:right;">
+10141
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+334
+</td>
+<td style="text-align:left;">
+Suominen Souveniers
+</td>
+<td style="text-align:right;">
+10247
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+334
+</td>
+<td style="text-align:left;">
+Suominen Souveniers
+</td>
+<td style="text-align:right;">
+10363
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+455
+</td>
+<td style="text-align:left;">
+Super Scale Inc. 
+</td>
+<td style="text-align:right;">
+10196
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+455
+</td>
+<td style="text-align:left;">
+Super Scale Inc. 
+</td>
+<td style="text-align:right;">
+10245
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+161
+</td>
+<td style="text-align:left;">
+Technics Stores Inc. 
+</td>
+<td style="text-align:right;">
+10140
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+161
+</td>
+<td style="text-align:left;">
+Technics Stores Inc. 
+</td>
+<td style="text-align:right;">
+10168
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+161
+</td>
+<td style="text-align:left;">
+Technics Stores Inc. 
+</td>
+<td style="text-align:right;">
+10317
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+161
+</td>
+<td style="text-align:left;">
+Technics Stores Inc. 
+</td>
+<td style="text-align:right;">
+10362
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+328
+</td>
+<td style="text-align:left;">
+Tekni Collectables Inc. 
+</td>
+<td style="text-align:right;">
+10233
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+328
+</td>
+<td style="text-align:left;">
+Tekni Collectables Inc. 
+</td>
+<td style="text-align:right;">
+10251
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+328
+</td>
+<td style="text-align:left;">
+Tekni Collectables Inc. 
+</td>
+<td style="text-align:right;">
+10401
+</td>
+<td style="text-align:left;">
+On Hold
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+450
+</td>
+<td style="text-align:left;">
+The Sharp Gifts Warehouse
+</td>
+<td style="text-align:right;">
+10250
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+450
+</td>
+<td style="text-align:left;">
+The Sharp Gifts Warehouse
+</td>
+<td style="text-align:right;">
+10257
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+450
+</td>
+<td style="text-align:left;">
+The Sharp Gifts Warehouse
+</td>
+<td style="text-align:right;">
+10400
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+450
+</td>
+<td style="text-align:left;">
+The Sharp Gifts Warehouse
+</td>
+<td style="text-align:right;">
+10407
+</td>
+<td style="text-align:left;">
+On Hold
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+398
+</td>
+<td style="text-align:left;">
+Tokyo Collectables, Ltd
+</td>
+<td style="text-align:right;">
+10258
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+398
+</td>
+<td style="text-align:left;">
+Tokyo Collectables, Ltd
+</td>
+<td style="text-align:right;">
+10339
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+398
+</td>
+<td style="text-align:left;">
+Tokyo Collectables, Ltd
+</td>
+<td style="text-align:right;">
+10372
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+398
+</td>
+<td style="text-align:left;">
+Tokyo Collectables, Ltd
+</td>
+<td style="text-align:right;">
+10408
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+259
+</td>
+<td style="text-align:left;">
+Toms Spezialitäten, Ltd
+</td>
+<td style="text-align:right;">
+10191
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+259
+</td>
+<td style="text-align:left;">
+Toms Spezialitäten, Ltd
+</td>
+<td style="text-align:right;">
+10310
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:left;">
+Toys of Finland, Co. 
+</td>
+<td style="text-align:right;">
+10155
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:left;">
+Toys of Finland, Co. 
+</td>
+<td style="text-align:right;">
+10299
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:left;">
+Toys of Finland, Co. 
+</td>
+<td style="text-align:right;">
+10377
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+205
+</td>
+<td style="text-align:left;">
+Toys4GrownUps.com
+</td>
+<td style="text-align:right;">
+10145
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+205
+</td>
+<td style="text-align:left;">
+Toys4GrownUps.com
+</td>
+<td style="text-align:right;">
+10189
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+205
+</td>
+<td style="text-align:left;">
+Toys4GrownUps.com
+</td>
+<td style="text-align:right;">
+10367
+</td>
+<td style="text-align:left;">
+Resolved
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+201
+</td>
+<td style="text-align:left;">
+UK Collectables, Ltd. 
+</td>
+<td style="text-align:right;">
+10253
+</td>
+<td style="text-align:left;">
+Cancelled
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+201
+</td>
+<td style="text-align:left;">
+UK Collectables, Ltd. 
+</td>
+<td style="text-align:right;">
+10302
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+201
+</td>
+<td style="text-align:left;">
+UK Collectables, Ltd. 
+</td>
+<td style="text-align:right;">
+10403
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+298
+</td>
+<td style="text-align:left;">
+Vida Sport, Ltd
+</td>
+<td style="text-align:right;">
+10225
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+298
+</td>
+<td style="text-align:left;">
+Vida Sport, Ltd
+</td>
+<td style="text-align:right;">
+10287
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+181
+</td>
+<td style="text-align:left;">
+Vitachrome Inc. 
+</td>
+<td style="text-align:right;">
+10102
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+181
+</td>
+<td style="text-align:left;">
+Vitachrome Inc. 
+</td>
+<td style="text-align:right;">
+10237
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+181
+</td>
+<td style="text-align:left;">
+Vitachrome Inc. 
+</td>
+<td style="text-align:right;">
+10324
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+144
+</td>
+<td style="text-align:left;">
+Volvo Model Replicas, Co
+</td>
+<td style="text-align:right;">
+10112
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+144
+</td>
+<td style="text-align:left;">
+Volvo Model Replicas, Co
+</td>
+<td style="text-align:right;">
+10320
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+144
+</td>
+<td style="text-align:left;">
+Volvo Model Replicas, Co
+</td>
+<td style="text-align:right;">
+10326
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+144
+</td>
+<td style="text-align:left;">
+Volvo Model Replicas, Co
+</td>
+<td style="text-align:right;">
+10334
+</td>
+<td style="text-align:left;">
+On Hold
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+459
+</td>
+<td style="text-align:left;">
+Warburg Exchange
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+475
+</td>
+<td style="text-align:left;">
+West Coast Collectables Co. 
+</td>
+<td style="text-align:right;">
+10199
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+475
+</td>
+<td style="text-align:left;">
+West Coast Collectables Co. 
+</td>
+<td style="text-align:right;">
+10215
+</td>
+<td style="text-align:left;">
+Shipped
+</td>
 </tr>
 </tbody>
 </table>
-</div>
-<a href="#contents"><em>(Top)</em></a>
-<hr>
-<pre class="r"><code>employees %&gt;%  
-  select(employeeNumber,managerLastName = lastName, managerFirstName = firstName) %&gt;% 
-  inner_join(select(employees, reportsTo, lastName, firstName), by = c(&#39;employeeNumber&#39; = &#39;reportsTo&#39;))</code></pre>
-<pre><code>## # A tibble: 22 x 5
-##    employeeNumber managerLastName managerFirstName lastName  firstName
-##             &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt;    
-##  1           1002 Murphy          Diane            Patterson Mary     
-##  2           1002 Murphy          Diane            Firrelli  Jeff     
-##  3           1056 Patterson       Mary             Patterson William  
-##  4           1056 Patterson       Mary             Bondur    Gerard   
-##  5           1056 Patterson       Mary             Bow       Anthony  
-##  6           1056 Patterson       Mary             Nishi     Mami     
-##  7           1088 Patterson       William          Fixter    Andy     
-##  8           1088 Patterson       William          Marsh     Peter    
-##  9           1088 Patterson       William          King      Tom      
-## 10           1102 Bondur          Gerard           Bondur    Loui     
-## # ... with 12 more rows</code></pre>
 </div>
 </div>
 </div>
@@ -4735,7 +7370,7 @@ Raanan Stores, Inc
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql/" data-tooltip="R and SQL (Part 1)">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -4743,7 +7378,7 @@ Raanan Stores, Inc
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql/" data-tooltip="R and SQL (Part 1)">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/statistical-tests/" data-tooltip="Common statistical tests are linear models">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -4821,7 +7456,7 @@ Raanan Stores, Inc
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql/" data-tooltip="R and SQL (Part 1)">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -4829,7 +7464,7 @@ Raanan Stores, Inc
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/r-and-sql/" data-tooltip="R and SQL (Part 1)">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/statistical-tests/" data-tooltip="Common statistical tests are linear models">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -4962,24 +7597,6 @@ Raanan Stores, Inc
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/08/r-and-sql-part-2/">
-                <h3 class="media-heading">R and SQL (Part 2)</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Aug 8, 2019
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">ContentsThe sample dataset1. Common joins1.1 Inner join1.2 Left join1.3 Right join1.4 Full joinThe sample datasetWe will use the same sample dataset from mysqltutorial.org that was used in the first part of this blog, as described here. The schema is reproduced below:
-Instructions on how to load the sample dataset into MySQL and R were provided here.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
-          <div class="media">
-            
-            <div class="media-body">
               <a class="link-unstyled" href="/2019/08/r-and-sql/">
                 <h3 class="media-heading">R and SQL (Part 1)</h3>
               </a>
@@ -4988,7 +7605,25 @@ Raanan Stores, Inc
                   Aug 8, 2019
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive. In Part 1, we look at selecting, sorting and filtering data. In Part 2 (to follow) we will look at joining data, grouping data and subqueries.</div>
+              <div class="media-content hide-xs font-merryweather">When analyzing data, many common procedures in SQL can also be performed in R, and vice versa. Here I demonstrate the similarities between the two. For people with a good basic knowledge of either R or SQL, this may make the process of learning the other language more intuitive.
+In Part 1 of this series we look at the similarities between SQL and R when selecting, sorting and filtering data.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/08/r-and-sql-part-2/">
+                <h3 class="media-heading">R and SQL (Part 2)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">library(tidyverse)Contents1. Joins1.1 Inner join1.2 Left join1. JoinsA join allows you to combine variables or columns from two tables. It first matches observations by their keys, then copies across variables from one table to another.For those who are new to SQL, this section of R for Data Science, by Hadley Wickham, provides a nice explanation of the different types joins.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
