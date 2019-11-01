@@ -34,7 +34,7 @@
 IntroductionIn Part 1 of this series we looked at the similarities between SQL and R when selecting, sorting and filtering data. In this second part we are going to extend the comparison to include joins, grouped data and subqueries.">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="R and SQL (Part 2)">
-    <meta property="og:url" content="/2019/08/r-and-sql-part2/">
+    <meta property="og:url" content="/2019/11/r-and-sql-part2/">
     <meta property="og:site_name" content="Steve Doogue">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Steve Doogue">
@@ -176,9 +176,9 @@
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2019-08-20T00:00:00Z">
+      <time itemprop="datePublished" datetime="2019-11-01T00:00:00Z">
         
-  August 20, 2019
+  November 1, 2019
 
       </time>
     
@@ -4759,7 +4759,7 @@ Raanan Stores, Inc
 <div id="example-a" class="section level5">
 <h5>Example A</h5>
 <p>Say we want to find the total value (in $) of each order in our sample data set.</p>
-<p>To do this, we need to (1) calculate the value of each product in every order, i.e. the quantity times the price; and (2) group each product by its order number and add these values together.</p>
+<p>To do this, we need to (1) calculate the value of each product in every order, i.e. the quantity times the price; and (2) group each product sold by its order number and add these values together.</p>
 <p><em>With SQL:</em></p>
 <p>In SQL we group the data using the <code>GROUP BY</code> clause, and specify our aggregate calculation in the <code>SELECT</code> clause, as follows:</p>
 <pre class="markdown"><code>SELECT 
@@ -5124,8 +5124,8 @@ Shipped
 </div>
 <div id="part3" class="section level1">
 <h1>3. Subqueries</h1>
-<p>With SQL, a subquery is where one query (‘inner query’) nested within another query (‘outer query’). The result of the inner query is used as part of the outer query.
-This is illustrated with two examples below: one in which a subquery is used in the WHERE clause, and one in which it is used in the FROM clause.</p>
+<p>In SQL, a subquery is where one query (the ‘inner query’) nested within another query (the ‘outer query’). The result of the inner query is used as part of the outer query.</p>
+<p>This concept is illustrated in the two examples below: one in which a subquery is used in the WHERE clause, and one in which it is used in the FROM clause.</p>
 <a href="#contents"><em>(Top)</em></a>
 <hr>
 <div id="part3_1" class="section level4">
@@ -5138,10 +5138,8 @@ FROM
   payments
 WHERE
   amount &gt; 
-   (SELECT 
-      AVG(amount)
-    FROM
-      payments)</code></pre>
+   (SELECT AVG(amount)
+    FROM payments)</code></pre>
 <p><em>With R:</em></p>
 <p>The equivalent code in R is as follows:</p>
 <pre class="r"><code>payments %&gt;% 
@@ -5270,9 +5268,9 @@ FROM(
 </div>
 <div id="part3_3" class="section level4">
 <h4>3.3 Correlated subqueries</h4>
-<p>In the previous two examples the subqueries were independent. This means the the inner query does not depend on the outer query, and could be run as a standalone query.</p>
-<p>A <em>correlated</em> subquery is one that uses data from the outer query. In other order, the inner query depends on the outer query. A correlated subquery is evaluated once for each row in the outer query.</p>
-<p>Example: here we want to select products whose buy prices are greater than the average buy price of all products in each product line.</p>
+<p>In the previous two examples the subqueries were independent. This means the the inner query did not depend on the outer query, and could have been run as a standalone query.</p>
+<p>A <em>correlated</em> subquery is one that uses data from the outer query. In other words, the inner query depends on the outer query. A correlated subquery is evaluated once for each row in the outer query.</p>
+<p>For example: say we want to select products with a buy price that is greater than the average buy price for its product line.</p>
 <p><em>With SQL:</em></p>
 <pre class="markdown"><code>SELECT 
   productname, buyprice
@@ -5282,10 +5280,12 @@ WHERE buyprice &gt;
   (SELECT avg(buyprice)
   FROM products
   WHERE productLine = p1.productLine)</code></pre>
+<p>Here the inner query is finding the average buy price corresponding to the product line listed in each row of the outer query, and only selecting rows where the product price exceeds this average.</p>
 <p><em>With R:</em></p>
-<p>To do this in R, we create a helper column called ‘avgBuyPrice’ which, for each row, shows the average price for associated product line. We then filter to only show products whose price is higher than this average:</p>
+<p>The same result can be achieved in R using a helper column called ‘avgBuyPrice’ which, for each row, shows the average price for the associated product line. The data is then filter to only show products whose price is higher than this average:</p>
 <pre class="r"><code>products %&gt;%
   # This is equivalent to the inner query
+  # Creates a column with the avg price of the relevant product line
   group_by(productLine) %&gt;% 
   mutate(avgBuyPrice = mean(buyPrice)) %&gt;% 
   ungroup() %&gt;%
@@ -5356,7 +5356,7 @@ buyPrice
 <p>Unlike a derived table, a CTE can be referenced multiple times in the same query. In addition, a CTE provides better readability and performance in comparison with a derived table.</p>
 <p>As a simple illustration, we can repeat the example above (see section 3.2) where we found the maximum, minimum and average number of items in an order. This time, instead of using a subquery, the inner query can be expressed as a common table expression called ‘itemcount’</p>
 <p><em>With SQL:</em></p>
-<p>We first create the common table expression called ‘itemcount’ using the <code>WITH</code> clause:</p>
+<p>This time we create the temporary table called ‘itemcount’ using the <code>WITH</code> clause. We then select the relevant informatoin from this CTE:</p>
 <pre class="markdown"><code>WITH itemcount AS (
     SELECT orderNumber, count(orderNumber) as items
   FROM orderdetails
@@ -5454,19 +5454,19 @@ avg
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/08/r-and-sql-part2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/11/r-and-sql-part2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/08/r-and-sql-part2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/11/r-and-sql-part2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/08/r-and-sql-part2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/11/r-and-sql-part2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -5540,19 +5540,19 @@ avg
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/08/r-and-sql-part2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/11/r-and-sql-part2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/08/r-and-sql-part2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/11/r-and-sql-part2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/08/r-and-sql-part2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/11/r-and-sql-part2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -5582,19 +5582,19 @@ avg
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2019%2F08%2Fr-and-sql-part2%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2019%2F11%2Fr-and-sql-part2%2F">
           <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2019%2F08%2Fr-and-sql-part2%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2019%2F11%2Fr-and-sql-part2%2F">
           <i class="fa fa-twitter"></i><span>Share on Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2019%2F08%2Fr-and-sql-part2%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2019%2F11%2Fr-and-sql-part2%2F">
           <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
         </a>
       </li>
@@ -5655,12 +5655,12 @@ avg
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/08/r-and-sql-part2/">
+              <a class="link-unstyled" href="/2019/11/r-and-sql-part2/">
                 <h3 class="media-heading">R and SQL (Part 2)</h3>
               </a>
               <span class="media-meta">
                 <span class="media-date text-small">
-                  Aug 8, 2019
+                  Nov 11, 2019
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">This is part 2 of a series of posts demonstrating how equivalent analysis can be carried out in SQL and R. Here we look at joins, grouped data, and subqueries.
@@ -5846,9 +5846,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/2019\/08\/r-and-sql-part2\/';
+          this.page.url = '\/2019\/11\/r-and-sql-part2\/';
           
-            this.page.identifier = '\/2019\/08\/r-and-sql-part2\/'
+            this.page.identifier = '\/2019\/11\/r-and-sql-part2\/'
           
         };
         (function() {

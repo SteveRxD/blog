@@ -6,20 +6,19 @@
     <description>Recent content in Posts on Steve Doogue</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 20 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 01 Nov 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>R and SQL (Part 2)</title>
-      <link>/2019/08/r-and-sql-part2/</link>
-      <pubDate>Tue, 20 Aug 2019 00:00:00 +0000</pubDate>
+      <link>/2019/11/r-and-sql-part2/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>/2019/08/r-and-sql-part2/</guid>
+      <guid>/2019/11/r-and-sql-part2/</guid>
       <description>This is part 2 of a series of posts demonstrating how equivalent analysis can be carried out in SQL and R. Here we look at joins, grouped data, and subqueries.
-Please note that this post is currently under construction. More sections will be added over time.
-IntroductionIn Part 1 of this series we looked at the similarities between SQL and R when selecting, sorting and filtering data.</description>
+IntroductionIn Part 1 of this series we looked at the similarities between SQL and R when selecting, sorting and filtering data. In this second part we are going to extend the comparison to include joins, grouped data and subqueries.</description>
     </item>
     
     <item>

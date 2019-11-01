@@ -1,7 +1,7 @@
 ---
 title: "R and SQL (Part 2)"
 author: ''
-date: '2019-08-20'
+date: '2019-11-01'
 comments: yes
 categories: []
 slug: r-and-sql-part2
@@ -15,10 +15,6 @@ _This is part 2 of a series of posts demonstrating how equivalent analysis can b
 
 <hr>
 <!--more--->
-
-{{<alert warning>}} 
-Please note that this post is currently under construction. More sections will be added over time.  
-{{</alert>}}
 
 # Introduction
 
@@ -93,6 +89,11 @@ products     <- read_csv(paste0(filepath,'products.csv'),
  -  [**2. Grouped data**](#part2)
     -  [**2.1 Summarizing grouped data**](#part2_1)
     -  [**2.2 Filtering grouped data**](#part2_2)
+ -  [**3. Subqueries**](#part3)
+    -  [**3.1 Subquery in the WHERE clause**](#part3_1)
+    -  [**3.2 Subquery in the FROM clause**](#part3_2)
+    -  [**3.3 Correlated subqueries**](#part3_3)
+    -  [**3.4 Common table expressions**](#part3_4)
 <hr>
 
 # The data{#setup}
@@ -418,7 +419,7 @@ Grouped data is often summarized using aggregate functions such as `SUM`, `AVG`,
 
 Say we want to find the total value (in $) of each order in our sample data set. 
 
-To do this, we need to (1) calculate the value of each product in every order, i.e. the quantity times the price; and (2) group each product by its order number and add these values together.
+To do this, we need to (1) calculate the value of each product in every order, i.e. the quantity times the price; and (2) group each product sold by its order number and add these values together.
 
 _With SQL:_
 
@@ -619,3 +620,217 @@ customers %>%
 
 [_(Top)_](#contents)
 <hr>
+
+# 3. Subqueries {#part3}
+
+In SQL, a subquery is where one query (the 'inner query') nested within another query (the 'outer query'). The result of the inner query is used as part of the outer query. 
+
+This concept is illustrated in the two examples below: one in which a subquery is used in the WHERE clause, and one in which it is used in the FROM clause. 
+
+[_(Top)_](#contents)
+<hr>
+
+#### 3.1 Subquery in the WHERE clause{#part3_1}
+
+In this example, we use a subquery find customers whose payments are greater than the average payment. 
+
+_With SQL:_
+
+```markdown
+SELECT 
+  customerNumber, checkNumber, amount
+FROM
+  payments
+WHERE
+  amount > 
+   (SELECT AVG(amount)
+    FROM payments)
+```
+_With R:_
+
+The equivalent code in R is as follows:
+
+```{r, eval = FALSE}
+payments %>% 
+  filter(amount > mean(amount))
+```
+Which gives 134 customers, the first five of which are shown below:
+
+```{r, echo = FALSE}
+payments %>% 
+  filter(amount > mean(amount)) %>% 
+  slice(1:5) %>% 
+  showTable(scroll = "no") %>% 
+  kable_styling(full_width = F, position = "left")
+```
+
+[_(Top)_](#contents)
+<hr>
+
+#### 3.2 Subquery in the FROM clause (derived tables) {#part3_2}
+
+We can also use subqueries in the FROM clause. This creates what's known as a 'derived table' - a virtual table which is only stored for the duration of the query.
+
+In this example we want to find the maximum, minimum and average number of items in an order. To do this we create a subquery / derived table which shows the count of different items that were included in each order.
+
+_With SQL:_
+
+In MySQL we use a subquery to create the derived table called 'itemcount'. This counts the number of items in each order ('items'). Note that in MySQL derived tables must always be given an alias. 
+
+```markdown
+SELECT
+  select max(items), min(items), floor(avg(items))
+FROM( 
+  SELECT 
+    orderNumber, count(orderNumber) as items
+  FROM orderdetails
+  GROUP BY orderNumber) as itemcount
+```
+_With R:_
+
+```{r, eval = FALSE}
+orderdetails %>% 
+  # This is equivalent to the inner query
+  group_by(orderNumber) %>% 
+  summarise(items = n()) %>% 
+  # This is equivalent to the outer query
+  summarise(
+    max = max(items),
+    min = min(items),
+    avg = floor(mean(items))
+  )
+```
+
+This shows that the maximum number of different items in an single order was 18, the minimum was 1, and the average was 9 (rounded).
+
+[_(Top)_](#contents)
+<hr>
+
+#### 3.3 Correlated subqueries{#part3_3}
+
+
+In the previous two examples the subqueries were independent. This means the the inner query did not depend on the outer query, and could have been run as a standalone query. 
+
+A *correlated* subquery is one that uses data from the outer query. In other words, the inner query depends on the outer query. A correlated subquery is evaluated once for each row in the outer query.
+
+For example: say we want to select products with a buy price that is greater than the average buy price for its product line.
+
+_With SQL:_
+
+```markdown
+SELECT 
+  productname, buyprice
+FROM 
+  products as p1
+WHERE buyprice >
+  (SELECT avg(buyprice)
+  FROM products
+  WHERE productLine = p1.productLine)
+```
+Here the inner query is finding the average buy price corresponding to the product line listed in each row of the outer query, and only selecting rows where the product price exceeds this average.  
+
+_With R:_
+
+The same result can be achieved in R using a helper column called 'avgBuyPrice' which, for each row, shows the average price for the associated product line. The data is then filter to only show products whose price is higher than this average:
+
+```{r, eval = FALSE}
+products %>%
+  # This is equivalent to the inner query
+  # Creates a column with the avg price of the relevant product line
+  group_by(productLine) %>% 
+  mutate(avgBuyPrice = mean(buyPrice)) %>% 
+  ungroup() %>%
+  # This is equivalent to the outer query
+  filter(buyPrice > avgBuyPrice) %>% 
+  select(productName, buyPrice)
+  
+```
+
+This code returns 55 rows, the first five of which are shown below: 
+
+```{r, echo = FALSE}
+products %>% 
+  group_by(productLine) %>% 
+  mutate(avgBuyPrice = mean(buyPrice)) %>% 
+  ungroup() %>% 
+  filter(buyPrice > avgBuyPrice) %>% 
+  select(productName, buyPrice) %>% 
+  slice(1:5) %>% 
+  showTable(scroll = "no") %>% 
+  kable_styling(full_width = F, position = "left")
+```
+
+
+[_(Top)_](#contents)
+<hr>
+
+#### 3.4 Common table expressions{#part3_4}
+
+A common table expression (CTE), like a derived table, is a named temporary table that exists only for the duration of a query. It is created using the `WITH` clause.
+
+Unlike a derived table, a CTE can be referenced multiple times in the same query. In addition, a CTE provides better readability and performance in comparison with a derived table.
+
+As a simple illustration, we can repeat the example above (see section 3.2) where we found the maximum, minimum and average number of items in an order. This time, instead of using a subquery, the inner query can be expressed as a common table expression called 'itemcount'
+
+_With SQL:_
+
+This time we create the temporary table called 'itemcount' using the `WITH` clause. We then select the relevant informatoin from this CTE:
+
+```markdown
+WITH itemcount AS (
+	SELECT orderNumber, count(orderNumber) as items
+  FROM orderdetails
+  GROUP BY orderNumber)
+    
+SELECT 
+  max(items), min(items), floor(avg(items))
+FROM 
+  itemcount
+```
+_With R:_
+
+In R, we create a separate dataframe which is analogous to the CTE above:
+
+```{r, eval = FALSE}
+# This is equivalent to the CTE table
+itemcount <- orderdetails %>% 
+  group_by(orderNumber) %>% 
+  summarise(items = n())
+
+# This is the code which makes use of the CTE
+itemcount %>%
+  summarize(
+    max = max(items), 
+    min = min(items), 
+    avg = floor(mean(items))
+  )
+```
+
+Here we get the same results as above:
+
+```{r, echo = FALSE}
+itemcount <- orderdetails %>% 
+  group_by(orderNumber) %>% 
+  summarise(items = n())
+
+itemcount %>%
+  summarize(
+    max = max(items), 
+    min = min(items), 
+    avg = floor(mean(items))
+  ) %>% 
+  
+# Table
+  showTable(scroll = "no") %>% 
+  kable_styling(full_width = F, position = "left")
+```
+
+[_(Top)_](#contents)
+<hr>
+
+
+
+
+
+
+

@@ -1,7 +1,7 @@
 ---
 title: "R and SQL (Part 2)"
 author: ''
-date: '2019-08-20'
+date: '2019-11-01'
 comments: yes
 categories: []
 slug: r-and-sql-part2
@@ -17,9 +17,6 @@ Summary: Part 2 of a series that examines parallels between SQL and R. Here we l
 <p><em>This is part 2 of a series of posts demonstrating how equivalent analysis can be carried out in SQL and R. Here we look at joins, grouped data, and subqueries.</em></p>
 <hr>
 <!--more--->
-<p>{{<alert warning>}}
-Please note that this post is currently under construction. More sections will be added over time.<br />
-{{</alert>}}</p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>In <a href="https://www.stevedoogue.com/2019/08/r-and-sql/">Part 1</a> of this series we looked at the similarities between SQL and R when <em>selecting</em>, <em>sorting</em> and <em>filtering</em> data. In this second part we are going to extend the comparison to include <em>joins</em>, <em>grouped data</em> and <em>subqueries</em>.</p>
@@ -38,7 +35,14 @@ Please note that this post is currently under construction. More sections will b
 <li><a href="#part2"><strong>2. Grouped data</strong></a>
 <ul>
 <li><a href="#part2_1"><strong>2.1 Summarizing grouped data</strong></a></li>
-<li><a href="#part2_2"><strong>2.2 Filtering grouped data</strong></a>
+<li><a href="#part2_2"><strong>2.2 Filtering grouped data</strong></a></li>
+</ul></li>
+<li><a href="#part3"><strong>3. Subqueries</strong></a>
+<ul>
+<li><a href="#part3_1"><strong>3.1 Subquery in the WHERE clause</strong></a></li>
+<li><a href="#part3_2"><strong>3.2 Subquery in the FROM clause</strong></a></li>
+<li><a href="#part3_3"><strong>3.3 Correlated subqueries</strong></a></li>
+<li><a href="#part3_4"><strong>3.4 Common table expressions</strong></a>
 <hr></li>
 </ul></li>
 </ul>
@@ -4576,7 +4580,7 @@ Raanan Stores, Inc
 <div id="example-a" class="section level5">
 <h5>Example A</h5>
 <p>Say we want to find the total value (in $) of each order in our sample data set.</p>
-<p>To do this, we need to (1) calculate the value of each product in every order, i.e. the quantity times the price; and (2) group each product by its order number and add these values together.</p>
+<p>To do this, we need to (1) calculate the value of each product in every order, i.e. the quantity times the price; and (2) group each product sold by its order number and add these values together.</p>
 <p><em>With SQL:</em></p>
 <p>In SQL we group the data using the <code>GROUP BY</code> clause, and specify our aggregate calculation in the <code>SELECT</code> clause, as follows:</p>
 <pre class="markdown"><code>SELECT 
@@ -4937,5 +4941,296 @@ Shipped
 <a href="#contents"><em>(Top)</em></a>
 <hr>
 </div>
+</div>
+</div>
+<div id="part3" class="section level1">
+<h1>3. Subqueries</h1>
+<p>In SQL, a subquery is where one query (the ‘inner query’) nested within another query (the ‘outer query’). The result of the inner query is used as part of the outer query.</p>
+<p>This concept is illustrated in the two examples below: one in which a subquery is used in the WHERE clause, and one in which it is used in the FROM clause.</p>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+<div id="part3_1" class="section level4">
+<h4>3.1 Subquery in the WHERE clause</h4>
+<p>In this example, we use a subquery find customers whose payments are greater than the average payment.</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT 
+  customerNumber, checkNumber, amount
+FROM
+  payments
+WHERE
+  amount &gt; 
+   (SELECT AVG(amount)
+    FROM payments)</code></pre>
+<p><em>With R:</em></p>
+<p>The equivalent code in R is as follows:</p>
+<pre class="r"><code>payments %&gt;% 
+  filter(amount &gt; mean(amount))</code></pre>
+<p>Which gives 134 customers, the first five of which are shown below:</p>
+<table class="table table" style="font-size: 11px; margin-left: auto; margin-right: auto; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:right;font-size: 9px;">
+customerNumber
+</th>
+<th style="text-align:left;font-size: 9px;">
+checkNumber
+</th>
+<th style="text-align:left;font-size: 9px;">
+paymentDate
+</th>
+<th style="text-align:right;font-size: 9px;">
+amount
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:left;">
+HQ55022
+</td>
+<td style="text-align:left;">
+2003-06-06
+</td>
+<td style="text-align:right;">
+32641.98
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:left;">
+ND748579
+</td>
+<td style="text-align:left;">
+2004-08-20
+</td>
+<td style="text-align:right;">
+33347.88
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+114
+</td>
+<td style="text-align:left;">
+GG31455
+</td>
+<td style="text-align:left;">
+2003-05-20
+</td>
+<td style="text-align:right;">
+45864.03
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+114
+</td>
+<td style="text-align:left;">
+MA765515
+</td>
+<td style="text-align:left;">
+2004-12-15
+</td>
+<td style="text-align:right;">
+82261.22
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+114
+</td>
+<td style="text-align:left;">
+NR27552
+</td>
+<td style="text-align:left;">
+2004-03-10
+</td>
+<td style="text-align:right;">
+44894.74
+</td>
+</tr>
+</tbody>
+</table>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+</div>
+<div id="part3_2" class="section level4">
+<h4>3.2 Subquery in the FROM clause (derived tables)</h4>
+<p>We can also use subqueries in the FROM clause. This creates what’s known as a ‘derived table’ - a virtual table which is only stored for the duration of the query.</p>
+<p>In this example we want to find the maximum, minimum and average number of items in an order. To do this we create a subquery / derived table which shows the count of different items that were included in each order.</p>
+<p><em>With SQL:</em></p>
+<p>In MySQL we use a subquery to create the derived table called ‘itemcount’. This counts the number of items in each order (‘items’). Note that in MySQL derived tables must always be given an alias.</p>
+<pre class="markdown"><code>SELECT
+  select max(items), min(items), floor(avg(items))
+FROM( 
+  SELECT 
+    orderNumber, count(orderNumber) as items
+  FROM orderdetails
+  GROUP BY orderNumber) as itemcount</code></pre>
+<p><em>With R:</em></p>
+<pre class="r"><code>orderdetails %&gt;% 
+  # This is equivalent to the inner query
+  group_by(orderNumber) %&gt;% 
+  summarise(items = n()) %&gt;% 
+  # This is equivalent to the outer query
+  summarise(
+    max = max(items),
+    min = min(items),
+    avg = floor(mean(items))
+  )</code></pre>
+<p>This shows that the maximum number of different items in an single order was 18, the minimum was 1, and the average was 9 (rounded).</p>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+</div>
+<div id="part3_3" class="section level4">
+<h4>3.3 Correlated subqueries</h4>
+<p>In the previous two examples the subqueries were independent. This means the the inner query did not depend on the outer query, and could have been run as a standalone query.</p>
+<p>A <em>correlated</em> subquery is one that uses data from the outer query. In other words, the inner query depends on the outer query. A correlated subquery is evaluated once for each row in the outer query.</p>
+<p>For example: say we want to select products with a buy price that is greater than the average buy price for its product line.</p>
+<p><em>With SQL:</em></p>
+<pre class="markdown"><code>SELECT 
+  productname, buyprice
+FROM 
+  products as p1
+WHERE buyprice &gt;
+  (SELECT avg(buyprice)
+  FROM products
+  WHERE productLine = p1.productLine)</code></pre>
+<p>Here the inner query is finding the average buy price corresponding to the product line listed in each row of the outer query, and only selecting rows where the product price exceeds this average.</p>
+<p><em>With R:</em></p>
+<p>The same result can be achieved in R using a helper column called ‘avgBuyPrice’ which, for each row, shows the average price for the associated product line. The data is then filter to only show products whose price is higher than this average:</p>
+<pre class="r"><code>products %&gt;%
+  # This is equivalent to the inner query
+  # Creates a column with the avg price of the relevant product line
+  group_by(productLine) %&gt;% 
+  mutate(avgBuyPrice = mean(buyPrice)) %&gt;% 
+  ungroup() %&gt;%
+  # This is equivalent to the outer query
+  filter(buyPrice &gt; avgBuyPrice) %&gt;% 
+  select(productName, buyPrice)</code></pre>
+<p>This code returns 55 rows, the first five of which are shown below:</p>
+<table class="table table" style="font-size: 11px; margin-left: auto; margin-right: auto; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:left;font-size: 9px;">
+productName
+</th>
+<th style="text-align:right;font-size: 9px;">
+buyPrice
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1952 Alpine Renault 1300
+</td>
+<td style="text-align:right;">
+98.58
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1996 Moto Guzzi 1100i
+</td>
+<td style="text-align:right;">
+68.99
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2003 Harley-Davidson Eagle Drag Bike
+</td>
+<td style="text-align:right;">
+91.02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1972 Alfa Romeo GTA
+</td>
+<td style="text-align:right;">
+85.68
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1962 LanciaA Delta 16V
+</td>
+<td style="text-align:right;">
+103.42
+</td>
+</tr>
+</tbody>
+</table>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
+</div>
+<div id="part3_4" class="section level4">
+<h4>3.4 Common table expressions</h4>
+<p>A common table expression (CTE), like a derived table, is a named temporary table that exists only for the duration of a query. It is created using the <code>WITH</code> clause.</p>
+<p>Unlike a derived table, a CTE can be referenced multiple times in the same query. In addition, a CTE provides better readability and performance in comparison with a derived table.</p>
+<p>As a simple illustration, we can repeat the example above (see section 3.2) where we found the maximum, minimum and average number of items in an order. This time, instead of using a subquery, the inner query can be expressed as a common table expression called ‘itemcount’</p>
+<p><em>With SQL:</em></p>
+<p>This time we create the temporary table called ‘itemcount’ using the <code>WITH</code> clause. We then select the relevant informatoin from this CTE:</p>
+<pre class="markdown"><code>WITH itemcount AS (
+    SELECT orderNumber, count(orderNumber) as items
+  FROM orderdetails
+  GROUP BY orderNumber)
+    
+SELECT 
+  max(items), min(items), floor(avg(items))
+FROM 
+  itemcount</code></pre>
+<p><em>With R:</em></p>
+<p>In R, we create a separate dataframe which is analogous to the CTE above:</p>
+<pre class="r"><code># This is equivalent to the CTE table
+itemcount &lt;- orderdetails %&gt;% 
+  group_by(orderNumber) %&gt;% 
+  summarise(items = n())
+
+# This is the code which makes use of the CTE
+itemcount %&gt;%
+  summarize(
+    max = max(items), 
+    min = min(items), 
+    avg = floor(mean(items))
+  )</code></pre>
+<p>Here we get the same results as above:</p>
+<table class="table table" style="font-size: 11px; margin-left: auto; margin-right: auto; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:right;font-size: 9px;">
+max
+</th>
+<th style="text-align:right;font-size: 9px;">
+min
+</th>
+<th style="text-align:right;font-size: 9px;">
+avg
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+</tbody>
+</table>
+<a href="#contents"><em>(Top)</em></a>
+<hr>
 </div>
 </div>
